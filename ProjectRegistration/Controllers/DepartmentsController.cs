@@ -59,6 +59,7 @@ namespace ProjectRegistration.Controllers
         {
             if (ModelState.IsValid)
             {
+                department.CreatedDateTime = DateTime.Now;
                 _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

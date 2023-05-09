@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjectRegistration.Models;
 
 public partial class Department
 {
+    [Display(Name = "ID")]
     public int Id { get; set; }
 
+    [Display(Name = "Name")]
     public string? Dname { get; set; }
 
+    [Display(Name = "Description")]
     public string? Info { get; set; }
 
     public DateTime? CreatedDateTime { get; set; }
