@@ -20,9 +20,9 @@ public partial class Course
 
     public DateTime? CreatedDateTime { get; set; }
 
-    public virtual ICollection<Project> ProjectCourseId2Navigations { get; set; } = new List<Project>();
+    public bool? Deleted { get; set; } = false;
 
-    public virtual ICollection<Project> ProjectCourses { get; set; } = new List<Project>();
+    public DateTime? DeletedDateTime { get; set; }
 
     public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
 }

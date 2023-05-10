@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectRegistration.Models.Course>
+﻿@model IEnumerable<ProjectRegistration.Models.Class>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,17 +13,20 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CourseName)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Semester)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Cyear)
             </th>
-            @*<th>
+            <th>
                 @Html.DisplayNameFor(model => model.CreatedDateTime)
-            </th>*@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Deleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeletedDateTime)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -31,17 +34,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CourseName)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Semester)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Cyear)
             </td>
-            @*<td>
+            <td>
                 @Html.DisplayFor(modelItem => item.CreatedDateTime)
-            </td>*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Deleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedDateTime)
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

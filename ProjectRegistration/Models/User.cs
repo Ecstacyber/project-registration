@@ -23,6 +23,10 @@ public partial class User
 
     public DateTime? CreatedDateTime { get; set; }
 
+    public bool? Deleted { get; set; } = false;
+
+    public DateTime? DeletedDateTime { get; set; }
+
     public virtual Department? Department { get; set; }
 
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();

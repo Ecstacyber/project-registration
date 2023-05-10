@@ -127,13 +127,13 @@ public partial class ProjectRegistrationManagementContext : DbContext
             entity.Property(e => e.Pname).HasColumnName("PName");
             entity.Property(e => e.Pyear).HasColumnName("PYear");
 
-            entity.HasOne(d => d.Course).WithMany(p => p.ProjectCourses)
-                .HasForeignKey(d => d.CourseId)
-                .HasConstraintName("FK_Projects_CourseId");
+            entity.HasOne(d => d.Class).WithMany(p => p.ProjectClasses)
+                .HasForeignKey(d => d.ClassId)
+                .HasConstraintName("FK_Projects_ClassId");
 
-            entity.HasOne(d => d.CourseId2Navigation).WithMany(p => p.ProjectCourseId2Navigations)
-                .HasForeignKey(d => d.CourseId2)
-                .HasConstraintName("FK_Projects_CourseId2");
+            entity.HasOne(d => d.ClassId2Navigation).WithMany(p => p.ProjectClassId2Navigations)
+                .HasForeignKey(d => d.ClassId2)
+                .HasConstraintName("FK_Projects_ClassId2");
 
             entity.HasOne(d => d.Department).WithMany(p => p.Projects)
                 .HasForeignKey(d => d.DepartmentId)

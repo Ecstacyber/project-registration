@@ -9,90 +9,88 @@ using ProjectRegistration.Models;
 
 namespace ProjectRegistration.Controllers
 {
-    public class UsersController : Controller
+    public class ClassesController : Controller
     {
         private readonly ProjectRegistrationManagementContext _context;
 
-        public UsersController(ProjectRegistrationManagementContext context)
+        public ClassesController(ProjectRegistrationManagementContext context)
         {
             _context = context;
         }
 
-        // GET: Users
+        // GET: Classes
         public async Task<IActionResult> Index()
         {
-            var projectRegistrationManagementContext = _context.Users.Include(u => u.Department);
-            return View(await projectRegistrationManagementContext.ToListAsync());
+              return _context.Classes != null ? 
+                          View(await _context.Classes.ToListAsync()) :
+                          Problem("Entity set 'ProjectRegistrationManagementContext.Classes'  is null.");
         }
 
-        // GET: Users/Details/5
+        // GET: Classes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Users == null)
+            if (id == null || _context.Classes == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .Include(u => u.Department)
+            var @class = await _context.Classes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            if (@class == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(@class);
         }
 
-        // GET: Users/Create
+        // GET: Classes/Create
         public IActionResult Create()
         {
-            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Dname");
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Classes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId,CreatedDateTime")] User user)
+        public async Task<IActionResult> Create([Bind("Id,CourseId,Semester,Cyear,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
+                @class.CreatedDateTime = DateTime.Now;
+                _context.Add(@class);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Department"] = new SelectList(_context.Departments, "Dname", "Dname", user.DepartmentId);
-            return View(user);
+            return View(@class);
         }
 
-        // GET: Users/Edit/5
+        // GET: Classes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Users == null)
+            if (id == null || _context.Classes == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var @class = await _context.Classes.FindAsync(id);
+            if (@class == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", user.DepartmentId);
-            return View(user);
+            return View(@class);
         }
 
-        // POST: Users/Edit/5
+        // POST: Classes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId,CreatedDateTime")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,Semester,Cyear,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
         {
-            if (id != user.Id)
+            if (id != @class.Id)
             {
                 return NotFound();
             }
@@ -101,12 +99,12 @@ namespace ProjectRegistration.Controllers
             {
                 try
                 {
-                    _context.Update(user);
+                    _context.Update(@class);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.Id))
+                    if (!ClassExists(@class.Id))
                     {
                         return NotFound();
                     }
@@ -117,51 +115,49 @@ namespace ProjectRegistration.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", user.DepartmentId);
-            return View(user);
+            return View(@class);
         }
 
-        // GET: Users/Delete/5
+        // GET: Classes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Users == null)
+            if (id == null || _context.Classes == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .Include(u => u.Department)
+            var @class = await _context.Classes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            if (@class == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(@class);
         }
 
-        // POST: Users/Delete/5
+        // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Users == null)
+            if (_context.Classes == null)
             {
-                return Problem("Entity set 'ProjectRegistrationManagementContext.Users'  is null.");
+                return Problem("Entity set 'ProjectRegistrationManagementContext.Classes'  is null.");
             }
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            var @class = await _context.Classes.FindAsync(id);
+            if (@class != null)
             {
-                _context.Users.Remove(user);
+                _context.Classes.Remove(@class);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool ClassExists(int id)
         {
-          return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Classes?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

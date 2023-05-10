@@ -21,5 +21,9 @@ public partial class LecturerStat
 
     public DateTime? CreatedDateTime { get; set; }
 
+    public bool? Deleted { get; set; } = false;
+
+    public DateTime? DeletedDateTime { get; set; }
+
     public virtual User? Lecturer { get; set; }
 }

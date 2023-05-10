@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectRegistration.Models;
 
@@ -11,9 +12,11 @@ using ProjectRegistration.Models;
 namespace ProjectRegistration.Migrations
 {
     [DbContext(typeof(ProjectRegistrationManagementContext))]
-    partial class ProjectRegistrationManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20230510013638_Add_Deleted_Status")]
+    partial class Add_Deleted_Status
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,10 +274,10 @@ namespace ProjectRegistration.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClassId")
+                    b.Property<int?>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClassId2")
+                    b.Property<int?>("CourseId2")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDateTime")
@@ -315,9 +318,9 @@ namespace ProjectRegistration.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Projects__3214EC07F1BD175F");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("CourseId");
 
-                    b.HasIndex("ClassId2");
+                    b.HasIndex("CourseId2");
 
                     b.HasIndex("DepartmentId");
 
@@ -521,15 +524,15 @@ namespace ProjectRegistration.Migrations
 
             modelBuilder.Entity("ProjectRegistration.Models.Project", b =>
                 {
-                    b.HasOne("ProjectRegistration.Models.Class", "Class")
-                        .WithMany("ProjectClasses")
-                        .HasForeignKey("ClassId")
-                        .HasConstraintName("FK_Projects_ClassId");
+                    b.HasOne("ProjectRegistration.Models.Course", "Course")
+                        .WithMany("ProjectCourses")
+                        .HasForeignKey("CourseId")
+                        .HasConstraintName("FK_Projects_CourseId");
 
-                    b.HasOne("ProjectRegistration.Models.Class", "ClassId2Navigation")
-                        .WithMany("ProjectClassId2Navigations")
-                        .HasForeignKey("ClassId2")
-                        .HasConstraintName("FK_Projects_ClassId2");
+                    b.HasOne("ProjectRegistration.Models.Course", "CourseId2Navigation")
+                        .WithMany("ProjectCourseId2Navigations")
+                        .HasForeignKey("CourseId2")
+                        .HasConstraintName("FK_Projects_CourseId2");
 
                     b.HasOne("ProjectRegistration.Models.Department", "Department")
                         .WithMany("Projects")
@@ -546,9 +549,9 @@ namespace ProjectRegistration.Migrations
                         .HasForeignKey("GuidingLecturerId")
                         .HasConstraintName("FK_Projects_GuidingLecturerId");
 
-                    b.Navigation("Class");
+                    b.Navigation("Course");
 
-                    b.Navigation("ClassId2Navigation");
+                    b.Navigation("CourseId2Navigation");
 
                     b.Navigation("Department");
 
@@ -594,16 +597,13 @@ namespace ProjectRegistration.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("ProjectRegistration.Models.Class", b =>
-                {
-                    b.Navigation("ProjectClassId2Navigations");
-
-                    b.Navigation("ProjectClasses");
-                });
-
             modelBuilder.Entity("ProjectRegistration.Models.Course", b =>
                 {
                     b.Navigation("Classes");
+
+                    b.Navigation("ProjectCourseId2Navigations");
+
+                    b.Navigation("ProjectCourses");
                 });
 
             modelBuilder.Entity("ProjectRegistration.Models.Department", b =>

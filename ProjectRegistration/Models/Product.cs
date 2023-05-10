@@ -13,6 +13,10 @@ public partial class Product
 
     public DateTime? CreatedDateTime { get; set; }
 
+    public bool? Deleted { get; set; } = false;
+
+    public DateTime? DeletedDateTime { get; set; }
+
     public virtual ICollection<ProductDetail> ProductDetails { get; set; } = new List<ProductDetail>();
 
     public virtual Project? Project { get; set; }

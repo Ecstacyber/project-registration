@@ -22,7 +22,7 @@ namespace ProjectRegistration.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Departments != null ? 
-                          View(await _context.Departments.ToListAsync()) :
+                          View(await _context.Departments.Where(x => x.Deleted == false).ToListAsync()) :
                           Problem("Entity set 'ProjectRegistrationManagementContext.Departments'  is null.");
         }
 
@@ -55,11 +55,12 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Dname,Info,CreatedDateTime")] Department department)
+        public async Task<IActionResult> Create([Bind("Id,Dname,Info,CreatedDateTime,Deleted,DeletedDateTime")] Department department)
         {
             if (ModelState.IsValid)
             {
                 department.CreatedDateTime = DateTime.Now;
+                department.Deleted = false;
                 _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -88,7 +89,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Dname,Info,CreatedDateTime")] Department department)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Dname,Info,CreatedDateTime,Deleted,DeletedDateTime")] Department department)
         {
             if (id != department.Id)
             {
@@ -148,7 +149,9 @@ namespace ProjectRegistration.Controllers
             var department = await _context.Departments.FindAsync(id);
             if (department != null)
             {
-                _context.Departments.Remove(department);
+                //_context.Departments.Remove(department);
+                department.Deleted = true;
+                department.DeletedDateTime = DateTime.Now;
             }
             
             await _context.SaveChangesAsync();

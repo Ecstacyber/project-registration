@@ -13,9 +13,9 @@ public partial class Project
 
     public int? DepartmentId { get; set; }
 
-    public int? CourseId { get; set; }
+    public int? ClassId { get; set; }
 
-    public int? CourseId2 { get; set; }
+    public int? ClassId2 { get; set; }
 
     public int? GuidingLecturerId { get; set; }
 
@@ -29,9 +29,13 @@ public partial class Project
 
     public DateTime? CreatedDateTime { get; set; }
 
-    public virtual Course? Course { get; set; }
+    public bool? Deleted { get; set; } = false;
 
-    public virtual Course? CourseId2Navigation { get; set; }
+    public DateTime? DeletedDateTime { get; set; }
+
+    public virtual Class? Class { get; set; }
+
+    public virtual Class? ClassId2Navigation { get; set; }
 
     public virtual Department? Department { get; set; }
 
