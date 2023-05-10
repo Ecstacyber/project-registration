@@ -1,24 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjectRegistration.Models;
 
 public partial class User
 {
     public int Id { get; set; }
+    public string? UserId { get; set; }
 
+    [Display(Name = "Họ và tên")]
     public string? Fullname { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:d}")]
+    [Display(Name = "Ngày sinh")]
     public DateTime? DateOfBirth { get; set; }
 
+    [Display(Name = "Tên đăng nhập")]
     public string? Username { get; set; }
 
+    [Display(Name = "Mật khẩu")]
     public string? UserPassword { get; set; }
 
+    [Display(Name = "Ảnh đại diện")]
     public string? ImagePath { get; set; }
 
     public int? DepartmentId { get; set; }
 
+    [Display(Name = "Loại tài khoản")]
     public int? UserTypeId { get; set; }
 
     public DateTime? CreatedDateTime { get; set; }
@@ -27,6 +36,7 @@ public partial class User
 
     public DateTime? DeletedDateTime { get; set; }
 
+    [Display(Name = "Khoa")]
     public virtual Department? Department { get; set; }
 
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
