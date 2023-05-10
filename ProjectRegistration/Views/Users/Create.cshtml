@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" class="form-control" />
+                <input asp-for="DateOfBirth" type="date" class="form-control" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
+                <input asp-for="ImagePath" type="file" accept="image/png, image/jpeg" class="form-control" />
                 <span asp-validation-for="ImagePath" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -44,15 +44,10 @@
             <div class="form-group">
                 <label asp-for="UserTypeId" class="control-label"></label>
                 <div>
-                    <input asp-for="UserTypeId" type="radio" name="UserTypeId" value="10" /> Lecturer
-                    <input asp-for="UserTypeId" type="radio" name="UserTypeId" value="100" /> Student
+                    <input asp-for="UserTypeId" type="radio" name="UserTypeId" value="10" /> Giảng viên
+                    <input asp-for="UserTypeId" type="radio" name="UserTypeId" value="100" /> Sinh viên
                 </div>
                 <span asp-validation-for="UserTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDateTime" class="control-label"></label>
-                <input asp-for="CreatedDateTime" class="form-control" />
-                <span asp-validation-for="CreatedDateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

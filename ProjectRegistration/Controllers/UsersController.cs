@@ -56,10 +56,11 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId,CreatedDateTime")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId")] User user)
         {
             if (ModelState.IsValid)
             {
+                user.CreatedDateTime = DateTime.Now;
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -81,7 +82,7 @@ namespace ProjectRegistration.Controllers
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", user.DepartmentId);
+            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Dname");
             return View(user);
         }
 

@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" class="form-control" />
+                <input asp-for="DateOfBirth" type="date" class="form-control" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -35,23 +35,20 @@
             </div>
             <div class="form-group">
                 <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
+                <input asp-for="ImagePath" type="file" accept="image/png, image/jpeg" class="form-control" />
                 <span asp-validation-for="ImagePath" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DepartmentId" class="control-label"></label>
-                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
-                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                <label asp-for="Department" class="control-label"></label>
+                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.Department"></select>
             </div>
             <div class="form-group">
                 <label asp-for="UserTypeId" class="control-label"></label>
-                <input asp-for="UserTypeId" class="form-control" />
+                <div>
+                    <input asp-for="UserTypeId" type="radio" name="UserTypeId" value="10" /> Giảng viên
+                    <input asp-for="UserTypeId" type="radio" name="UserTypeId" value="100" /> Sinh viên
+                </div>
                 <span asp-validation-for="UserTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDateTime" class="control-label"></label>
-                <input asp-for="CreatedDateTime" class="form-control" />
-                <span asp-validation-for="CreatedDateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -65,5 +62,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
