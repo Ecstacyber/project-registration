@@ -9,12 +9,13 @@ public partial class Department
     [Display(Name = "ID")]
     public int Id { get; set; }
 
-    [Display(Name = "Name")]
+    [Display(Name = "Mã khoa")]
     public string? Dname { get; set; }
 
-    [Display(Name = "Description")]
+    [Display(Name = "Tên khoa")]
     public string? Info { get; set; }
 
+    [Display(Name = "Ngày tạo")]
     public DateTime? CreatedDateTime { get; set; }
 
     public bool? Deleted { get; set; } = false;

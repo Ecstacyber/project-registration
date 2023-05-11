@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectRegistration.Models;
 
@@ -11,9 +12,11 @@ using ProjectRegistration.Models;
 namespace ProjectRegistration.Migrations
 {
     [DbContext(typeof(ProjectRegistrationManagementContext))]
-    partial class ProjectRegistrationManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20230511134737_Courses_Fix")]
+    partial class Courses_Fix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -446,9 +449,6 @@ namespace ProjectRegistration.Migrations
                     b.Property<string>("ImagePath")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserPassword")
                         .HasColumnType("nvarchar(max)");
