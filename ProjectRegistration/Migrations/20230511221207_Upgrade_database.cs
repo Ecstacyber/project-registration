@@ -6,41 +6,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjectRegistration.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDB : Migration
+    public partial class Upgrade_database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Classes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CourseId = table.Column<int>(type: "int", nullable: true),
-                    Semester = table.Column<int>(type: "int", nullable: true),
-                    CYear = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Classes__3214EC07339A5E70", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CourseId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CourseName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Semester = table.Column<int>(type: "int", nullable: true),
-                    CYear = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Courses__3214EC07BE249912", x => x.Id);
+                    table.PrimaryKey("PK__Courses__3214EC077A99B303", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,11 +36,37 @@ namespace ProjectRegistration.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Dname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Info = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Departme__3214EC074FB0CB9F", x => x.Id);
+                    table.PrimaryKey("PK__Departme__3214EC07D7964779", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Classes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CourseId = table.Column<int>(type: "int", nullable: true),
+                    ClassId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Semester = table.Column<int>(type: "int", nullable: true),
+                    CYear = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Classes__3214EC07C7FBE7D2", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Classes_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -64,6 +75,7 @@ namespace ProjectRegistration.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Fullname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "smalldatetime", nullable: true),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -71,15 +83,44 @@ namespace ProjectRegistration.Migrations
                     ImagePath = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
                     UserTypeId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Users__3214EC07392CD93F", x => x.Id);
+                    table.PrimaryKey("PK__Users__3214EC0714467FCB", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Users_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClassDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClassId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__ClassDet__3214EC07265C2FDC", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClassDetails_ClassId",
+                        column: x => x.ClassId,
+                        principalTable: "Classes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ClassDetails_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id");
                 });
 
@@ -91,15 +132,17 @@ namespace ProjectRegistration.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LecturerId = table.Column<int>(type: "int", nullable: true),
                     Semester = table.Column<int>(type: "int", nullable: true),
-                    SYear = table.Column<int>(type: "int", nullable: true),
+                    SYear = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AvgGrade = table.Column<double>(type: "float", nullable: true),
                     TotalProjectsGuided = table.Column<int>(type: "int", nullable: true),
                     TotalProjectsGraded = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Lecturer__3214EC07C06C93CA", x => x.Id);
+                    table.PrimaryKey("PK__Lecturer__3214EC07073DD833", x => x.Id);
                     table.ForeignKey(
                         name: "FK_LecturerStats_LecturerId",
                         column: x => x.LecturerId,
@@ -116,27 +159,28 @@ namespace ProjectRegistration.Migrations
                     PName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Info = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
-                    CourseId = table.Column<int>(type: "int", nullable: true),
-                    CourseId2 = table.Column<int>(type: "int", nullable: true),
+                    ClassId = table.Column<int>(type: "int", nullable: true),
+                    ClassId2 = table.Column<int>(type: "int", nullable: true),
                     GuidingLecturerId = table.Column<int>(type: "int", nullable: true),
                     GradingLecturerId = table.Column<int>(type: "int", nullable: true),
-                    MaxMember = table.Column<int>(type: "int", nullable: true),
-                    PYear = table.Column<int>(type: "int", nullable: true),
+                    PYear = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Semester = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Projects__3214EC07F1BD175F", x => x.Id);
+                    table.PrimaryKey("PK__Projects__3214EC07CFEA4E65", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Projects_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
+                        name: "FK_Projects_ClassId",
+                        column: x => x.ClassId,
+                        principalTable: "Classes",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Projects_CourseId2",
-                        column: x => x.CourseId2,
-                        principalTable: "Courses",
+                        name: "FK_Projects_ClassId2",
+                        column: x => x.ClassId2,
+                        principalTable: "Classes",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Projects_DepartmentId",
@@ -163,15 +207,17 @@ namespace ProjectRegistration.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentId = table.Column<int>(type: "int", nullable: true),
                     Semester = table.Column<int>(type: "int", nullable: true),
-                    SYear = table.Column<int>(type: "int", nullable: true),
+                    SYear = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AvgGrade = table.Column<double>(type: "float", nullable: true),
                     TotalProjects = table.Column<int>(type: "int", nullable: true),
                     FinishedProjects = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__StudentS__3214EC07DBB6243E", x => x.Id);
+                    table.PrimaryKey("PK__StudentS__3214EC076466FA7E", x => x.Id);
                     table.ForeignKey(
                         name: "FK_StudentStats_StudentId",
                         column: x => x.StudentId,
@@ -188,11 +234,13 @@ namespace ProjectRegistration.Migrations
                     ProjectId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true),
                     Info = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Document__3214EC079026AE41", x => x.Id);
+                    table.PrimaryKey("PK__Document__3214EC07AF051F9B", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Documents_ProjectId",
                         column: x => x.ProjectId,
@@ -213,11 +261,13 @@ namespace ProjectRegistration.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectId = table.Column<int>(type: "int", nullable: true),
                     StudentId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Products__3214EC07069534B4", x => x.Id);
+                    table.PrimaryKey("PK__Products__3214EC07F35EC2C6", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Products_ProjectId",
                         column: x => x.ProjectId,
@@ -240,11 +290,13 @@ namespace ProjectRegistration.Migrations
                     GroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StudentId = table.Column<int>(type: "int", nullable: true),
                     Grade = table.Column<double>(type: "float", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__ProjectM__3214EC07D4367647", x => x.Id);
+                    table.PrimaryKey("PK__ProjectM__3214EC0757140A70", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProjectMembers_ProjectId",
                         column: x => x.ProjectId,
@@ -265,17 +317,34 @@ namespace ProjectRegistration.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: true),
                     ProductPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
+                    CreatedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletedDateTime = table.Column<DateTime>(type: "smalldatetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__ProductD__3214EC071DE98856", x => x.Id);
+                    table.PrimaryKey("PK__ProductD__3214EC07802A3FFF", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProductDetails_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassDetails_ClassId",
+                table: "ClassDetails",
+                column: "ClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassDetails_UserId",
+                table: "ClassDetails",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Classes_CourseId",
+                table: "Classes",
+                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_ProjectId",
@@ -318,14 +387,14 @@ namespace ProjectRegistration.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_CourseId",
+                name: "IX_Projects_ClassId",
                 table: "Projects",
-                column: "CourseId");
+                column: "ClassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_CourseId2",
+                name: "IX_Projects_ClassId2",
                 table: "Projects",
-                column: "CourseId2");
+                column: "ClassId2");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_DepartmentId",
@@ -357,7 +426,7 @@ namespace ProjectRegistration.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Classes");
+                name: "ClassDetails");
 
             migrationBuilder.DropTable(
                 name: "Documents");
@@ -381,10 +450,13 @@ namespace ProjectRegistration.Migrations
                 name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "Courses");
+                name: "Classes");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Courses");
 
             migrationBuilder.DropTable(
                 name: "Departments");

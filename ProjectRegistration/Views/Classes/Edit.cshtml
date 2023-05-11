@@ -19,6 +19,11 @@
                 <span asp-validation-for="CourseId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ClassId" class="control-label"></label>
+                <input asp-for="ClassId" class="form-control" />
+                <span asp-validation-for="ClassId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Semester" class="control-label"></label>
                 <input asp-for="Semester" class="form-control" />
                 <span asp-validation-for="Semester" class="text-danger"></span>
@@ -28,7 +33,7 @@
                 <input asp-for="Cyear" class="form-control" />
                 <span asp-validation-for="Cyear" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
+            <div class="form-group">
                 <label asp-for="CreatedDateTime" class="control-label"></label>
                 <input asp-for="CreatedDateTime" class="form-control" />
                 <span asp-validation-for="CreatedDateTime" class="text-danger"></span>
@@ -42,7 +47,7 @@
                 <label asp-for="DeletedDateTime" class="control-label"></label>
                 <input asp-for="DeletedDateTime" class="form-control" />
                 <span asp-validation-for="DeletedDateTime" class="text-danger"></span>
-            </div>*@
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

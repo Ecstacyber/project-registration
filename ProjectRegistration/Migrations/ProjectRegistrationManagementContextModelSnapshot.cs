@@ -47,17 +47,50 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<int?>("Semester")
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Classes__3214EC07339A5E70");
+                        .HasName("PK__Classes__3214EC07C7FBE7D2");
 
                     b.HasIndex("CourseId");
 
                     b.ToTable("Classes");
+                });
+
+            modelBuilder.Entity("ProjectRegistration.Models.ClassDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDateTime")
+                        .HasColumnType("smalldatetime");
+
+                    b.Property<bool?>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedDateTime")
+                        .HasColumnType("smalldatetime");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id")
+                        .HasName("PK__ClassDet__3214EC07265C2FDC");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ClassDetails");
                 });
 
             modelBuilder.Entity("ProjectRegistration.Models.Course", b =>
@@ -77,21 +110,14 @@ namespace ProjectRegistration.Migrations
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("smalldatetime");
 
-                    b.Property<string>("Cyear")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CYear");
-
                     b.Property<bool?>("Deleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("Semester")
-                        .HasColumnType("int");
+                        .HasColumnType("smalldatetime");
 
                     b.HasKey("Id")
-                        .HasName("PK__Courses__3214EC07BE249912");
+                        .HasName("PK__Courses__3214EC077A99B303");
 
                     b.ToTable("Courses");
                 });
@@ -111,7 +137,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<string>("Dname")
                         .HasColumnType("nvarchar(max)");
@@ -120,7 +146,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Departme__3214EC074FB0CB9F");
+                        .HasName("PK__Departme__3214EC07D7964779");
 
                     b.ToTable("Departments");
                 });
@@ -140,7 +166,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<string>("Info")
                         .HasColumnType("nvarchar(max)");
@@ -152,7 +178,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Document__3214EC079026AE41");
+                        .HasName("PK__Document__3214EC07AF051F9B");
 
                     b.HasIndex("ProjectId");
 
@@ -179,7 +205,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<int?>("LecturerId")
                         .HasColumnType("int");
@@ -187,8 +213,8 @@ namespace ProjectRegistration.Migrations
                     b.Property<int?>("Semester")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Syear")
-                        .HasColumnType("int")
+                    b.Property<string>("Syear")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("SYear");
 
                     b.Property<int?>("TotalProjectsGraded")
@@ -198,7 +224,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Lecturer__3214EC07C06C93CA");
+                        .HasName("PK__Lecturer__3214EC07073DD833");
 
                     b.HasIndex("LecturerId");
 
@@ -220,7 +246,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<int?>("ProjectId")
                         .HasColumnType("int");
@@ -229,7 +255,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Products__3214EC07069534B4");
+                        .HasName("PK__Products__3214EC07F35EC2C6");
 
                     b.HasIndex("ProjectId");
 
@@ -253,7 +279,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
@@ -262,7 +288,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id")
-                        .HasName("PK__ProductD__3214EC071DE98856");
+                        .HasName("PK__ProductD__3214EC07802A3FFF");
 
                     b.HasIndex("ProductId");
 
@@ -290,7 +316,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
@@ -304,22 +330,19 @@ namespace ProjectRegistration.Migrations
                     b.Property<string>("Info")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaxMember")
-                        .HasColumnType("int");
-
                     b.Property<string>("Pname")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("PName");
 
-                    b.Property<int?>("Pyear")
-                        .HasColumnType("int")
+                    b.Property<string>("Pyear")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("PYear");
 
                     b.Property<int?>("Semester")
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Projects__3214EC07F1BD175F");
+                        .HasName("PK__Projects__3214EC07CFEA4E65");
 
                     b.HasIndex("ClassId");
 
@@ -349,7 +372,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<double?>("Grade")
                         .HasColumnType("float");
@@ -364,7 +387,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__ProjectM__3214EC07D4367647");
+                        .HasName("PK__ProjectM__3214EC0757140A70");
 
                     b.HasIndex("ProjectId");
 
@@ -391,7 +414,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<int?>("FinishedProjects")
                         .HasColumnType("int");
@@ -402,15 +425,15 @@ namespace ProjectRegistration.Migrations
                     b.Property<int?>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Syear")
-                        .HasColumnType("int")
+                    b.Property<string>("Syear")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("SYear");
 
                     b.Property<int?>("TotalProjects")
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__StudentS__3214EC07DBB6243E");
+                        .HasName("PK__StudentS__3214EC076466FA7E");
 
                     b.HasIndex("StudentId");
 
@@ -435,7 +458,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("DeletedDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
 
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
@@ -460,7 +483,7 @@ namespace ProjectRegistration.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Users__3214EC07392CD93F");
+                        .HasName("PK__Users__3214EC0714467FCB");
 
                     b.HasIndex("DepartmentId");
 
@@ -469,9 +492,29 @@ namespace ProjectRegistration.Migrations
 
             modelBuilder.Entity("ProjectRegistration.Models.Class", b =>
                 {
-                    b.HasOne("ProjectRegistration.Models.Course", null)
+                    b.HasOne("ProjectRegistration.Models.Course", "Course")
                         .WithMany("Classes")
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .HasConstraintName("FK_Classes_CourseId");
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("ProjectRegistration.Models.ClassDetail", b =>
+                {
+                    b.HasOne("ProjectRegistration.Models.Class", "Class")
+                        .WithMany("ClassDetails")
+                        .HasForeignKey("ClassId")
+                        .HasConstraintName("FK_ClassDetails_ClassId");
+
+                    b.HasOne("ProjectRegistration.Models.User", "User")
+                        .WithMany("ClassDetails")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("FK_ClassDetails_UserId");
+
+                    b.Navigation("Class");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ProjectRegistration.Models.Document", b =>
@@ -605,6 +648,8 @@ namespace ProjectRegistration.Migrations
 
             modelBuilder.Entity("ProjectRegistration.Models.Class", b =>
                 {
+                    b.Navigation("ClassDetails");
+
                     b.Navigation("ProjectClassId2Navigations");
 
                     b.Navigation("ProjectClasses");
@@ -638,6 +683,8 @@ namespace ProjectRegistration.Migrations
 
             modelBuilder.Entity("ProjectRegistration.Models.User", b =>
                 {
+                    b.Navigation("ClassDetails");
+
                     b.Navigation("Documents");
 
                     b.Navigation("LecturerStats");

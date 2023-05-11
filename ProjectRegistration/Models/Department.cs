@@ -6,7 +6,6 @@ namespace ProjectRegistration.Models;
 
 public partial class Department
 {
-    [Display(Name = "ID")]
     public int Id { get; set; }
 
     [Display(Name = "Mã khoa")]
@@ -15,7 +14,6 @@ public partial class Department
     [Display(Name = "Tên khoa")]
     public string? Info { get; set; }
 
-    [Display(Name = "Ngày tạo")]
     public DateTime? CreatedDateTime { get; set; }
 
     public bool? Deleted { get; set; } = false;

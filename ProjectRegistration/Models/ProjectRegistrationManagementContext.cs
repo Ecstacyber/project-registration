@@ -17,6 +17,8 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
     public virtual DbSet<Class> Classes { get; set; }
 
+    public virtual DbSet<ClassDetail> ClassDetails { get; set; }
+
     public virtual DbSet<Course> Courses { get; set; }
 
     public virtual DbSet<Department> Departments { get; set; }
@@ -45,32 +47,55 @@ public partial class ProjectRegistrationManagementContext : DbContext
     {
         modelBuilder.Entity<Class>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Classes__3214EC07339A5E70");
+            entity.HasKey(e => e.Id).HasName("PK__Classes__3214EC07C7FBE7D2");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
             entity.Property(e => e.Cyear).HasColumnName("CYear");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
+
+            entity.HasOne(d => d.Course).WithMany(p => p.Classes)
+                .HasForeignKey(d => d.CourseId)
+                .HasConstraintName("FK_Classes_CourseId");
+        });
+
+        modelBuilder.Entity<ClassDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ClassDet__3214EC07265C2FDC");
+
+            entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
+
+            entity.HasOne(d => d.Class).WithMany(p => p.ClassDetails)
+                .HasForeignKey(d => d.ClassId)
+                .HasConstraintName("FK_ClassDetails_ClassId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ClassDetails)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_ClassDetails_UserId");
         });
 
         modelBuilder.Entity<Course>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Courses__3214EC07BE249912");
+            entity.HasKey(e => e.Id).HasName("PK__Courses__3214EC077A99B303");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
-            entity.Property(e => e.Cyear).HasColumnName("CYear");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
         });
 
         modelBuilder.Entity<Department>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC074FB0CB9F");
+            entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC07D7964779");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
         });
 
         modelBuilder.Entity<Document>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Document__3214EC079026AE41");
+            entity.HasKey(e => e.Id).HasName("PK__Document__3214EC07AF051F9B");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.ProjectId)
@@ -83,9 +108,10 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
         modelBuilder.Entity<LecturerStat>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Lecturer__3214EC07C06C93CA");
+            entity.HasKey(e => e.Id).HasName("PK__Lecturer__3214EC07073DD833");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
             entity.Property(e => e.Syear).HasColumnName("SYear");
 
             entity.HasOne(d => d.Lecturer).WithMany(p => p.LecturerStats)
@@ -95,9 +121,10 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Products__3214EC07069534B4");
+            entity.HasKey(e => e.Id).HasName("PK__Products__3214EC07F35EC2C6");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProjectId)
@@ -110,9 +137,10 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
         modelBuilder.Entity<ProductDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ProductD__3214EC071DE98856");
+            entity.HasKey(e => e.Id).HasName("PK__ProductD__3214EC07802A3FFF");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductDetails)
                 .HasForeignKey(d => d.ProductId)
@@ -121,9 +149,10 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
         modelBuilder.Entity<Project>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Projects__3214EC07F1BD175F");
+            entity.HasKey(e => e.Id).HasName("PK__Projects__3214EC07CFEA4E65");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
             entity.Property(e => e.Pname).HasColumnName("PName");
             entity.Property(e => e.Pyear).HasColumnName("PYear");
 
@@ -150,9 +179,10 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
         modelBuilder.Entity<ProjectMember>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ProjectM__3214EC07D4367647");
+            entity.HasKey(e => e.Id).HasName("PK__ProjectM__3214EC0757140A70");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
 
             entity.HasOne(d => d.Project).WithMany(p => p.ProjectMembers)
                 .HasForeignKey(d => d.ProjectId)
@@ -165,9 +195,10 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
         modelBuilder.Entity<StudentStat>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__StudentS__3214EC07DBB6243E");
+            entity.HasKey(e => e.Id).HasName("PK__StudentS__3214EC076466FA7E");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
             entity.Property(e => e.Syear).HasColumnName("SYear");
 
             entity.HasOne(d => d.Student).WithMany(p => p.StudentStats)
@@ -177,10 +208,11 @@ public partial class ProjectRegistrationManagementContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07392CD93F");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC0714467FCB");
 
             entity.Property(e => e.CreatedDateTime).HasColumnType("smalldatetime");
             entity.Property(e => e.DateOfBirth).HasColumnType("smalldatetime");
+            entity.Property(e => e.DeletedDateTime).HasColumnType("smalldatetime");
             entity.Property(e => e.ImagePath).IsUnicode(false);
 
             entity.HasOne(d => d.Department).WithMany(p => p.Users)

@@ -3,15 +3,13 @@ using System.Collections.Generic;
 
 namespace ProjectRegistration.Models;
 
-public partial class Document
+public partial class ClassDetail
 {
     public int Id { get; set; }
 
-    public int? ProjectId { get; set; }
+    public int? ClassId { get; set; }
 
     public int? UserId { get; set; }
-
-    public string? Info { get; set; }
 
     public DateTime? CreatedDateTime { get; set; }
 
@@ -19,7 +17,7 @@ public partial class Document
 
     public DateTime? DeletedDateTime { get; set; }
 
-    public virtual Project? Project { get; set; }
+    public virtual Class? Class { get; set; }
 
     public virtual User? User { get; set; }
 }

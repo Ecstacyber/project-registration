@@ -7,6 +7,7 @@ namespace ProjectRegistration.Models;
 public partial class User
 {
     public int Id { get; set; }
+
     public string? UserId { get; set; }
 
     [Display(Name = "Họ và tên")]
@@ -36,7 +37,8 @@ public partial class User
 
     public DateTime? DeletedDateTime { get; set; }
 
-    [Display(Name = "Khoa")]
+    public virtual ICollection<ClassDetail> ClassDetails { get; set; } = new List<ClassDetail>();
+
     public virtual Department? Department { get; set; }
 
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();

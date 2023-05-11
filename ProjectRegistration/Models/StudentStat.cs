@@ -11,7 +11,7 @@ public partial class StudentStat
 
     public int? Semester { get; set; }
 
-    public int? Syear { get; set; }
+    public string? Syear { get; set; }
 
     public double? AvgGrade { get; set; }
 
@@ -21,7 +21,7 @@ public partial class StudentStat
 
     public DateTime? CreatedDateTime { get; set; }
 
-    public bool? Deleted { get; set; } = false;
+    public bool? Deleted { get; set; }
 
     public DateTime? DeletedDateTime { get; set; }
 

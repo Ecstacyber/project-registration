@@ -17,7 +17,7 @@ public partial class ProjectMember
 
     public DateTime? CreatedDateTime { get; set; }
 
-    public bool? Deleted { get; set; } = false;
+    public bool? Deleted { get; set; }
 
     public DateTime? DeletedDateTime { get; set; }
 

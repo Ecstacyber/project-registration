@@ -28,4 +28,17 @@
     <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Views\Classes\Create.cshtml" />
+    <None Include="Views\Classes\Delete.cshtml" />
+    <None Include="Views\Classes\Details.cshtml" />
+    <None Include="Views\Classes\Edit.cshtml" />
+    <None Include="Views\Classes\Index.cshtml" />
+    <None Include="Views\Courses\Create.cshtml" />
+    <None Include="Views\Courses\Delete.cshtml" />
+    <None Include="Views\Courses\Details.cshtml" />
+    <None Include="Views\Courses\Edit.cshtml" />
+    <None Include="Views\Courses\Index.cshtml" />
+  </ItemGroup>
+
 </Project>

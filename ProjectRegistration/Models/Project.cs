@@ -21,15 +21,13 @@ public partial class Project
 
     public int? GradingLecturerId { get; set; }
 
-    public int? MaxMember { get; set; }
-
-    public int? Pyear { get; set; }
+    public string? Pyear { get; set; }
 
     public int? Semester { get; set; }
 
     public DateTime? CreatedDateTime { get; set; }
 
-    public bool? Deleted { get; set; } = false;
+    public bool? Deleted { get; set; }
 
     public DateTime? DeletedDateTime { get; set; }
 

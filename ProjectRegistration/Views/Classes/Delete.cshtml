@@ -12,6 +12,12 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ClassId)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Semester)
         </dt>
         <dd class = "col-sm-10">
@@ -23,7 +29,7 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Cyear)
         </dd>
-        @*<dt class = "col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedDateTime)
         </dt>
         <dd class = "col-sm-10">
@@ -40,7 +46,13 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DeletedDateTime)
-        </dd>*@
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Course)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Course.Id)
+        </dd>
     </dl>
     
     <form asp-action="Delete">

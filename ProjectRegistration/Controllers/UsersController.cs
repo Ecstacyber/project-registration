@@ -189,7 +189,7 @@ namespace ProjectRegistration.Controllers
                     while (reader.Read()) //Each row of the file
                     {
 
-                        var existedUser = _context.Users.Where(x => x.UserId == reader.GetValue(1).ToString()).FirstOrDefault();
+                        var existedUser = _context.Users.Where(x => (x.UserId == reader.GetValue(1).ToString() && x.Deleted == false)).FirstOrDefault();
                         if (existedUser != null) continue;
 
                         var user = new User();
