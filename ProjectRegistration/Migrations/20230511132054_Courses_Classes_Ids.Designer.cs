@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectRegistration.Models;
 
@@ -11,9 +12,11 @@ using ProjectRegistration.Models;
 namespace ProjectRegistration.Migrations
 {
     [DbContext(typeof(ProjectRegistrationManagementContext))]
-    partial class ProjectRegistrationManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20230511132054_Courses_Classes_Ids")]
+    partial class Courses_Classes_Ids
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,8 +80,8 @@ namespace ProjectRegistration.Migrations
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("smalldatetime");
 
-                    b.Property<string>("Cyear")
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int?>("Cyear")
+                        .HasColumnType("int")
                         .HasColumnName("CYear");
 
                     b.Property<bool?>("Deleted")

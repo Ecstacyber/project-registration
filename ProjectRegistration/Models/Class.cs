@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjectRegistration.Models;
 
@@ -7,12 +8,19 @@ public partial class Class
 {
     public int Id { get; set; }
 
+    [Display(Name = "Mã lớp")]
+    public string? ClassId { get; set; }
+
+    [Display(Name = "Mã khoa")]
     public int? CourseId { get; set; }
 
+    [Display(Name = "Học kỳ")]
     public int? Semester { get; set; }
 
+    [Display(Name = "Năm học")]
     public string? Cyear { get; set; }
 
+    [Display(Name = "Ngày tạo")]
     public DateTime? CreatedDateTime { get; set; }
 
     public bool? Deleted { get; set; } = false;

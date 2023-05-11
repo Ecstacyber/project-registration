@@ -1,49 +1,10 @@
-﻿@model IEnumerable<ProjectRegistration.Models.Department>
+﻿@model IEnumerable<ProjectRegistration.Models.Course>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
-
-@*<style>
-    .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    }
-
-    /* Modal Content/Box */
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 60%; /* Could be more or less, depending on screen size */
-    }
-
-    /* The Close Button */
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-</style>*@
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -52,10 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Dname)
+                @Html.DisplayNameFor(model => model.CourseId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Info)
+                @Html.DisplayNameFor(model => model.CourseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Semester)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cyear)
             </th>
             @*<th>
                 @Html.DisplayNameFor(model => model.CreatedDateTime)
@@ -73,10 +40,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Dname)
+                @Html.DisplayFor(modelItem => item.CourseId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Info)
+                @Html.DisplayFor(modelItem => item.CourseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semester)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cyear)
             </td>
             @*<td>
                 @Html.DisplayFor(modelItem => item.CreatedDateTime)
@@ -90,11 +63,9 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
-                    Xoá
-                </button>
-                    
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                        Xoá
+                    </button>
             </td>
         </tr>
 }
@@ -128,34 +99,13 @@
         const deleteBtn = document.getElementById('delete-btn');
         const deleteForm = document.getElementById('delete-form');
         modal.addEventListener('show.bs.modal', function (event) {
-            // Button that triggered the modal
             const button = event.relatedTarget;
             id = button.getAttribute('data-id');
-           
+
         });
         deleteBtn.onclick = () => {
             deleteForm.action = 'Departments/Delete/' + id;
             deleteForm.submit();
         }
-            //btn.onclick = function () {
-            //    modal.style.display = "block";
-            //}
-
-            //span.onclick = function () {
-            //    modal.style.display = "none";
-            //}
-
-            //deleteNo.onclick = function () {
-            //    modal.style.display = "none";
-            //}
-            //deleteYes.onclick = function() {
-
-            //}
-
-            //window.onclick = function (event) {
-            //    if (event.target == modal) {
-            //        modal.style.display = "none";
-            //    }
-            //}
     </script>
 }

@@ -1,4 +1,4 @@
-﻿@model ProjectRegistration.Models.Class
+﻿@model ProjectRegistration.Models.Course
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,7 +6,7 @@
 
 <h1>Edit</h1>
 
-<h4>Class</h4>
+<h4>Course</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,8 +15,13 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
+                <input asp-for="CourseId" class="form-control" />
                 <span asp-validation-for="CourseId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CourseName" class="control-label"></label>
+                <input asp-for="CourseName" class="form-control" />
+                <span asp-validation-for="CourseName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Semester" class="control-label"></label>
