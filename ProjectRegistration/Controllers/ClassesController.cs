@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
@@ -245,6 +246,35 @@ namespace ProjectRegistration.Controllers
                 @classDetails.Deleted = true;
                 @classDetails.DeletedDateTime = DateTime.Now;
             }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = int.Parse(ids[1]) });
+        }
+
+        [HttpPost, ActionName("AddUser")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddUser(string id)
+        {
+            if (_context.Classes == null)
+            {
+                return Problem("Entity set 'ProjectRegistrationManagementContext.Classes'  is null.");
+            }
+            string[] ids = id.Split('-');
+
+            var user = _context.Users.Where(x => (x.UserId == ids[0] && x.Deleted == false)).FirstOrDefault();            
+            var @class = _context.Classes.Where(x => (x.Id == int.Parse(ids[1]) && x.Deleted == false)).FirstOrDefault();
+
+            ClassDetail classDetail = new ClassDetail();
+            classDetail.ClassId = @class.Id;
+            classDetail.UserId = user.Id;
+            classDetail.Class = @class;
+            classDetail.User = user;
+            classDetail.CreatedDateTime = DateTime.Now;
+            //List<ClassDetail> userCd = new List<ClassDetail>();
+            //userCd = user.ClassDetails.ToList();
+            //userCd.Add(classDetail);
+            //user.ClassDetails = userCd;
+            _context.ClassDetails.Add(classDetail);
 
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", new { id = int.Parse(ids[1]) });

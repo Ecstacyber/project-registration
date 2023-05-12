@@ -124,7 +124,7 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-<!-- Modal -->
+<!-- Delete Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" style="z-index:1060">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -144,6 +144,27 @@
 </div>
 <form method="post" id="delete-form"></form>
 
+<!-- Add Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Thêm sinh viên vào lớp</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Nhập MSSV
+            </div>
+            <input type="text" id="userIdText"/>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add-btn">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="add-form"></form>
+
 @section Scripts {
     <script>
         let id;
@@ -158,6 +179,18 @@
         deleteBtn.onclick = () => {
             deleteForm.action = '@Url.Content("~/Classes/DeleteUser/")' + id + '-' + classId.value;
             deleteForm.submit();
+        }
+    </script>
+
+    <script>
+        let id = document.getElementById("userIdText");
+        let classId = document.getElementById("ClassIdHere");
+        const addBtn = document.getElementById('add-btn');
+        const addForm = document.getElementById('add-form');
+        
+        addBtn.onclick = () => {
+            addForm.action = '@Url.Content("~/Classes/AddUser/")' + id.value + '-' + classId.value;
+            addForm.submit();
         }
     </script>
 }
