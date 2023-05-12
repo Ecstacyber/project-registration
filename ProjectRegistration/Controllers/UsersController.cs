@@ -175,7 +175,11 @@ namespace ProjectRegistration.Controllers
         {
             var fileextension = Path.GetExtension(fileSelect.FileName);
             var filename = Guid.NewGuid().ToString() + fileextension;
-            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
+            }
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);          
             using (FileStream fs = System.IO.File.Create(filepath))
             {
                 fileSelect.CopyTo(fs);
@@ -215,7 +219,6 @@ namespace ProjectRegistration.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
 
         public int RandomNumber(int min, int max)
         {

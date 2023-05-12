@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Course)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ClassId)
             </th>
             <th>
@@ -30,15 +33,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.DeletedDateTime)
             </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.CourseName)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ClassId)
             </td>
@@ -56,16 +60,52 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DeletedDateTime)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseName)
-            </td>
+            </td>*@           
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                        Xoá
+                    </button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" action="" id="delete-form"></form>
+@section Scripts {
+    <script>
+        let id;
+        var modal = document.getElementById("exampleModal");
+        const deleteBtn = document.getElementById('delete-btn');
+        const deleteForm = document.getElementById('delete-form');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            id = button.getAttribute('data-id');
+        });
+        deleteBtn.onclick = () => {
+            deleteForm.action = 'Departments/Delete/' + id;
+            deleteForm.submit();
+        }
+    </script>
+}

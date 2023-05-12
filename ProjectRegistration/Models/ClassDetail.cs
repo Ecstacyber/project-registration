@@ -13,7 +13,7 @@ public partial class ClassDetail
 
     public DateTime? CreatedDateTime { get; set; }
 
-    public bool? Deleted { get; set; }
+    public bool? Deleted { get; set; } = false;
 
     public DateTime? DeletedDateTime { get; set; }
 

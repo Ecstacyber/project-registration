@@ -35,13 +35,17 @@ namespace ProjectRegistration.Controllers
             }
 
             var @class = await _context.Classes
+                .Where(x => x.Deleted == false)
                 .Include(x => x.Course)
+                .Include(x => x.ClassDetails)
+                .ThenInclude(x => x.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@class == null)
             {
                 return NotFound();
             }
-
+            var list = @class.ClassDetails.Where(x => x.Deleted == false).ToList();
+            @class.ClassDetails = list;
             return View(@class);
         }
 
@@ -123,23 +127,23 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Classes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Classes == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Classes == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var @class = await _context.Classes
-                .Include(x => x.Course)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (@class == null)
-            {
-                return NotFound();
-            }
+        //    var @class = await _context.Classes
+        //        .Include(x => x.Course)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (@class == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(@class);
-        }
+        //    return View(@class);
+        //}
 
         // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -183,6 +187,10 @@ namespace ProjectRegistration.Controllers
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
                     reader.Read();
+                    var @class = _context.Classes.Where(x => (x.Deleted == false && x.Id == Id)).FirstOrDefault();
+
+                    List<ClassDetail> cd = new List<ClassDetail>();
+
                     while (reader.Read()) //Each row of the file
                     {
 
@@ -190,14 +198,23 @@ namespace ProjectRegistration.Controllers
                         if (user == null) continue;
                         if (_context.ClassDetails.Where(x => x.ClassId == Id && x.UserId == user.Id).FirstOrDefault() != null) continue;
 
-                        ClassDetail classDetail= new ClassDetail();
+                        ClassDetail classDetail = new ClassDetail();
                         classDetail.ClassId = Id;
                         classDetail.UserId = user.Id;
-                        classDetail.Class = _context.Classes.Where(x => (x.Deleted == false && x.Id == Id)).FirstOrDefault();
+                        classDetail.Class = @class;
                         classDetail.User = user;
+                        classDetail.CreatedDateTime = DateTime.Now;
+                        List<ClassDetail> userCd = new List<ClassDetail>();
+                        userCd = user.ClassDetails.ToList();
+                        userCd.Add(classDetail);
+                        user.ClassDetails = userCd;
+                        cd.Add(classDetail);
+                        
 
                         _context.ClassDetails.Add(classDetail);
                     }
+                    @class.ClassDetails = cd;
+
                 }
             }
 
@@ -205,6 +222,32 @@ namespace ProjectRegistration.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", new { id = Id} );
+        }
+
+        [HttpPost, ActionName("GetUsersInClass")]
+        public IActionResult GetUsersInClass(int id)
+        {
+            return RedirectToAction("GetUsersInClass", "ClassDetailsController", id);
+        }
+
+        [HttpPost, ActionName("DeleteUser")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            if (_context.Classes == null)
+            {
+                return Problem("Entity set 'ProjectRegistrationManagementContext.Classes'  is null.");
+            }            
+            string[] ids = id.Split('-');
+            var @classDetails = _context.ClassDetails.Where(x => x.UserId == int.Parse(ids[0]) && x.ClassId == int.Parse(ids[1])).FirstOrDefault();
+            if (@classDetails != null)
+            {
+                @classDetails.Deleted = true;
+                @classDetails.DeletedDateTime = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = int.Parse(ids[1]) });
         }
     }
 }

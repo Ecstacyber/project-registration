@@ -169,5 +169,15 @@ namespace ProjectRegistration.Controllers
         {
           return (_context.ClassDetails?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        public async Task<IActionResult> GetUsersInClass(int id)
+        {
+            if (_context.ClassDetails == null)
+            {
+                return Problem("Entity set 'ProjectRegistrationManagementContext.ClassDetails'  is null.");
+            }
+            var classDetails = _context.ClassDetails.Where(x => x.ClassId == id).Include(x => x.User.UserId).Include(x => x.User.Fullname).Include(x => x.User.Department.Dname);
+            return View(await classDetails.ToListAsync());
+        }
     }
 }

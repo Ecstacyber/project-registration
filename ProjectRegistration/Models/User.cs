@@ -26,6 +26,7 @@ public partial class User
     [Display(Name = "Ảnh đại diện")]
     public string? ImagePath { get; set; }
 
+    [Display(Name = "Khoa")]
     public int? DepartmentId { get; set; }
 
     [Display(Name = "Loại tài khoản")]

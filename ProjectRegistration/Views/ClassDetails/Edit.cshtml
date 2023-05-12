@@ -1,4 +1,4 @@
-﻿@model ProjectRegistration.Models.Class
+﻿@model ProjectRegistration.Models.ClassDetail
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,7 +6,7 @@
 
 <h1>Edit</h1>
 
-<h4>Class</h4>
+<h4>ClassDetail</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,26 +14,16 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="ClassId" class="control-label"></label>
-                <input asp-for="ClassId" class="form-control" />
+                <select asp-for="ClassId" class="form-control" asp-items="ViewBag.ClassId"></select>
                 <span asp-validation-for="ClassId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Semester" class="control-label"></label>
-                <input asp-for="Semester" class="form-control" />
-                <span asp-validation-for="Semester" class="text-danger"></span>
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Cyear" class="control-label"></label>
-                <input asp-for="Cyear" class="form-control" />
-                <span asp-validation-for="Cyear" class="text-danger"></span>
-            </div>
-            @*<div class="form-group">
                 <label asp-for="CreatedDateTime" class="control-label"></label>
                 <input asp-for="CreatedDateTime" class="form-control" />
                 <span asp-validation-for="CreatedDateTime" class="text-danger"></span>
@@ -47,7 +37,7 @@
                 <label asp-for="DeletedDateTime" class="control-label"></label>
                 <input asp-for="DeletedDateTime" class="form-control" />
                 <span asp-validation-for="DeletedDateTime" class="text-danger"></span>
-            </div>*@
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

@@ -20,6 +20,7 @@ public partial class Class
     [Display(Name = "Năm học")]
     public string? Cyear { get; set; }
 
+    [Display(Name = "Ngày tạo")]
     public DateTime? CreatedDateTime { get; set; }
 
     public bool? Deleted { get; set; } = false;
@@ -28,6 +29,7 @@ public partial class Class
 
     public virtual ICollection<ClassDetail> ClassDetails { get; set; } = new List<ClassDetail>();
 
+    [Display(Name = "Mã môn học")]
     public virtual Course? Course { get; set; }
 
     public virtual ICollection<Project> ProjectClassId2Navigations { get; set; } = new List<Project>();

@@ -5,11 +5,17 @@
 }
 
 <h1>Details</h1>
-
+<input type="hidden" id="ClassIdHere" value=@Model.Id asp-for="Id" />
 <div>
     <h4>Class</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Course)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Course.CourseId)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ClassId)
         </dt>
@@ -28,7 +34,7 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Cyear)
         </dd>
-@*        <dt class = "col-sm-2">
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedDateTime)
         </dt>
         <dd class = "col-sm-10">
@@ -45,22 +51,16 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DeletedDateTime)
-        </dd>*@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Course)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Course.Id)
-        </dd>
+        </dd>*@        
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFromExcelModal">
     Thêm file excel
+</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFromExcelModal">
+    Thêm bằng MSSV
 </button>
 
 <form method="post" enctype="multipart/form-data" name="add-file-form" id="add-file-form" asp-asp-controller="Users" asp-action="AddUserFromFileExcel">
@@ -86,4 +86,78 @@
     </div>
 </form>
 
-<></>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                MSSV
+            </th>
+            <th>
+                Tên
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ClassDetails)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.User.UserId)           
+                </td>                
+                <td>
+                    @Html.DisplayFor(model => item.User.Fullname)
+                </td>
+                <td>
+                    <a asp-controller="User" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.User.Id">
+                        Xoá
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Xóa tài khoản</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="delete-form"></form>
+
+@section Scripts {
+    <script>
+        let id;
+        let classId = document.getElementById("ClassIdHere");
+        var modal = document.getElementById("confirmDeleteModal");
+        const deleteBtn = document.getElementById('delete-btn');
+        const deleteForm = document.getElementById('delete-form');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            id = button.getAttribute('data-id');
+        });
+        deleteBtn.onclick = () => {
+            deleteForm.action = '@Url.Content("~/Classes/DeleteUser/")' + id + '-' + classId.value;
+            deleteForm.submit();
+        }
+    </script>
+}
