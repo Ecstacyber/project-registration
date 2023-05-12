@@ -209,9 +209,7 @@ namespace ProjectRegistration.Controllers
                         userCd = user.ClassDetails.ToList();
                         userCd.Add(classDetail);
                         user.ClassDetails = userCd;
-                        cd.Add(classDetail);
-                        
-
+                        cd.Add(classDetail);                       
                         _context.ClassDetails.Add(classDetail);
                     }
                     @class.ClassDetails = cd;
@@ -262,22 +260,64 @@ namespace ProjectRegistration.Controllers
             string[] ids = id.Split('-');
 
             var user = _context.Users.Where(x => (x.UserId == ids[0] && x.Deleted == false)).FirstOrDefault();            
-            var @class = _context.Classes.Where(x => (x.Id == int.Parse(ids[1]) && x.Deleted == false)).FirstOrDefault();
-
-            ClassDetail classDetail = new ClassDetail();
-            classDetail.ClassId = @class.Id;
-            classDetail.UserId = user.Id;
-            classDetail.Class = @class;
-            classDetail.User = user;
-            classDetail.CreatedDateTime = DateTime.Now;
-            //List<ClassDetail> userCd = new List<ClassDetail>();
-            //userCd = user.ClassDetails.ToList();
-            //userCd.Add(classDetail);
-            //user.ClassDetails = userCd;
-            _context.ClassDetails.Add(classDetail);
+            var @class = _context.Classes.Where(x => (x.Id == int.Parse(ids[1]) && x.Deleted == false)).Include(x => x.ClassDetails).FirstOrDefault();
+            if (!@class.ClassDetails.Any(x => x.UserId == user.Id))
+            {
+                ClassDetail classDetail = new ClassDetail();
+                classDetail.ClassId = @class.Id;
+                classDetail.UserId = user.Id;
+                classDetail.Class = @class;
+                classDetail.User = user;
+                classDetail.CreatedDateTime = DateTime.Now;
+                _context.ClassDetails.Add(classDetail);
+            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", new { id = int.Parse(ids[1]) });
+        }
+
+        [HttpPost, ActionName("ViewProjectList")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ViewProjectList(int id)
+        {
+            var @class = _context.Classes.Include(x => x.ProjectClasses).Where(x => x.Deleted == false && x.Id == id).FirstOrDefault();
+            var projectList = new List<Project>();
+            projectList = @class.ProjectClasses.ToList();
+            ViewData["id"] = id;
+            return View(projectList);
+        }
+
+        // GET: Projects/Create
+        public IActionResult CreateProject(int id)
+        {
+            ViewData["id"] = id;
+            ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id");
+            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id");
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id");
+            ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id");
+            return View();
+        }
+
+        // POST: Projects/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost, ActionName("CreateProject")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateProject([Bind("Id,Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(project);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("ViewProjectList", new { id = ViewData["id"]});
+            }
+            ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
+            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
+            ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
+            ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
+            return View(project);
         }
     }
 }

@@ -59,9 +59,15 @@
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFromExcelModal">
     Thêm file excel
 </button>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFromExcelModal">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
     Thêm bằng MSSV
 </button>
+<form method="post" asp-action="ViewProjectList" asp-route-id="@Model.Id">
+    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewProjectList">
+        Danh sách đồ án
+    </button>
+</form>
+
 
 <form method="post" enctype="multipart/form-data" name="add-file-form" id="add-file-form" asp-asp-controller="Users" asp-action="AddUserFromFileExcel">
     <!-- Modal -->
@@ -155,7 +161,7 @@
             <div class="modal-body">
                 Nhập MSSV
             </div>
-            <input type="text" id="userIdText"/>
+            <input type="text" id="userIdText" class="form-control"/>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="add-btn">Thêm</button>
@@ -183,13 +189,13 @@
     </script>
 
     <script>
-        let id = document.getElementById("userIdText");
-        let classId = document.getElementById("ClassIdHere");
+        let userId = document.getElementById("userIdText");
         const addBtn = document.getElementById('add-btn');
         const addForm = document.getElementById('add-form');
         
         addBtn.onclick = () => {
-            addForm.action = '@Url.Content("~/Classes/AddUser/")' + id.value + '-' + classId.value;
+            console.log("here!");
+            addForm.action = '@Url.Content("~/Classes/AddUser/")' + userId.value + '-' + classId.value;
             addForm.submit();
         }
     </script>
