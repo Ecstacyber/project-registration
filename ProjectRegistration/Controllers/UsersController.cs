@@ -59,7 +59,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId")] User user)
+        public async Task<IActionResult> Create([Bind("Id,UserId,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace ProjectRegistration.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Department"] = new SelectList(_context.Departments, "Dname", "Dname", user.DepartmentId);
+            ViewData["Department"] = new SelectList(_context.Departments.Where(x => x.Deleted == false), "Dname", "Dname", user.DepartmentId);
             return View(user);
         }
 
@@ -94,7 +94,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId,CreatedDateTime")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Fullname,DateOfBirth,Username,UserPassword,ImagePath,DepartmentId,UserTypeId,CreatedDateTime")] User user)
         {
             if (id != user.Id)
             {

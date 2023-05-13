@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<ProjectRegistration.Models.Course>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách các môn học";
 }
 
-<h1>Index</h1>
+<h1>Danh cách các môn học</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">+ Tạo mới</a>
 </p>
 <table class="table">
     <thead>
@@ -19,44 +19,45 @@
                 @Html.DisplayNameFor(model => model.CourseName)
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.CreatedDateTime)
+            @Html.DisplayNameFor(model => model.CreatedDateTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Deleted)
+            @Html.DisplayNameFor(model => model.Deleted)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DeletedDateTime)
+            @Html.DisplayNameFor(model => model.DeletedDateTime)
             </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourseId)
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseName)
+                </td>
+                @*<td>
+            @Html.DisplayFor(modelItem => item.CreatedDateTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CourseName)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.CreatedDateTime)
+            @Html.DisplayFor(modelItem => item.Deleted)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedDateTime)
+            @Html.DisplayFor(modelItem => item.DeletedDateTime)
             </td>*@
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                <td>
+                    <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
+                    <a class="btn btn-link border-0" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+                    <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
                         Xoá
                     </button>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

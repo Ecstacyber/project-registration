@@ -41,6 +41,7 @@ public partial class Project
 
     public DateTime? DeletedDateTime { get; set; }
 
+    [Display(Name = "Lớp")]
     public virtual Class? Class { get; set; }
 
     public virtual Class? ClassId2Navigation { get; set; }
@@ -49,8 +50,10 @@ public partial class Project
 
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
 
+    [Display(Name = "Giảng viên phúc đáp")]
     public virtual User? GradingLecturer { get; set; }
 
+    [Display(Name = "Giảng viên hướng dẫn")]
     public virtual User? GuidingLecturer { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();

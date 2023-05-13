@@ -40,6 +40,7 @@ public partial class User
 
     public virtual ICollection<ClassDetail> ClassDetails { get; set; } = new List<ClassDetail>();
 
+    [Display(Name = "Khoa")]
     public virtual Department? Department { get; set; }
 
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();

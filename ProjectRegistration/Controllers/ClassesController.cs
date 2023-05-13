@@ -83,7 +83,7 @@ namespace ProjectRegistration.Controllers
                 return NotFound();
             }
 
-            var @class = await _context.Classes.FindAsync(id);
+            var @class = await _context.Classes.Include(x=>x.Course).Where(x=> x.Id == id).FirstOrDefaultAsync();
             if (@class == null)
             {
                 return NotFound();

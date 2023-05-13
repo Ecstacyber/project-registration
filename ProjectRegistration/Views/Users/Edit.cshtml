@@ -1,18 +1,19 @@
 ﻿@model ProjectRegistration.Models.User
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa thông tin tài khoản";
 }
 
-<h1>Edit</h1>
+<h1>Sửa thông tin tài khoản</h1>
 
-<h4>User</h4>
+<h4>Tài khoản</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="UserId" />
             <div class="form-group">
                 <label asp-for="Fullname" class="control-label"></label>
                 <input asp-for="Fullname" class="form-control" />
@@ -42,7 +43,7 @@
                 <label asp-for="Department" class="control-label"></label>
                 <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.Department"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group pb-4">
                 <label asp-for="UserTypeId" class="control-label"></label>
                 <div>
                     <input asp-for="UserTypeId" type="radio" name="UserTypeId" value="10" /> Giảng viên
@@ -58,7 +59,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Quay trở lại</a>
 </div>
 
 @section Scripts {

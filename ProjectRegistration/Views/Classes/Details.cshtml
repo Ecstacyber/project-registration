@@ -1,13 +1,13 @@
 ﻿@model ProjectRegistration.Models.Class
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Thông tin chi tiết của lớp học";
 }
+<h1>Thông tin chi tiết của lớp học</h1>
 
-<h1>Details</h1>
 <input type="hidden" id="ClassIdHere" value=@Model.Id asp-for="Id" />
 <div>
-    <h4>Class</h4>
+    <h4>@Model.Course.CourseName</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -55,16 +55,15 @@
     </dl>
 </div>
 
-
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFromExcelModal">
-    Thêm file excel
-</button>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
-    Thêm bằng MSSV
-</button>
 <form method="post" asp-action="ViewProjectList" asp-route-id="@Model.Id">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        + Thêm bằng MSSV
+    </button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFromExcelModal">
+        + Thêm bằng file excel
+    </button>
     <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewProjectList">
-        Danh sách đồ án
+        Xem danh sách đồ án
     </button>
 </form>
 
@@ -115,8 +114,7 @@
                     @Html.DisplayFor(model => item.User.Fullname)
                 </td>
                 <td>
-                    <a asp-controller="User" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.User.Id">
+                    <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.User.Id">
                         Xoá
                     </button>
                 </td>
@@ -142,7 +140,7 @@
                 Bạn có chắc muốn xoá?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
             </div>
         </div>
@@ -161,9 +159,9 @@
             <div class="modal-body">
                 Nhập MSSV
             </div>
-            <input type="text" id="userIdText" class="form-control"/>
+            <input type="text" id="userIdText" class="m-3"/>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 <button type="button" class="btn btn-primary" id="add-btn">Thêm</button>
             </div>
         </div>

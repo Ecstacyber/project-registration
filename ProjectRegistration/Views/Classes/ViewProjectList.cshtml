@@ -1,112 +1,112 @@
 ﻿@model IEnumerable<ProjectRegistration.Models.Project>
 
 @{
-    ViewData["Title"] = "ProjectList";
+    ViewData["Title"] = "Danh sách đồ án";
 }
 
-<h1>ProjectList</h1>
+<h1>Danh sách đồ án</h1>
 
 <p>
-    <a asp-action="CreateProject" asp-route-id="@ViewData["id"]">Create New Project</a>
+    <a class="btn btn-primary" asp-action="CreateProject" asp-route-id="@ViewData["id"]">Tạo mới đồ án</a>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectFromExcelModal">
+        Thêm bằng   file excel
+    </button>
 </p>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectFromExcelModal">
-    Thêm file excel
-</button>
-<div class ="datatable">
-    <table>
-        <thead>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Pname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Info)
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.Pyear)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.Semester)
+            </th>*@
+            @*<th>
+            @Html.DisplayNameFor(model => model.CreatedDateTime)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.Deleted)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.DeletedDateTime)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Class)
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.ClassId2Navigation)
+            </th>*@
+            @*<th>
+            @Html.DisplayNameFor(model => model.Department)
+            </th>*@
+            @*<th>
+                @Html.DisplayNameFor(model => model.GradingLecturer)
+            </th>*@
+            <th>
+                Giảng viên hướng dẫn
+                @*@Html.DisplayNameFor(model => model.GuidingLecturer)*@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Pname)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Info)
-                </th>
-                @*<th>
-                @Html.DisplayNameFor(model => model.Pyear)
-                </th>
-                <th>
-                @Html.DisplayNameFor(model => model.Semester)
-                </th>*@
-                @*<th>
-                @Html.DisplayNameFor(model => model.CreatedDateTime)
-                </th>
-                <th>
-                @Html.DisplayNameFor(model => model.Deleted)
-                </th>
-                <th>
-                @Html.DisplayNameFor(model => model.DeletedDateTime)
-                </th>*@
-                <th>
-                    @Html.DisplayNameFor(model => model.Class)
-                </th>
-                @*<th>
-                @Html.DisplayNameFor(model => model.ClassId2Navigation)
-                </th>*@
-                @*<th>
-                @Html.DisplayNameFor(model => model.Department)
-                </th>*@
-                <th>
-                    @Html.DisplayNameFor(model => model.GradingLecturer)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.GuidingLecturer)
-                </th>
-                <th></th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Info)
+                </td>
+                @*<td>
+            @Html.DisplayFor(modelItem => item.Pyear)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.Semester)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.CreatedDateTime)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.Deleted)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.DeletedDateTime)
+            </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.ClassId)
+                </td>
+                @*<td>
+            @Html.DisplayFor(modelItem => item.ClassId2Navigation.Id)
+            </td>*@
+                @*<td>
+            @Html.DisplayFor(modelItem => item.Department.Id)
+            </td>*@
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.GradingLecturer.Fullname)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
+                </td>
+                <td>
+                    <a class="btn btn-link border-0" asp-action="EditProject" asp-route-id="@item.Id">Sửa</a> |
+                    <a class="btn btn-link border-0" asp-action="ProjectDetails" asp-route-id="@item.Id">Chi tiết</a> |
+                    <button class="btn btn-link border-0" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                        Xoá
+                    </button>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Pname)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Info)
-                    </td>
-                    @*<td>
-                @Html.DisplayFor(modelItem => item.Pyear)
-                </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Semester)
-                </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.CreatedDateTime)
-                </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.Deleted)
-                </td>
-                <td>
-                @Html.DisplayFor(modelItem => item.DeletedDateTime)
-                </td>*@
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Class.ClassId)
-                    </td>
-                    @*<td>
-                @Html.DisplayFor(modelItem => item.ClassId2Navigation.Id)
-                </td>*@
-                    @*<td>
-                @Html.DisplayFor(modelItem => item.Department.Id)
-                </td>*@
-                    <td>
-                        @Html.DisplayFor(modelItem => item.GradingLecturer.Fullname)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
-                    </td>
-                    <td>
-                        <a asp-action="EditProject" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="ProjectDetails" asp-route-id="@item.Id">Details</a> |
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
-                            Xoá
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
+    </tbody>
+</table>
 
 <form method="post" enctype="multipart/form-data" name="add-project-file-form" id="add-project-file-form" asp-action="AddProjectFromFileExcel">
     <!-- Modal -->
@@ -128,7 +128,7 @@
             </div>
         </div>
     </div>
-    <input type="hidden" name="classId" value="@ViewData["id"]"/>
+    <input type="hidden" name="classId" value="@ViewData["id"]" />
 </form>
 
 <!-- Delete Confirmation Modal -->

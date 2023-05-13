@@ -1,13 +1,12 @@
 ﻿@model ProjectRegistration.Models.Course
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Thông tin chi tiết của môc học";
 }
-
-<h1>Details</h1>
+<h1>Thông tin chi tiết của môn học</h1>
 
 <div>
-    <h4>Course</h4>
+    <h4>@Model.CourseId</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -43,6 +42,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Sửa</a> |
+    <a asp-action="Index">Quay trở lại</a>
 </div>

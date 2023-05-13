@@ -1,52 +1,13 @@
 ﻿@model IEnumerable<ProjectRegistration.Models.Department>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Khoa";
 }
 
-<h1>Index</h1>
-
-@*<style>
-    .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    }
-
-    /* Modal Content/Box */
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 60%; /* Could be more or less, depending on screen size */
-    }
-
-    /* The Close Button */
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-</style>*@
+<h1>Danh sách các khoa</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">+ Tạo mới</a>
 </p>
 <table class="table">
     <thead>
@@ -58,46 +19,47 @@
                 @Html.DisplayNameFor(model => model.Info)
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.CreatedDateTime)
+            @Html.DisplayNameFor(model => model.CreatedDateTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Deleted)
+            @Html.DisplayNameFor(model => model.Deleted)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DeletedDateTime)
+            @Html.DisplayNameFor(model => model.DeletedDateTime)
             </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dname)
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Info)
+                </td>
+                @*<td>
+            @Html.DisplayFor(modelItem => item.CreatedDateTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Info)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.CreatedDateTime)
+            @Html.DisplayFor(modelItem => item.Deleted)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedDateTime)
+            @Html.DisplayFor(modelItem => item.DeletedDateTime)
             </td>*@
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
-                    Xoá
-                </button>
-                    
-            </td>
-        </tr>
-}
+                <td>
+                    <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
+                    <a class="btn btn-link border-0" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+
+                    <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                        Xoá
+                    </button>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -131,31 +93,31 @@
             // Button that triggered the modal
             const button = event.relatedTarget;
             id = button.getAttribute('data-id');
-           
+
         });
         deleteBtn.onclick = () => {
-            deleteForm.action = 'Departments/Delete/' + id;
+            deleteForm.action = 'Delete/' + id;
             deleteForm.submit();
         }
-            //btn.onclick = function () {
-            //    modal.style.display = "block";
-            //}
+                    //btn.onclick = function () {
+                    //    modal.style.display = "block";
+                    //}
 
-            //span.onclick = function () {
-            //    modal.style.display = "none";
-            //}
+                    //span.onclick = function () {
+                    //    modal.style.display = "none";
+                    //}
 
-            //deleteNo.onclick = function () {
-            //    modal.style.display = "none";
-            //}
-            //deleteYes.onclick = function() {
+                    //deleteNo.onclick = function () {
+                    //    modal.style.display = "none";
+                    //}
+                    //deleteYes.onclick = function() {
 
-            //}
+                    //}
 
-            //window.onclick = function (event) {
-            //    if (event.target == modal) {
-            //        modal.style.display = "none";
-            //    }
-            //}
+                    //window.onclick = function (event) {
+                    //    if (event.target == modal) {
+                    //        modal.style.display = "none";
+                    //    }
+                    //}
     </script>
 }
