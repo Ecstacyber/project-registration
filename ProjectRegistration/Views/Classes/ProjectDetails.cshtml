@@ -22,7 +22,7 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Info)
         </dd>
-        <dt class = "col-sm-2">
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Pyear)
         </dt>
         <dd class = "col-sm-10">
@@ -33,8 +33,8 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Semester)
-        </dd>
-        <dt class = "col-sm-2">
+        </dd>*@
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedDateTime)
         </dt>
         <dd class = "col-sm-10">
@@ -69,22 +69,22 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Department.Id)
-        </dd>
+        </dd>*@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.GradingLecturer)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GradingLecturer.Id)
+            @Html.DisplayFor(model => model.GradingLecturer.Fullname)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.GuidingLecturer)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GuidingLecturer.Id)
+            @Html.DisplayFor(model => model.GuidingLecturer.Fullname)
         </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="ViewProjectList" asp-route-id="@ViewData["id"]>Back to project list</a>
 </div>

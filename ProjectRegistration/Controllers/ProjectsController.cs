@@ -34,9 +34,9 @@ namespace ProjectRegistration.Controllers
             }
 
             var project = await _context.Projects
+                .Where(p => p.Deleted == false)
                 .Include(p => p.Class)
-                .Include(p => p.ClassId2Navigation)
-                .Include(p => p.Department)
+                .Include(p => p.ProjectMembers)
                 .Include(p => p.GradingLecturer)
                 .Include(p => p.GuidingLecturer)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -93,8 +93,8 @@ namespace ProjectRegistration.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
-            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
+            //ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
+            //ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
             ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
             ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);

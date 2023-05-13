@@ -12,96 +12,101 @@
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectFromExcelModal">
     Thêm file excel
 </button>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Pname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Info)
-            </th>
-            @*<th>
+<div class ="datatable">
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Info)
+                </th>
+                @*<th>
                 @Html.DisplayNameFor(model => model.Pyear)
-            </th>
-            <th>
+                </th>
+                <th>
                 @Html.DisplayNameFor(model => model.Semester)
-            </th>*@
-            @*<th>
+                </th>*@
+                @*<th>
                 @Html.DisplayNameFor(model => model.CreatedDateTime)
-            </th>
-            <th>
+                </th>
+                <th>
                 @Html.DisplayNameFor(model => model.Deleted)
-            </th>
-            <th>
+                </th>
+                <th>
                 @Html.DisplayNameFor(model => model.DeletedDateTime)
-            </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.Class)
-            </th>
-            @*<th>
+                </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.Class)
+                </th>
+                @*<th>
                 @Html.DisplayNameFor(model => model.ClassId2Navigation)
-            </th>*@
-            @*<th>
+                </th>*@
+                @*<th>
                 @Html.DisplayNameFor(model => model.Department)
-            </th>*@
-            <th>
-                @Html.DisplayNameFor(model => model.GradingLecturer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GuidingLecturer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Info)
-            </td>
-            @*<td>
+                </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.GradingLecturer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.GuidingLecturer)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Info)
+                    </td>
+                    @*<td>
                 @Html.DisplayFor(modelItem => item.Pyear)
-            </td>
-            <td>
+                </td>
+                <td>
                 @Html.DisplayFor(modelItem => item.Semester)
-            </td>
-            <td>
+                </td>
+                <td>
                 @Html.DisplayFor(modelItem => item.CreatedDateTime)
-            </td>
-            <td>
+                </td>
+                <td>
                 @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
-            <td>
+                </td>
+                <td>
                 @Html.DisplayFor(modelItem => item.DeletedDateTime)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.Class.ClassId)
-            </td>
-            @*<td>
+                </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Class.ClassId)
+                    </td>
+                    @*<td>
                 @Html.DisplayFor(modelItem => item.ClassId2Navigation.Id)
-            </td>*@
-            @*<td>
+                </td>*@
+                    @*<td>
                 @Html.DisplayFor(modelItem => item.Department.Id)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.GradingLecturer.Fullname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GradingLecturer.Fullname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
+                    </td>
+                    <td>
+                        <a asp-action="EditProject" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="ProjectDetails" asp-route-id="@item.Id">Details</a> |
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                            Xoá
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <form method="post" enctype="multipart/form-data" name="add-project-file-form" id="add-project-file-form" asp-action="AddProjectFromFileExcel">
     <!-- Modal -->
@@ -125,3 +130,50 @@
     </div>
     <input type="hidden" name="classId" value="@ViewData["id"]"/>
 </form>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" action="" id="delete-form"></form>
+@section Scripts {
+    <script>
+        let id;
+        var modal = document.getElementById("exampleModal");
+        const deleteBtn = document.getElementById('delete-btn');
+        const deleteForm = document.getElementById('delete-form');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            id = button.getAttribute('data-id');
+
+        });
+        deleteBtn.onclick = () => {
+            deleteForm.action = '@Url.Content("~/Classes/DeleteProject/")' + id;
+            deleteForm.submit();
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="/js/data-table.js"></script>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" />
+}

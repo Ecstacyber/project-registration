@@ -24,6 +24,16 @@ namespace ProjectRegistration.Controllers
 
         public IActionResult Login()
         {
+            var admin = _context.Users.Where(x => x.Username == "admin").FirstOrDefault();
+            if (admin == null)
+            {
+                admin = new User();
+                admin.Username = "admin";
+                admin.UserPassword = "admin";
+                admin.UserTypeId = 1;
+                _context.Users.Add(admin);
+                _context.SaveChanges();
+            }
             return View();
         }
 
@@ -51,5 +61,7 @@ namespace ProjectRegistration.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }
