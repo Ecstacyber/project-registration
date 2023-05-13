@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Identity;
+using Microsoft.AspNetCore.Mvc;
 using ProjectRegistration.Models;
 using System.Diagnostics;
 
@@ -6,16 +7,38 @@ namespace ProjectRegistration.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ProjectRegistrationManagementContext _context;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ProjectRegistrationManagementContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
+
             return View();
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Login([Bind("Username,UserPassword")] User user)
+        {
+            var CheckUser = _context.Users.Where(x => x.Username == user.Username && x.UserPassword == user.UserPassword).FirstOrDefault();
+            if (CheckUser != null)
+            {
+                return RedirectToAction("Index", "Home");
+
+            }
+            return View();
+
         }
 
         public IActionResult Privacy()
