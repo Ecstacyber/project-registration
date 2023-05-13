@@ -7,19 +7,19 @@
 <h1>Danh sách đồ án</h1>
 
 <p>
-    <a class="btn btn-primary" asp-action="CreateProject" asp-route-id="@ViewData["id"]">Tạo mới đồ án</a>
+    <a class="btn btn-primary" asp-action="CreateProject" asp-route-id="@ViewData["id"]">+ Tạo mới đồ án</a>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectFromExcelModal">
         Thêm bằng   file excel
     </button>
 </p>
 
-<table class="table table-hover">
+<table class="table table-hover table-responsive">
     <thead>
         <tr>
-            <th>
+            <th class="text-nowrap w-50">
                 @Html.DisplayNameFor(model => model.Pname)
             </th>
-            <th>
+            <th class="text-nowrap">
                 @Html.DisplayNameFor(model => model.Info)
             </th>
             @*<th>
@@ -37,7 +37,7 @@
             <th>
             @Html.DisplayNameFor(model => model.DeletedDateTime)
             </th>*@
-            <th>
+            <th class="text-nowrap">
                 @Html.DisplayNameFor(model => model.Class)
             </th>
             @*<th>
@@ -49,11 +49,11 @@
             @*<th>
                 @Html.DisplayNameFor(model => model.GradingLecturer)
             </th>*@
-            <th>
+            <th class="text-nowrap">
                 Giảng viên hướng dẫn
                 @*@Html.DisplayNameFor(model => model.GuidingLecturer)*@
             </th>
-            <th></th>
+            <th class="text-nowrap"></th>
         </tr>
     </thead>
     <tbody>
@@ -67,30 +67,30 @@
                     @Html.DisplayFor(modelItem => item.Info)
                 </td>
                 @*<td>
-            @Html.DisplayFor(modelItem => item.Pyear)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.Semester)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.CreatedDateTime)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.DeletedDateTime)
-            </td>*@
+                @Html.DisplayFor(modelItem => item.Pyear)
+                </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.Semester)
+                </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.CreatedDateTime)
+                </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.Deleted)
+                </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.DeletedDateTime)
+                </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Class.ClassId)
                 </td>
                 @*<td>
-            @Html.DisplayFor(modelItem => item.ClassId2Navigation.Id)
-            </td>*@
+                @Html.DisplayFor(modelItem => item.ClassId2Navigation.Id)
+                </td>*@
                 @*<td>
-            @Html.DisplayFor(modelItem => item.Department.Id)
-            </td>*@
-            @*<td>
+                @Html.DisplayFor(modelItem => item.Department.Id)
+                </td>*@
+                @*<td>
                     @Html.DisplayFor(modelItem => item.GradingLecturer.Fullname)
                 </td>*@
                 <td>
