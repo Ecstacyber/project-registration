@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
@@ -280,10 +281,10 @@ namespace ProjectRegistration.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ViewProjectList(int id)
         {
-            var @class = _context.Classes.Include(x => x.ProjectClasses).Where(x => x.Deleted == false && x.Id == id).FirstOrDefault();
+            var @class = _context.Classes.Where(x => x.Deleted == false && x.Id == id).Include(x => x.ProjectClasses).FirstOrDefault();
             var projectList = new List<Project>();
             projectList = @class.ProjectClasses.ToList();
-            ViewData["id"] = id;
+            //ViewData["id"] = id;
             return View(projectList);
         }
 
@@ -308,6 +309,9 @@ namespace ProjectRegistration.Controllers
         {
             if (ModelState.IsValid)
             {
+                project.Id = 0;
+                project.ClassId = (int?)ViewData["id"];
+                project.CreatedDateTime = DateTime.Now;
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("ViewProjectList", new { id = ViewData["id"]});
@@ -317,7 +321,7 @@ namespace ProjectRegistration.Controllers
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
             ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
             ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
-            return View(project);
+            return RedirectToAction("ViewProjectList", new { id = ViewData["id"] });
         }
     }
 }

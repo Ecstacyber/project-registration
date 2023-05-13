@@ -76,7 +76,7 @@
                 @Html.DisplayFor(modelItem => item.DeletedDateTime)
             </td>*@
             <td>
-                @Html.DisplayFor(modelItem => item.Class.Id)
+                @Html.DisplayFor(modelItem => item.Class.ClassId)
             </td>
             @*<td>
                 @Html.DisplayFor(modelItem => item.ClassId2Navigation.Id)
@@ -85,10 +85,10 @@
                 @Html.DisplayFor(modelItem => item.Department.Id)
             </td>*@
             <td>
-                @Html.DisplayFor(modelItem => item.GradingLecturer.Id)
+                @Html.DisplayFor(modelItem => item.GradingLecturer.Fullname)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.GuidingLecturer.Id)
+                @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
             </td>
             @*<td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
