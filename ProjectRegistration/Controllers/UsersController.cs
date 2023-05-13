@@ -64,6 +64,8 @@ namespace ProjectRegistration.Controllers
             if (ModelState.IsValid)
             {
                 user.CreatedDateTime = DateTime.Now;
+                user.Username = user.UserId;
+                user.UserPassword = user.UserId;
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

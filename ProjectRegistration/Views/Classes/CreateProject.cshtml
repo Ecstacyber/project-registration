@@ -69,14 +69,14 @@
             </div>*@
             <input type="hidden" asp-for="ClassId" value="@ViewData["id"]" />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Tạo mới" class="btn btn-primary" />
             </div>           
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="ViewProjectList" asp-route-id="@ViewData["id"]">Back to project list</a>
+    <a asp-action="ViewProjectList" asp-route-id="@ViewData["id"]">Quay lại danh sách đồ án</a>
 </div>
 
 @section Scripts {
