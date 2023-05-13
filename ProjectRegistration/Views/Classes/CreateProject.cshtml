@@ -67,9 +67,10 @@
                 <input asp-for="DeletedDateTime" class="form-control" />
                 <span asp-validation-for="DeletedDateTime" class="text-danger"></span>
             </div>*@
+            <input type="hidden" asp-for="ClassId" value="@ViewData["id"]" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            </div>           
         </form>
     </div>
 </div>

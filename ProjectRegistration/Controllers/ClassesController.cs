@@ -277,14 +277,16 @@ namespace ProjectRegistration.Controllers
             return RedirectToAction("Details", new { id = int.Parse(ids[1]) });
         }
 
-        [HttpPost, ActionName("ViewProjectList")]
-        [ValidateAntiForgeryToken]
+        [ActionName("ViewProjectList")]
         public async Task<IActionResult> ViewProjectList(int id)
         {
-            var @class = _context.Classes.Where(x => x.Deleted == false && x.Id == id).Include(x => x.ProjectClasses).FirstOrDefault();
+            var @class = _context.Classes.Where(x => x.Deleted == false && x.Id == id)
+                .Include(x => x.ProjectClasses).ThenInclude(x => x.GuidingLecturer)
+                .Include(x => x.ProjectClasses).ThenInclude(x => x.GradingLecturer)
+                .FirstOrDefault();
             var projectList = new List<Project>();
             projectList = @class.ProjectClasses.ToList();
-            //ViewData["id"] = id;
+            ViewData["id"] = id;
             return View(projectList);
         }
 
@@ -295,8 +297,8 @@ namespace ProjectRegistration.Controllers
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id");
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id");
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id");
-            ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["GradingLecturerId"] = new SelectList(_context.Users.Where(x => x.UserTypeId == 10), "Id", "Fullname");
+            ViewData["GuidingLecturerId"] = new SelectList(_context.Users.Where(x => x.UserTypeId == 10), "Id", "Fullname");
             return View();
         }
 
@@ -310,18 +312,74 @@ namespace ProjectRegistration.Controllers
             if (ModelState.IsValid)
             {
                 project.Id = 0;
-                project.ClassId = (int?)ViewData["id"];
                 project.CreatedDateTime = DateTime.Now;
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("ViewProjectList", new { id = ViewData["id"]});
+                return RedirectToAction("ViewProjectList", new { id = project.ClassId });
             }
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
             ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
             ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
-            return RedirectToAction("ViewProjectList", new { id = ViewData["id"] });
+            return RedirectToAction("CreateProject", new { id = project.ClassId });
+        }
+
+        [HttpPost, ActionName("AddProjectFromFileExcel")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProjectFromFileExcel(IFormCollection form, IFormFile fileSelect)
+        {
+            int classId = int.Parse(form["classId"]);
+            var fileextension = Path.GetExtension(fileSelect.FileName);
+            var filename = Guid.NewGuid().ToString() + fileextension;
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+            using (FileStream fs = System.IO.File.Create(filepath))
+            {
+                fileSelect.CopyTo(fs);
+            }
+
+            using (var stream = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    reader.Read();
+                    reader.Read();
+                    reader.Read();
+                    var @class = _context.Classes.Where(x => (x.Deleted == false && x.Id == classId)).FirstOrDefault();
+
+                    var cd = new List<Project>();
+                    foreach (var x in @class.ProjectClasses)
+                    {
+                        cd.Add(x);
+                    }
+
+                    while (reader.Read()) //Each row of the file
+                    {
+                        if (reader.GetValue(1) == null) continue;
+                        var existProject = _context.Projects
+                            .Where(x => x.Deleted == false && x.Pname == reader.GetValue(1).ToString() && x.ClassId == classId).FirstOrDefault();
+                        if (existProject != null) continue;
+                        var project = new Project();
+                        project.Pname = reader.GetValue(1).ToString();
+                        var user = _context.Users.Where(x => (x.Fullname == reader.GetValue(3).ToString() && x.Deleted == false)).FirstOrDefault();
+                        if (user == null) continue;
+                        project.GuidingLecturer = user;
+                        project.GuidingLecturerId = user.Id;
+                        project.Info = reader.GetValue(2) == null? "" : reader.GetValue(2).ToString();
+                        project.CreatedDateTime = DateTime.Now;
+                        project.ClassId = classId;
+                        cd.Add(project);
+                        _context.Projects.Add(project);
+                    }
+
+                    @class.ProjectClasses = cd;
+                }
+            }
+
+            System.IO.File.Delete(filepath);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ViewProjectList", new { id = classId });
         }
     }
 }
