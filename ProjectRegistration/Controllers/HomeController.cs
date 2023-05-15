@@ -18,7 +18,6 @@ namespace ProjectRegistration.Controllers
 
         public IActionResult Index()
         {
-
             return View();
         }
 
