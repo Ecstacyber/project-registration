@@ -419,8 +419,8 @@ namespace ProjectRegistration.Controllers
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
-            ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
-            ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
+            ViewData["GradingLecturerId"] = new SelectList(_context.Users.Where(x => x.Deleted == false && x.UserTypeId == 10), "Id", "Fullname", project.GradingLecturerId);
+            ViewData["GuidingLecturerId"] = new SelectList(_context.Users.Where(x => x.Deleted == false && x.UserTypeId == 10), "Id", "Fullname", project.GuidingLecturerId);
             return View(project);
         }
 

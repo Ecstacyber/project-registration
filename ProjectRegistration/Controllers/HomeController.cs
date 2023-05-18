@@ -34,6 +34,22 @@ namespace ProjectRegistration.Controllers
                 _context.Users.Add(admin);
                 _context.SaveChanges();
             }
+
+            if (_context.Departments.Count() == 0)
+            {
+                var Dnamelist = new string[] { "CNTT", "KHMT", "CNPM", "MMT&TT", "KH&KTTT", "HTTT" };
+                var DescList = new string[] { "Công nghệ thông tin", "Khoa học máy tính", "Công nghệ phần mềm", "Mạng máy tính & Truyền thông", "Khoa học & Kỹ thuật thông tin", "Hệ thống thông tin" };
+                for (int i = 0; i < Dnamelist.Length; i++)
+                {
+                    var department = new Department();
+                    department.Dname = Dnamelist[i];
+                    department.Info = DescList[i];
+                    department.CreatedDateTime = DateTime.Now;
+                    department.Deleted = false;
+                    _context.Add(department);
+                }
+                _context.SaveChanges();
+            }
             return View();
         }
 
