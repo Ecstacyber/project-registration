@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectRegistration.Models;
 
@@ -11,9 +12,11 @@ using ProjectRegistration.Models;
 namespace ProjectRegistration.Migrations
 {
     [DbContext(typeof(ProjectRegistrationManagementContext))]
-    partial class ProjectRegistrationManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20230525054933_Add_registration_time")]
+    partial class Add_registration_time
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,9 +54,6 @@ namespace ProjectRegistration.Migrations
 
                     b.Property<DateTime?>("RegEnd")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool?>("RegOpen")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("RegStart")
                         .HasColumnType("datetime2");

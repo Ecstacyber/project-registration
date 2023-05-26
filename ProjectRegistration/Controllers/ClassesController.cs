@@ -24,7 +24,7 @@ namespace ProjectRegistration.Controllers
         // GET: Classes
         public async Task<IActionResult> Index()
         {
-            var projectRegistrationManagementContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false);
+            var projectRegistrationManagementContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false).OrderBy(x => x.Id);
             return View(await projectRegistrationManagementContext.ToListAsync());
         }
 
@@ -63,7 +63,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CourseId,ClassId,Semester,Cyear,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
+        public async Task<IActionResult> Create([Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart,RegEnd,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,ClassId,Semester,Cyear,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart,RegEnd,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
         {
             if (id != @class.Id)
             {

@@ -24,14 +24,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Cyear)
             </th>
-@*            <th>
-                @Html.DisplayNameFor(model => model.CreatedDateTime)
+            @*<th>
+                @Html.DisplayNameFor(model => model.RegStart)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Deleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedDateTime)
+                @Html.DisplayNameFor(model => model.RegEnd)
             </th>*@
             
             <th></th>
@@ -52,21 +49,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Cyear)
             </td>
-@*            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDateTime)
+            @*<td>
+                @Html.DisplayFor(modelItem => item.RegStart)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
+                @Html.DisplayFor(modelItem => item.RegEnd)
+            </td>*@         
             <td>
-                @Html.DisplayFor(modelItem => item.DeletedDateTime)
-            </td>*@           
-            <td>
-                    <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
-                    <a class="btn btn-link border-0" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
-                    <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
-                        Xoá
-                    </button>
+                <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
+                <a class="btn btn-link border-0" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+                <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                    Xoá
+                </button>
             </td>
         </tr>
 }

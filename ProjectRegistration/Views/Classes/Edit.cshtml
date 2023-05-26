@@ -33,21 +33,20 @@
                 <input asp-for="Cyear" class="form-control" />
                 <span asp-validation-for="Cyear" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                <label asp-for="CreatedDateTime" class="control-label"></label>
-                <input asp-for="CreatedDateTime" class="form-control" />
-                <span asp-validation-for="CreatedDateTime" class="text-danger"></span>
+            <div class="form-group">
+                <label class="control-label" name="statusLabel"></label>
+                <button type="button" name="toggleReg" class="btn btn-danger">      </button>
             </div>
             <div class="form-group">
-                <label asp-for="Deleted" class="control-label"></label>
-                <input asp-for="Deleted" class="form-control" />
-                <span asp-validation-for="Deleted" class="text-danger"></span>
+                <label asp-for="RegStart" class="control-label"></label>
+                <input asp-for="RegStart" class="form-control" />
+                <span asp-validation-for="RegStart" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DeletedDateTime" class="control-label"></label>
-                <input asp-for="DeletedDateTime" class="form-control" />
-                <span asp-validation-for="DeletedDateTime" class="text-danger"></span>
-            </div>*@
+                <label asp-for="RegEnd" class="control-label"></label>
+                <input asp-for="RegEnd" class="form-control" />
+                <span asp-validation-for="RegEnd" class="text-danger"></span>
+            </div>
             <div class="form-group" pt-3 pb-3">
                 <input type="submit" value="Lưu" class="btn btn-primary" />
             </div>
@@ -61,4 +60,44 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        let toggleRegId = document.getElementById('toggleReg');
+        let statusId = document.getElementById('statusLabel');
+
+        toggleRegId.onclick = () => {
+            if (toggleRegId.hasClass('btn-danger')) {
+                toggleRegId.removeClass('btn-danger');
+                toggleRegId.addClass(document.documentElement, 'btn-success');
+                console.log('success');
+                statusId.text = "Trạng thái: Đóng đăng ký"
+            }
+            else {
+                toggleRegId.removeClass(document.documentElement, 'btn-success');
+                toggleRegId.addClass('btn-danger');
+                statusId.text = "Trạng thái: Mở đăng ký"
+            }
+        }
+
+        function hasClass(elem, className) {
+            return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
+        }
+
+        function addClass(elem, className) {
+            if (!hasClass(elem, className)) {
+                elem.className += ' ' + className;
+            }
+        }
+
+        function removeClass(elem, className) {
+            var newClass = ' ' + elem.className.replace(/[\t\r\n]/g, ' ') + ' ';
+            if (hasClass(elem, className)) {
+                while (newClass.indexOf(' ' + className + ' ') >= 0) {
+                    newClass = newClass.replace(' ' + className + ' ', ' ');
+                }
+                elem.className = newClass.replace(/^\s+|\s+$/g, '');
+            }
+        }
+
+    </script>
 }
