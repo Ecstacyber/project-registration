@@ -20,12 +20,13 @@ public partial class Class
     [Display(Name = "Năm học")]
     public string? Cyear { get; set; }
 
-    public bool? RegOpen { get; set; } = false;
+    [Display(Name = "Trạng thái")]
+    public string? RegOpen { get; set; }
 
-    [Display(Name = "Thời gian bắt đầu đăng ký đồ án")]
+    [Display(Name = "Thời gian bắt đầu đăng ký")]
     public DateTime? RegStart { get; set; }
 
-    [Display(Name = "Thời gian kết thúc đăng ký đồ án")]
+    [Display(Name = "Thời gian kết thúc đăng ký")]
     public DateTime? RegEnd { get; set; }
 
     [Display(Name = "Ngày tạo")]

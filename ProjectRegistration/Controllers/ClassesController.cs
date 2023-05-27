@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -67,6 +68,7 @@ namespace ProjectRegistration.Controllers
         {
             if (ModelState.IsValid)
             {
+                @class.CreatedDateTime = DateTime.Now;
                 _context.Add(@class);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -108,6 +110,7 @@ namespace ProjectRegistration.Controllers
             {
                 try
                 {
+                    Debug.WriteLine(@class.RegOpen + "\n" + @class.RegStart.ToString() + "\n" + @class.RegEnd.ToString());
                     _context.Update(@class);
                     await _context.SaveChangesAsync();
                 }
