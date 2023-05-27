@@ -39,7 +39,7 @@
                     <label class="control-label" id="statusLabel">Trạng thái đăng ký</label>
                     <input asp-for="RegOpen" id="RegStatus" class="form-control" style="background-color: transparent; border: none" />
                     <span asp-validation-for="RegOpen" class="text-danger"></span>
-                    <button type="button" id="toggleReg" class="btn btn-danger" style="width: 40px"></button>                    
+                    <button type="button" id="toggleReg" class="btn" style="width: 40px"></button>                    
                 </div>
                 <div class="form-group">
                     <label asp-for="RegStart" class="control-label"></label>
@@ -78,6 +78,7 @@
             }
         }
 
+
         function removeClass(elem, className) {
             var newClass = ' ' + elem.className.replace(/[\t\r\n]/g, ' ') + ' ';
             if (hasClass(elem, className)) {
@@ -90,27 +91,29 @@
 
         let toggleRegId = document.getElementById('toggleReg');
         let statusId = document.getElementById('RegStatus');
-        let flag = false;
 
-        if (statusId.value = "Mở đăng ký") {
-            removeClass(toggleRegId, 'btn-danger');
+        console.log('initial check');
+        if (statusId.value == "Mở đăng ký") {
             addClass(toggleRegId, 'btn-success');
-            flag = true;
+            console.log('is green');
         }
-
+        else {
+            addClass(toggleRegId, 'btn-danger');
+            console.log('is red');
+        }
+     
         toggleRegId.onclick = function () {
             if (hasClass(toggleRegId, 'btn-danger')) {
                 removeClass(toggleRegId, 'btn-danger');
                 addClass(toggleRegId, 'btn-success');
                 statusId.value = "Mở đăng ký";
-                flag = false;
             }
             else {
                 removeClass(toggleRegId, 'btn-success');
                 addClass(toggleRegId, 'btn-danger');
                 statusId.value = "Đóng đăng ký";
-                flag = false;
             }
+            console.log("res: " + toggleRegId.className);
         }
     </script>
 }
