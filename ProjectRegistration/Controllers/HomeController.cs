@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectRegistration.Models;
 using System.Diagnostics;
+using System.Net;
 
 namespace ProjectRegistration.Controllers
 {
@@ -9,6 +10,7 @@ namespace ProjectRegistration.Controllers
     {
         private readonly ProjectRegistrationManagementContext _context;
         private readonly ILogger<HomeController> _logger;
+        //public static User? user;
 
         public HomeController(ILogger<HomeController> logger, ProjectRegistrationManagementContext context)
         {
@@ -18,12 +20,12 @@ namespace ProjectRegistration.Controllers
 
         public IActionResult Index()
         {
-
             return View();
         }
 
         public IActionResult Login()
         {
+            
             var admin = _context.Users.Where(x => x.Username == "admin").FirstOrDefault();
             if (admin == null)
             {
@@ -49,7 +51,7 @@ namespace ProjectRegistration.Controllers
                     _context.Add(department);
                 }
                 _context.SaveChanges();
-            }
+            }            
             return View();
         }
 
@@ -60,11 +62,13 @@ namespace ProjectRegistration.Controllers
             var CheckUser = _context.Users.Where(x => x.Username == user.Username && x.UserPassword == user.UserPassword).FirstOrDefault();
             if (CheckUser != null)
             {
+                //user = CheckUser;
+                IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+                Debug.WriteLine("\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + localIPs[1].ToString());
+                ViewData["userID"] = CheckUser.Id;
                 return RedirectToAction("Index", "Home");
-
             }
             return View();
-
         }
 
         public IActionResult Privacy()
@@ -77,7 +81,6 @@ namespace ProjectRegistration.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
 
     }
 }
