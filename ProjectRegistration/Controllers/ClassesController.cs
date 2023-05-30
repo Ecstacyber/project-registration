@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using ProjectRegistration.Models;
 
 namespace ProjectRegistration.Controllers
@@ -24,6 +26,27 @@ namespace ProjectRegistration.Controllers
         // GET: Classes
         public async Task<IActionResult> Index()
         {
+            //if (HomeController.user == null)
+            //{
+            //    return RedirectToAction("Login", "Home");
+            //}
+            //var projectRegistrationManagementContext = _context.Classes.Include(x => x.Course).Include(x => x.ClassDetails).Where(x => x.Deleted == false);
+            //if (HomeController.user.UserTypeId == 10)
+            //{
+            //    return View(await projectRegistrationManagementContext.ToListAsync());
+            //}
+            //if (HomeController.user.UserTypeId == 100)
+            //{
+            //    List<Class> classes = new List<Class>();
+            //    foreach (var c in projectRegistrationManagementContext)
+            //    {
+            //        if (c.ClassDetails.Any(x => x.User != null && x.User.Id == HomeController.user.Id))
+            //        {
+            //            classes.Add(c);
+            //        }
+            //    }
+            //    return View(classes);
+            //}
             var projectRegistrationManagementContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false);
             return View(await projectRegistrationManagementContext.ToListAsync());
         }

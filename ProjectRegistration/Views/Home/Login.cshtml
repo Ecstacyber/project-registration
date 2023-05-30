@@ -5,54 +5,35 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-<section class="">
+<section class="vh-100">
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-md-9 col-lg-6 col-xl-5">
-                <img class="w-75" src="~/files/login_pic.png"
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
                      class="img-fluid" alt="Sample image">
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form asp-action="Login" id="account" method="post">
-                    <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                        @*                        <p class="lead fw-normal mb-0 me-3">Sign in with</p>
-                        <button type="button" class="btn btn-primary btn-floating mx-1">
-                        <i class="fab fa-facebook-f"></i>
-                        </button>
-
-                        <button type="button" class="btn btn-primary btn-floating mx-1">
-                        <i class="fab fa-twitter"></i>
-                        </button>
-
-                        <button type="button" class="btn btn-primary btn-floating mx-1">
-                        <i class="fab fa-linkedin-in"></i>
-                        </button>
-                        </div>
-
-                        <div class="divider d-flex align-items-center my-4">
-                        <p class="text-center fw-bold mx-3 mb-0">Or</p>*@
-                    </div>
-
-                    <!-- Email input -->
+                    <!-- Username input -->
                     <div class="form-outline mb-4">
-                        <label class="form-label">Tên đăng nhập</label>
-                        <input type="text" asp-for="Username" class="form-control form-control-lg"
-                               placeholder="Vui lòng nhập tên đăng nhập" />
+                        <label class="form-label" for="username">Tên đăng nhập</label>
+                        <input asp-for="Username" id="username" class="form-control form-control-lg"
+                               placeholder="Nhập tên đăng nhập" />
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-3">
-                        <label class="form-label">Mật khẩu</label>
-                        <input type="password" asp-for="UserPassword" class="form-control form-control-lg"
-                               placeholder="Vui lòng nhập mật khẩu" />
+                        <label class="form-label" for="password">Mật khẩu</label>
+                        <input type="password" id="password" class="form-control form-control-lg" asp-for="UserPassword"
+                               placeholder="Nhập mật khẩu" />
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
                         <!-- Checkbox -->
                         <div class="form-check mb-0">
-                            <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
-                            <label class="form-check-label" for="form2Example3">
-                                Nhớ tên đăng nhập
+                            <input class="form-check-input me-2" type="checkbox" value="" id="rememberMe" />
+                            <label class="form-check-label" for="rememberMe">
+                                Nhớ tài khoản?
                             </label>
                         </div>
                         <a href="#!" class="text-body">Quên mật khẩu?</a>
@@ -63,70 +44,19 @@
                                 style="padding-left: 2.5rem; padding-right: 2.5rem;">
                             Đăng nhập
                         </button>
-                        @*                        <p class="small fw-bold mt-2 pt-1 mb-0">
-                        Don't have an account? <a href="#!"
-                        class="link-danger">Register</a>
-                        </p>*@
+
                     </div>
 
                 </form>
             </div>
         </div>
     </div>
-    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary fixed-bottom">
-        <!-- Copyright -->
-        <div class="text-white mb-3 mb-md-0">
-            Copyright © 2020. All rights reserved.
-        </div>
-        <!-- Copyright -->
-        <!-- Right -->
-        <div>
-            <a href="#!" class="text-white me-4">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#!" class="text-white me-4">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#!" class="text-white me-4">
-                <i class="fab fa-google"></i>
-            </a>
-            <a href="#!" class="text-white">
-                <i class="fab fa-linkedin-in"></i>
-            </a>
-        </div>
-        <!-- Right -->
-    </div>
-</section>
-<div class="row">
 
-    @*    <div class="col-md-6 col-md-offset-2">
-    <section>
-    <h3>Use another service to log in.</h3>
-    <hr />
-    @{
-    if ((Model.ExternalLogins?.Count ?? 0) == 0)
-    {
-    <div>
-    <p>
-    There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-    about setting up this ASP.NET application to support logging in via external services</a>.
-    </p>
+</section>
+<div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary navbar fixed-bottom">
+    <!-- Copyright -->
+    <div class="text-white mb-3 mb-md-0">
+        Copyright © 2020. All rights reserved.
     </div>
-    }
-    else
-    {
-    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-    <div>
-    <p>
-    @foreach (var provider in Model.ExternalLogins!)
-    {
-    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-    }
-    </p>
-    </div>
-    </form>
-    }
-    }
-    </section>
-    </div>*@
+    <!-- Copyright -->
 </div>
