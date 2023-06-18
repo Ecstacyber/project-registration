@@ -98,7 +98,7 @@
             id = button.getAttribute('data-id');
         });
         deleteBtn.onclick = () => {
-            deleteForm.action = 'Classes/Delete/' + id;
+            deleteForm.action = '@Url.Content("~/Classes/Delete/")' + id;
             deleteForm.submit();
         }
     </script>
