@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ProjectRegistration</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/bootswatchTheme.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ProjectRegistration.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" onclick="changeactive('Home')" href="../../Home/Index">Quản lý đăng ký đồ án</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-betweene" id="navbarColor01">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item" asp-area="" asp-controller="Home" asp-action="Index">
+                            <a class="nav-link" hover="changeactive('Home')" onclick="changeactive('Home')" asp-controller="Home" asp-action="Index">
+                                Trang chủ
+                                <span class="visually-hidden">(current)</span>
+                            </a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Manager"))
+                            {
+                                <li class="nav-item active">
+                                    <a class="nav-link" hover="changeactive('Departments')" onclick="changeactive('Departments')" asp-area="" asp-controller="Departments" asp-action="Index">Khoa</a>
+                                </li>
+                                <li class="nav-item active">
+                                    <a class="nav-link" onclick="changeactive('Users')" asp-area="" asp-controller="Users" asp-action="Index">Tài khoản</a>
+                                </li>
+                                <li class="nav-item active">
+                                    <a class="nav-link" onclick="changeactive('Courses')" asp-area="" asp-controller="Courses" asp-action="Index">Môn học</a>
+                                </li>
+                                <li class="nav-item active">
+                                    <a class="nav-link" onclick="changeactive('Classes')" asp-area="" asp-controller="Classes" asp-action="Index">Lớp học</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+
+                    <partial name="_LoginPartial" />
+                    @*                    <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Hello @ViewData["userID"]</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Cài đặt</a></li>
+                    <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                    </ul>
+                    </li>
+                    </ul>*@
+
+                    @*                    <form class="d-flex">
+                    <input class="form-control me-sm-2" type="search" placeholder="Search">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                    </form>*@
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3 pt-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - ProjectRegistration - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Styles", required: false)
+</body>
+</html>
+<section>
+    <script>
+        function changeactive(pname) {
+
+            //console.log(pname);
+
+            sessionStorage.setItem("activepage", pname);
+        }
+
+        $(function () {
+            var pname = sessionStorage.getItem("activepage");
+
+            if (pname == "Home" || pname == "" || pname == null) {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("active-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Departments") {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("active-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Users") {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("active-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Courses") {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("active-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Classes") {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("active-item");
+            }
+
+        })
+    </script>
+</section>
+<style>
+    .active-item {
+        color: white !important;
+        font-size: large;
+    }
+
+    .normal-item {
+        /*color: silver !important;*/
+    }
+
+    .nav-item:hover {
+        font-size: large;
+    }
+</style>

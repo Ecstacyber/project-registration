@@ -1,0 +1,57 @@
+﻿@model ProjectRegistration.Models.Class
+
+@{
+    ViewData["Title"] = "Tạo lớp học mới";
+}
+
+<h1 class="pt-4">Tạo mới</h1>
+
+<h4 class="pt-3">Lớp học</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CourseId" class="control-label"></label>
+                <select asp-for="CourseId" class ="form-control" asp-items="ViewBag.Course"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClassId" class="control-label"></label>
+                <input asp-for="ClassId" class="form-control" />
+                <span asp-validation-for="ClassId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Semester" class="control-label"></label>
+                <input asp-for="Semester" class="form-control" />
+                <span asp-validation-for="Semester" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cyear" class="control-label"></label>
+                <input asp-for="Cyear" class="form-control" />
+                <span asp-validation-for="Cyear" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegStart" class="control-label"></label>
+                <input asp-for="RegStart" class="form-control" />
+                <span asp-validation-for="RegStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegEnd" class="control-label"></label>
+                <input asp-for="RegEnd" class="form-control" />
+                <span asp-validation-for="RegEnd" class="text-danger"></span>
+            </div>
+            <div class="form-group pt-3 pb-3">
+                <input type="submit" value="Tạo lớp học" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class="pt-4" asp-action="Index">Quay trở lại</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
