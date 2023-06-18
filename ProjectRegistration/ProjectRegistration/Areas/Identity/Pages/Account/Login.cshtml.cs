@@ -23,11 +23,21 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<User> _userManager;
+        private readonly IUserStore<User> _userStore;
 
-        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<User> signInManager, 
+            ILogger<LoginModel> logger,
+            UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IUserStore<User> userStore)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _userStore = userStore;
         }
 
         /// <summary>
@@ -100,6 +110,62 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+            CreateDefaultDataAsync();
+        }
+
+
+        public async Task CreateDefaultDataAsync()
+        {
+            var role = _roleManager.Roles.ToList();
+
+            if (role.Find(x => x.Name == "Manager") == null)
+            {
+                var mngRole = new IdentityRole();
+                mngRole.Id = "Manager";
+                mngRole.Name = "Manager";
+                mngRole.NormalizedName = "MANAGER";
+                await _roleManager.CreateAsync(mngRole);
+            }
+
+            if (role.Find(x => x.Name == "Lecturer") == null)
+            {
+                var lectRole = new IdentityRole();
+                lectRole.Id = "Lecturer";
+                lectRole.Name = "Lecturer";
+                lectRole.NormalizedName = "LECTURER";
+                await _roleManager.CreateAsync(lectRole);
+            }
+
+            if (role.Find(x => x.Name == "Student") == null)
+            {
+                var stuRole = new IdentityRole();
+                stuRole.Id = "Student";
+                stuRole.Name = "Student";
+                stuRole.NormalizedName = "STUDENT";
+                await _roleManager.CreateAsync(stuRole);
+            }
+
+            if (_userManager.FindByNameAsync("admin").Result == null)
+            {
+                var user = CreateUser();
+                await _userStore.SetUserNameAsync(user, "admin", CancellationToken.None);
+                await _userManager.CreateAsync(user, "admin");
+                await _userManager.AddToRoleAsync(user, "Manager");
+            }
+        }
+
+        private User CreateUser()
+        {
+            try
+            {
+                return Activator.CreateInstance<User>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
+                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
