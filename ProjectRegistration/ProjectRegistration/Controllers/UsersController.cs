@@ -88,7 +88,7 @@ namespace ProjectRegistration.Controllers
         [ValidateAntiForgeryToken]
 
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Create([Bind("UserId,Fullname,DateOfBirth,ImagePath,DepartmentId,UserTypeId")] User user)
+        public async Task<IActionResult> Create([Bind("UserId,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
             if (ModelState.IsValid)
             {
@@ -108,7 +108,6 @@ namespace ProjectRegistration.Controllers
                     newUser.Fullname = user.Fullname;
                     newUser.PhoneNumber = user.PhoneNumber;
                     newUser.DateOfBirth = user.DateOfBirth;
-                    newUser.ImagePath = user.ImagePath;
                     newUser.DepartmentId = user.DepartmentId;
                     newUser.UserTypeId = user.UserTypeId;
 
@@ -120,6 +119,20 @@ namespace ProjectRegistration.Controllers
                     {
                         await _userManager.AddToRoleAsync(newUser, "Student");
                     }
+
+                    var fileextension = Path.GetExtension(ImagePath.FileName);
+                    var filename = Guid.NewGuid().ToString() + fileextension;
+                    if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+                    {
+                        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
+                    }
+                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+                    using (FileStream fs = System.IO.File.Create(filepath))
+                    {
+                        ImagePath.CopyTo(fs);
+                    }
+
+                    newUser.ImagePath = filepath;
 
                     _context.Update(newUser);
                     await _context.SaveChangesAsync();
@@ -159,7 +172,7 @@ namespace ProjectRegistration.Controllers
         [HttpPost]
         [Authorize(Roles = "Manager")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,Fullname,DateOfBirth,ImagePath,DepartmentId,UserTypeId")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
             if (id != user.Id)
             {
@@ -178,6 +191,33 @@ namespace ProjectRegistration.Controllers
                     updatedUser.ImagePath = user.ImagePath;
                     updatedUser.DepartmentId = user.DepartmentId;
                     updatedUser.UserTypeId = user.UserTypeId;
+
+
+
+                    if (updatedUser.UserTypeId == 10)
+                    {
+                        await _userManager.AddToRoleAsync(updatedUser, "Lecturer");
+                        await _userManager.RemoveFromRoleAsync(updatedUser, "Student");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(updatedUser, "Student");
+                        await _userManager.RemoveFromRoleAsync(updatedUser, "Lecturer");
+                    }
+
+                    var fileextension = Path.GetExtension(ImagePath.FileName);
+                    var filename = Guid.NewGuid().ToString() + fileextension;
+                    if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+                    {
+                        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
+                    }
+                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+                    using (FileStream fs = System.IO.File.Create(filepath))
+                    {
+                        ImagePath.CopyTo(fs);
+                    }
+
+                    updatedUser.ImagePath = filename;
 
                     _context.Update(updatedUser);
                     await _context.SaveChangesAsync();
