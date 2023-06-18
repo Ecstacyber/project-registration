@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace ProjectRegistration.Models
 {
@@ -14,6 +16,8 @@ namespace ProjectRegistration.Models
         }
 
         public string Id { get; set; } = null!;
+
+        [Display(Name = "Tên đăng nhập")]
         public string? UserName { get; set; }
         public string? NormalizedUserName { get; set; }
         public string? Email { get; set; }
