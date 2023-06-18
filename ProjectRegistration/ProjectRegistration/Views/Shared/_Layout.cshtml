@@ -13,8 +13,8 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="../../Home/Index">Quản lý đăng ký đồ án</a>
-                <button class="navbar-toggler" onclick="changeactive('Home')" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" onclick="changeactive('Home')" href="../../Home/Index">Quản lý đăng ký đồ án</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse d-sm-inline-flex justify-content-betweene" id="navbarColor01">
@@ -25,18 +25,24 @@
                                 <span class="visually-hidden">(current)</span>
                             </a>
                         </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" hover="changeactive('Departments')" onclick="changeactive('Departments')" asp-area="" asp-controller="Departments" asp-action="Index">Khoa</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" onclick="changeactive('Users')" asp-area="" asp-controller="Users" asp-action="Index">Tài khoản</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" onclick="changeactive('Courses')" asp-area="" asp-controller="Courses" asp-action="Index">Môn học</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" onclick="changeactive('Classes')" asp-area="" asp-controller="Classes" asp-action="Index">Lớp học</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Manager"))
+                            {
+                                <li class="nav-item active">
+                                    <a class="nav-link" hover="changeactive('Departments')" onclick="changeactive('Departments')" asp-area="" asp-controller="Departments" asp-action="Index">Khoa</a>
+                                </li>
+                                <li class="nav-item active">
+                                    <a class="nav-link" onclick="changeactive('Users')" asp-area="" asp-controller="Users" asp-action="Index">Tài khoản</a>
+                                </li>
+                                <li class="nav-item active">
+                                    <a class="nav-link" onclick="changeactive('Courses')" asp-area="" asp-controller="Courses" asp-action="Index">Môn học</a>
+                                </li>
+                                <li class="nav-item active">
+                                    <a class="nav-link" onclick="changeactive('Classes')" asp-area="" asp-controller="Classes" asp-action="Index">Lớp học</a>
+                                </li>
+                            }
+                        }
                     </ul>
 
 
@@ -83,11 +89,11 @@
 
             //console.log(pname);
 
-            localStorage.setItem("activepage", pname);
+            sessionStorage.setItem("activepage", pname);
         }
 
         $(function () {
-            var pname = localStorage.getItem("activepage");
+            var pname = sessionStorage.getItem("activepage");
 
             if (pname == "Home" || pname == "" || pname == null) {
                 $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("active-item");

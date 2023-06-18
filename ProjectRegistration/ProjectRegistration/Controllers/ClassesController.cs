@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
@@ -7,6 +8,7 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Classes
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Index()
         {
             var IDENTITYUSERContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false).OrderBy(x => x.Id);
@@ -32,6 +35,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Classes/Details/5
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Classes == null)
@@ -55,6 +59,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Classes/Create
+        [Authorize(Roles = "Manager")]
         public IActionResult Create()
         {
             ViewData["Course"] = new SelectList(_context.Courses, "Id", "CourseName");
@@ -66,6 +71,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Create([Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart,RegEnd,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
         {
             if (ModelState.IsValid)
@@ -80,6 +86,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Classes/Edit/5
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Classes == null)
@@ -101,6 +108,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart,RegEnd,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
         {
             if (id != @class.Id)
@@ -155,6 +163,7 @@ namespace ProjectRegistration.Controllers
         // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Classes == null)
@@ -179,6 +188,7 @@ namespace ProjectRegistration.Controllers
 
         [HttpPost, ActionName("AddUserFromFileExcel")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> AddUserFromFileExcel(int Id, IFormFile fileSelect)
         {
             var fileextension = Path.GetExtension(fileSelect.FileName);
@@ -237,6 +247,7 @@ namespace ProjectRegistration.Controllers
 
         [HttpPost, ActionName("DeleteUser")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             if (_context.Classes == null)
@@ -257,6 +268,7 @@ namespace ProjectRegistration.Controllers
 
         [HttpPost, ActionName("AddUser")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> AddUser(string id)
         {
             if (_context.Classes == null)

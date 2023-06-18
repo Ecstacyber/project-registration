@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ProjectRegistration.Models;
+using System.Security.Claims;
 
 namespace ProjectRegistration.Areas.Identity.Pages.Account
 {
@@ -109,11 +110,32 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                var user = await _signInManager.UserManager.FindByNameAsync(Input.UserName);
+                if (user == null)
+                {
+                    ModelState.AddModelError(String.Empty, "Tên đăng nhập hoặc mật khẩu không chính xác.");
+                    return Page();
+                }
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, false);
                 if (result.Succeeded)
                 {
+                    var claims = new List<Claim>()
+                    {
+                        new Claim("amr", "pwd"),
+                    };
+
+                    var roles = await _signInManager.UserManager.GetRolesAsync(user);
+
+                    if (roles.Any())
+                    {
+                        var roleClaim = string.Join(",", roles);
+                        claims.Add(new Claim("Roles", roleClaim));
+                    }
+
+                    await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);
+
                     _logger.LogInformation("Xác nhận đăng nhập.");
                     return LocalRedirect(returnUrl);
                 }

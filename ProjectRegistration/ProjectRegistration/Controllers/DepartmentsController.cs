@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Departments
+
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Index()
         {
               return _context.Departments != null ? 
@@ -27,6 +31,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Departments/Details/5
+
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Departments == null)
@@ -45,6 +51,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Departments/Create
+
+        [Authorize(Roles = "Manager")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +62,7 @@ namespace ProjectRegistration.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Dname,Info,CreatedDateTime,Deleted,DeletedDateTime")] Department department)
         {
@@ -69,6 +78,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Departments/Edit/5
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Departments == null)
@@ -89,6 +99,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Dname,Info,CreatedDateTime,Deleted,DeletedDateTime")] Department department)
         {
             if (id != department.Id)
@@ -120,6 +131,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Departments/Delete/5
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Departments == null)
@@ -140,6 +152,7 @@ namespace ProjectRegistration.Controllers
         // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Departments == null)

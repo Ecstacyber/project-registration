@@ -26,7 +26,16 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.User.RequireUniqueEmail = false;
 
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<IDENTITYUSERContext>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireManager", policy => policy.RequireRole("Manager"));
+    options.AddPolicy("RequireLecturer", policy => policy.RequireRole("Lecturer"));
+    options.AddPolicy("RequireStudent", policy => policy.RequireRole("Student"));
+});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     // Cookie settings

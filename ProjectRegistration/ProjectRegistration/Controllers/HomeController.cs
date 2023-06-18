@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectRegistration.Models;
 using System.Diagnostics;
@@ -9,13 +11,16 @@ namespace ProjectRegistration.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IDENTITYUSERContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public HomeController(ILogger<HomeController> logger, IDENTITYUSERContext context)
+        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, IDENTITYUSERContext context, RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
             _context = context;
+            _roleManager = roleManager;
         }
 
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public IActionResult Index()
         {
             if (_context.Departments.Count() == 0)
@@ -32,6 +37,35 @@ namespace ProjectRegistration.Controllers
                     _context.Add(department);
                 }
                 _context.SaveChanges();
+            }
+
+            var role = _roleManager.Roles.ToList();
+
+            if (role.Find(x => x.Name == "Manager") == null)
+            {
+                var mngRole = new IdentityRole();
+                mngRole.Id = "Manager";
+                mngRole.Name = "Manager";
+                mngRole.NormalizedName = "MANAGER";
+                _roleManager.CreateAsync(mngRole);
+            }
+
+            if (role.Find(x => x.Name == "Lecturer") == null)
+            {
+                var lectRole = new IdentityRole();
+                lectRole.Id = "Lecturer";
+                lectRole.Name = "Lecturer";
+                lectRole.NormalizedName = "LECTURER";
+                _roleManager.CreateAsync(lectRole);
+            }
+
+            if (role.Find(x => x.Name == "Student") == null)
+            {
+                var stuRole = new IdentityRole();
+                stuRole.Id = "Student";
+                stuRole.Name = "Student";
+                stuRole.NormalizedName = "STUDENT";
+                _roleManager.CreateAsync(stuRole);
             }
             return View();
 

@@ -14,6 +14,8 @@ using ProjectRegistration.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace ProjectRegistration.Controllers
 {
@@ -41,6 +43,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Users
+
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Index()
         {
             var IDENTITYUSERContext = _context.Users.Include(u => u.Department);
@@ -48,6 +52,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Users/Details/5
+
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null || _context.Users == null)
@@ -67,6 +73,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Users/Create
+
+        [Authorize(Roles = "Manager")]
         public IActionResult Create()
         {
             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Dname");
@@ -78,6 +86,8 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Create([Bind("UserId,Fullname,DateOfBirth,ImagePath,DepartmentId,UserTypeId")] User user)
         {
             if (ModelState.IsValid)
@@ -102,6 +112,15 @@ namespace ProjectRegistration.Controllers
                     newUser.DepartmentId = user.DepartmentId;
                     newUser.UserTypeId = user.UserTypeId;
 
+                    if (newUser.UserTypeId == 10)
+                    {
+                        await _userManager.AddToRoleAsync(newUser, "Lecturer");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(newUser, "Student");
+                    }
+
                     _context.Update(newUser);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -116,6 +135,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Users/Edit/5
+
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(string? id)
         {
             if (id == null || _context.Users == null)
@@ -136,6 +157,7 @@ namespace ProjectRegistration.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,Fullname,DateOfBirth,ImagePath,DepartmentId,UserTypeId")] User user)
         {
@@ -178,6 +200,8 @@ namespace ProjectRegistration.Controllers
         }
 
         // POST: Users/Delete/5
+
+        [Authorize(Roles = "Manager")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -204,6 +228,7 @@ namespace ProjectRegistration.Controllers
 
         [HttpPost, ActionName("AddUserFromFileExcel")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> AddUserFromFileExcel(IFormFile fileSelect)
         {
             var fileextension = Path.GetExtension(fileSelect.FileName);
@@ -240,6 +265,9 @@ namespace ProjectRegistration.Controllers
                             user.CreatedDateTime = DateTime.Now;
                             user.Fullname = reader.GetValue(2).ToString();
                             user.UserTypeId = 100;
+
+                            await _userManager.AddToRoleAsync(user, "Student");
+
 
                             var department = _context.Departments.Where(x => x.Dname == reader.GetValue(3).ToString()).FirstOrDefault();
                             if (department != null)
