@@ -38,6 +38,7 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
             _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
+            _context = context;
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
-            CreateDefaultDataAsync();
+            await CreateDefaultDataAsync();
         }
 
 
