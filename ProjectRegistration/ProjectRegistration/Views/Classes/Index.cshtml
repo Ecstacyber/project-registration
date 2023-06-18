@@ -1,0 +1,105 @@
+﻿@model IEnumerable<ProjectRegistration.Models.Class>
+
+@{
+    ViewData["Title"] = "lớp";
+}
+
+<h1>Danh sách các lớp của trường</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">+ Tạo mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Course)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClassId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Semester)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cyear)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.RegStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegEnd)
+            </th>*@
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.CourseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClassId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semester)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cyear)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.RegStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegEnd)
+            </td>*@         
+            <td>
+                <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
+                <a class="btn btn-link border-0" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+                <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
+                    Xoá
+                </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" action="" id="delete-form"></form>
+@section Scripts {
+    <script>
+        let id;
+        var modal = document.getElementById("exampleModal");
+        const deleteBtn = document.getElementById('delete-btn');
+        const deleteForm = document.getElementById('delete-form');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            id = button.getAttribute('data-id');
+        });
+        deleteBtn.onclick = () => {
+            deleteForm.action = 'Classes/Delete/' + id;
+            deleteForm.submit();
+        }
+    </script>
+}

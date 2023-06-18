@@ -14,28 +14,28 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container-fluid">
                 <a class="navbar-brand" href="../../Home/Index">Quản lý đăng ký đồ án</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" onclick="changeactive('Home')" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse d-sm-inline-flex justify-content-betweene" id="navbarColor01">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item" asp-area="" asp-controller="Home" asp-action="Index">
-                            <a class="nav-link active" onclick="changeactive('Home')" asp-controller="Home" asp-action="Index">
+                            <a class="nav-link" hover="changeactive('Home')" onclick="changeactive('Home')" asp-controller="Home" asp-action="Index">
                                 Trang chủ
                                 <span class="visually-hidden">(current)</span>
                             </a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" onclick="changeactive('Departments')" asp-area="" asp-controller="Departments" asp-action="Index">Khoa</a>
+                            <a class="nav-link" hover="changeactive('Departments')" onclick="changeactive('Departments')" asp-area="" asp-controller="Departments" asp-action="Index">Khoa</a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Tài khoản</a>
+                            <a class="nav-link" onclick="changeactive('Users')" asp-area="" asp-controller="Users" asp-action="Index">Tài khoản</a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index">Môn học</a>
+                            <a class="nav-link" onclick="changeactive('Courses')" asp-area="" asp-controller="Courses" asp-action="Index">Môn học</a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" asp-area="" asp-controller="Classes" asp-action="Index">Lớp học</a>
+                            <a class="nav-link" onclick="changeactive('Classes')" asp-area="" asp-controller="Classes" asp-action="Index">Lớp học</a>
                         </li>
                     </ul>
 
@@ -92,19 +92,49 @@
             if (pname == "Home" || pname == "" || pname == null) {
                 $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("active-item");
                 $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
-            } else {
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Departments") {
                 $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
                 $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("active-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Users") {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("active-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Courses") {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("active-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
+            } else if (pname == "Classes") {
+                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
+                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("active-item");
             }
+
         })
     </script>
 </section>
 <style>
     .active-item {
         color: white !important;
+        font-size: large;
     }
 
     .normal-item {
-        color: silver !important;
+        /*color: silver !important;*/
+    }
+
+    .nav-item:hover {
+        font-size: large;
     }
 </style>

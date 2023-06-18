@@ -43,8 +43,8 @@ namespace ProjectRegistration.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var projectRegistrationManagementContext = _context.Users.Include(u => u.Department);
-            return View(await projectRegistrationManagementContext.Where(x => x.Deleted == false).ToListAsync());
+            var IDENTITYUSERContext = _context.Users.Include(u => u.Department);
+            return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -184,7 +184,7 @@ namespace ProjectRegistration.Controllers
         {
             if (_context.Users == null)
             {
-                return Problem("Entity set 'ProjectRegistrationManagementContext.Users'  is null.");
+                return Problem("Entity set 'IDENTITYUSERContext.Users'  is null.");
             }
             var user = await _userManager.FindByIdAsync(id);
             if (user != null)
