@@ -132,7 +132,7 @@ namespace ProjectRegistration.Controllers
                         ImagePath.CopyTo(fs);
                     }
 
-                    newUser.ImagePath = filepath;
+                    newUser.ImagePath = filename;
 
                     _context.Update(newUser);
                     await _context.SaveChangesAsync();

@@ -85,5 +85,10 @@
 </div>
 <div>
     <a asp-action="EditProject" asp-route-id="@Model?.Id">Sửa</a> |
-    <a asp-action="ViewProjectList" asp-route-id="@ViewData["id"]">Quay lại danh sách đồ án</a>
+    <a asp-action="ViewProjectList" asp-route-id="@Model?.ClassId">Quay lại danh sách đồ án</a>
 </div>
+
+<div>
+    <a asp-action="AddMemberToProject" asp-route-id="@Model?.Id">Thêm sinh viên vào đồ án</a>
+</div>
+

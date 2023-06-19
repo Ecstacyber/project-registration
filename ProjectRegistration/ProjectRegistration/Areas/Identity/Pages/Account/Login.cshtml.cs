@@ -38,7 +38,6 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
             _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
-            _context = context;
         }
 
         /// <summary>
