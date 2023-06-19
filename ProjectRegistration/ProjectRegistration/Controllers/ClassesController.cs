@@ -494,6 +494,7 @@ namespace ProjectRegistration.Controllers
                 .Where(p => p.Deleted == false)
                 .Include(p => p.Class)
                 .Include(p => p.ProjectMembers)
+                .ThenInclude(p => p.Student)
                 .Include(p => p.GradingLecturer)
                 .Include(p => p.GuidingLecturer)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -511,9 +512,7 @@ namespace ProjectRegistration.Controllers
             ViewData["id"] = id;
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
             ViewData["Project"] = project;
-            //ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
-            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
-            
+            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();           
             ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname");
             ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname");
             return View();
@@ -529,18 +528,22 @@ namespace ProjectRegistration.Controllers
             ModelState.Remove("StudentId2");
             if (ModelState.IsValid)
             {
-                var projectMember1 = new ProjectMember();
-                projectMember1.CreatedDateTime = DateTime.Now;
+                var projectMember1 = new ProjectMember
+                {
+                    CreatedDateTime = DateTime.Now
+                };
                 projectMember1.Project = _context.Projects.FirstOrDefault(x => x.Id == projectMember1.ProjectId);
                 projectMember1.ProjectId = projectMember.ProjectId;
                 projectMember1.Student = _context.Users.FirstOrDefault(x => x.Id == projectMember1.StudentId);
                 projectMember1.StudentId = StudentId1;
                 projectMember1.GroupName = projectMember.GroupName;
                 _context.Add(projectMember1);
-                if (StudentId2 == null)
+                if (StudentId2 != null)
                 {
-                    var projectMember2 = new ProjectMember();
-                    projectMember2.CreatedDateTime = DateTime.Now;
+                    var projectMember2 = new ProjectMember
+                    {
+                        CreatedDateTime = DateTime.Now
+                    };
                     projectMember2.Project = _context.Projects.FirstOrDefault(x => x.Id == projectMember2.ProjectId);
                     projectMember2.ProjectId = projectMember.ProjectId;
                     projectMember2.Student = _context.Users.FirstOrDefault(x => x.Id == projectMember2.StudentId);
@@ -559,6 +562,28 @@ namespace ProjectRegistration.Controllers
             ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname", StudentId1);
             ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname", StudentId2);
             return View(projectMember);
+        }
+
+
+        // POST: Classes/DeleteMemberFromProject/5
+        [HttpPost, ActionName("DeleteMemberFromProject")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> DeleteMemberFromProject(int id)
+        {
+            if (_context.ProjectMembers == null)
+            {
+                return Problem("Entity set 'IDENTITYUSERContext.ProjectMembers'  is null.");
+            }
+            var member = await _context.ProjectMembers.FindAsync(id);
+            if (member != null)
+            {
+                member.Deleted = true;
+                member.DeletedDateTime = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ProjectDetails", new { id = id });
         }
     }
 }

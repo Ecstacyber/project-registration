@@ -92,3 +92,79 @@
     <a asp-action="AddMemberToProject" asp-route-id="@Model?.Id">Thêm sinh viên vào đồ án</a>
 </div>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                MSSV
+            </th>
+            <th>
+                Tên
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ProjectMembers)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Student.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Student.Fullname)
+                </td>
+                <td>
+                    <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.Id">
+                        Xoá
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Xóa sinh viên khỏi đồ án</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="delete-form"></form>
+
+@section Scripts {
+    <script>
+        let memberid;
+        var modal = document.getElementById("confirmDeleteModal");
+        const deleteBtn = document.getElementById('delete-btn');
+        const deleteForm = document.getElementById('delete-form');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            console.log(button);
+            memberid = button.getAttribute('data-id');
+            
+        });
+        
+        console.log("MemberID: " + memberid);
+        deleteBtn.onclick = () => {
+            console.log("MemberID: " + memberid);
+            deleteForm.action = '/Classes/DeleteMemberFromProject/' + memberid;
+            deleteForm.submit();
+        }
+    </script>
+    @*<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="/js/data-table.js"></script>*@
+}
