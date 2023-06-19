@@ -28,7 +28,7 @@ namespace ProjectRegistration.Controllers
         private readonly IUserEmailStore<User> _emailStore;
         private readonly IEmailSender _emailSender;
 
-        public UsersController(IDENTITYUSERContext context, 
+        public UsersController(IDENTITYUSERContext context,
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
@@ -90,6 +90,7 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Create([Bind("UserId,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
+            ModelState.Remove("ImagePath");
             if (ModelState.IsValid)
             {
                 var newUser = CreateUser();
@@ -120,19 +121,22 @@ namespace ProjectRegistration.Controllers
                         await _userManager.AddToRoleAsync(newUser, "Student");
                     }
 
-                    var fileextension = Path.GetExtension(ImagePath.FileName);
-                    var filename = Guid.NewGuid().ToString() + fileextension;
-                    if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+                    if (ImagePath != null)
                     {
-                        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
-                    }
-                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
-                    using (FileStream fs = System.IO.File.Create(filepath))
-                    {
-                        ImagePath.CopyTo(fs);
-                    }
+                        var fileextension = Path.GetExtension(ImagePath.FileName);
+                        var filename = Guid.NewGuid().ToString() + fileextension;
+                        if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+                        {
+                            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
+                        }
+                        var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+                        using (FileStream fs = System.IO.File.Create(filepath))
+                        {
+                            ImagePath.CopyTo(fs);
+                        }
 
-                    newUser.ImagePath = filename;
+                        newUser.ImagePath = filename;
+                    }
 
                     _context.Update(newUser);
                     await _context.SaveChangesAsync();
@@ -179,6 +183,7 @@ namespace ProjectRegistration.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove("ImagePath");
             if (ModelState.IsValid)
             {
                 try
@@ -188,11 +193,8 @@ namespace ProjectRegistration.Controllers
                     updatedUser.UserId = user.UserId;
                     updatedUser.Fullname = user.Fullname;
                     updatedUser.DateOfBirth = user.DateOfBirth;
-                    updatedUser.ImagePath = user.ImagePath;
                     updatedUser.DepartmentId = user.DepartmentId;
                     updatedUser.UserTypeId = user.UserTypeId;
-
-
 
                     if (updatedUser.UserTypeId == 10)
                     {
@@ -205,19 +207,23 @@ namespace ProjectRegistration.Controllers
                         await _userManager.RemoveFromRoleAsync(updatedUser, "Lecturer");
                     }
 
-                    var fileextension = Path.GetExtension(ImagePath.FileName);
-                    var filename = Guid.NewGuid().ToString() + fileextension;
-                    if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+                    if (ImagePath != null)
                     {
-                        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
-                    }
-                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
-                    using (FileStream fs = System.IO.File.Create(filepath))
-                    {
-                        ImagePath.CopyTo(fs);
-                    }
 
-                    updatedUser.ImagePath = filename;
+                        var fileextension = Path.GetExtension(ImagePath.FileName);
+                        var filename = Guid.NewGuid().ToString() + fileextension;
+                        if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+                        {
+                            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
+                        }
+                        var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+                        using (FileStream fs = System.IO.File.Create(filepath))
+                        {
+                            ImagePath.CopyTo(fs);
+                        }
+
+                        updatedUser.ImagePath = filename;
+                    }
 
                     _context.Update(updatedUser);
                     await _context.SaveChangesAsync();
@@ -277,7 +283,7 @@ namespace ProjectRegistration.Controllers
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
             }
-            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);          
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
             using (FileStream fs = System.IO.File.Create(filepath))
             {
                 fileSelect.CopyTo(fs);
