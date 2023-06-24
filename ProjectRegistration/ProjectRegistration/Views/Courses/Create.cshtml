@@ -50,4 +50,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(function () {
+            var msg = '@ViewData["result"]';
+            if (msg == 'Success') {
+                alert("Thêm môn học thành công");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+            if (msg == 'Failed') {
+                alert("Thêm môn học thất bại");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+        });
+    </script>
 }

@@ -93,8 +93,26 @@
 
         });
         deleteBtn.onclick = () => {
-            deleteForm.action = 'Departments/Delete/' + id;
+            deleteForm.action = 'Courses/Delete/' + id;
             deleteForm.submit();
         }
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            var msg = '@ViewData["result"]';
+            if (msg == 'Success') {
+                alert("Xóa môn học thành công");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+            if (msg == 'Failed') {
+                alert("Xóa môn học thất bại");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+            if (msg == 'NoIdFound') {
+                alert("Xóa môn học thất bại.%0D%0AKhông tìm thấy môn học");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+        });
     </script>
 }

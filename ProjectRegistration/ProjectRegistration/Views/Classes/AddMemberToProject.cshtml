@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="AddMemberToProject">
-            <input asp-for="ProjectId" id="ProjectId" hidden value="@ViewData["id"]" />
+            <input asp-for="ProjectId" name="ProjectIdHere" id="ProjectIdHere" hidden value="@ViewData["id"]" />
             @*<div class="form-group">
                 <label asp-for="ProjectId" class="control-label"></label>
                 <select asp-for="ProjectId" class ="form-control" asp-items="ViewBag.ProjectId"></select>
@@ -64,4 +64,21 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*<script>
+        $(function () {
+            var msg = '@ViewData["result"]';
+            var projectId = document.getElementById("ProjectIdHere");
+            console.log("projectId: " + projectId.Value);
+            var id = projectId.Value;
+            if (msg == 'Success') {
+                alert("Đăng ký đồ án thành công");
+                window.location.href = "@Url.Action("ViewProjectList", "Classes", new { id = "<projectId.Value>" })";
+            }
+            if (msg == 'Failed') {
+                alert("Đăng ký đồ án thất bại");
+                window.location.href = "@Url.Action("ViewProjectList", "Classes", new { id = "<projectId.Value>" })";
+            }
+        });
+    </script>*@
 }

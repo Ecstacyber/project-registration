@@ -96,8 +96,10 @@
 
         });
         deleteBtn.onclick = () => {
-            deleteForm.action = 'Delete/' + id;
+            deleteForm.action = '@Url.Content("~/Departments/Delete/")' + id;
             deleteForm.submit();
+            //alert("Xóa khoa thành công");
+            //window.location.href = "@Url.Action("Index", "Departments")";
         }
     </script>
 }

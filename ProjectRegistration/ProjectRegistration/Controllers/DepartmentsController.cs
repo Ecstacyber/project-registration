@@ -72,8 +72,11 @@ namespace ProjectRegistration.Controllers
                 department.Deleted = false;
                 _context.Add(department);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["result"] = "Success";
+                //return RedirectToAction(nameof(Index));
+                return View(department);
             }
+            ViewData["result"] = "Failed";
             return View(department);
         }
 
@@ -104,6 +107,7 @@ namespace ProjectRegistration.Controllers
         {
             if (id != department.Id)
             {
+                ViewData["result"] = "NoIdFound";
                 return NotFound();
             }
 
@@ -113,20 +117,25 @@ namespace ProjectRegistration.Controllers
                 {
                     _context.Update(department);
                     await _context.SaveChangesAsync();
+                    ViewData["result"] = "Success";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!DepartmentExists(department.Id))
                     {
+                        ViewData["result"] = "NoIdFound";
                         return NotFound();
                     }
                     else
                     {
+                        ViewData["result"] = "Failed";
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View(department);
+                //return RedirectToAction(nameof(Index));
             }
+            ViewData["result"] = "Failed";
             return View(department);
         }
 
@@ -157,6 +166,7 @@ namespace ProjectRegistration.Controllers
         {
             if (_context.Departments == null)
             {
+                ViewData["result"] = "Failed";
                 return Problem("Entity set 'IDENTITYUSERContext.Departments'  is null.");
             }
             var department = await _context.Departments.FindAsync(id);
@@ -165,6 +175,7 @@ namespace ProjectRegistration.Controllers
                 //_context.Departments.Remove(department);
                 department.Deleted = true;
                 department.DeletedDateTime = DateTime.Now;
+                ViewData["result"] = "Success";
             }
             
             await _context.SaveChangesAsync();

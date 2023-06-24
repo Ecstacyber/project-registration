@@ -51,4 +51,22 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(function () {
+            var msg = '@ViewData["result"]';
+            if (msg == 'Success') {
+                alert("Sửa môn học thành công");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+            if (msg == 'Failed') {
+                alert("Sửa môn học thất bại");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+            if (msg == 'NoIdFound') {
+                alert("Sửa môn học thất bại.%0D%0AKhông tìm thấy môn học");
+                window.location.href = "@Url.Action("Index", "Courses")";
+            }
+        });
+    </script>
 }

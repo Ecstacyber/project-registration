@@ -7,9 +7,11 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Text.Json;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
@@ -20,10 +22,12 @@ namespace ProjectRegistration.Controllers
     public class ClassesController : Controller
     {
         private readonly IDENTITYUSERContext _context;
+        private readonly ILogger<ClassesController> _logger;
 
-        public ClassesController(IDENTITYUSERContext context)
+        public ClassesController(IDENTITYUSERContext context, ILogger<ClassesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Classes
@@ -80,9 +84,12 @@ namespace ProjectRegistration.Controllers
                 @class.RegOpen = "Đóng đăng ký";
                 _context.Add(@class);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["result"] = "Success";
+                return View(@class);
+                //return RedirectToAction(nameof(Index));
             }
             ViewData["Course"] = new SelectList(_context.Courses, "CourseName", "CourseName", @class.CourseId);
+            ViewData["result"] = "Failed";
             return View(@class);
         }
 
@@ -92,12 +99,14 @@ namespace ProjectRegistration.Controllers
         {
             if (id == null || _context.Classes == null)
             {
+                ViewData["result"] = "NoIdFound";
                 return NotFound();
             }
 
             var @class = await _context.Classes.Include(x=>x.Course).Where(x=> x.Id == id).FirstOrDefaultAsync();
             if (@class == null)
             {
+                ViewData["result"] = "NoIdFound";
                 return NotFound();
             }
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @class.CourseId);
@@ -114,6 +123,7 @@ namespace ProjectRegistration.Controllers
         {
             if (id != @class.Id)
             {
+                ViewData["result"] = "NoIdFound";
                 return NotFound();
             }
 
@@ -124,19 +134,23 @@ namespace ProjectRegistration.Controllers
                     Debug.WriteLine(@class.RegOpen + "\n" + @class.RegStart.ToString() + "\n" + @class.RegEnd.ToString());
                     _context.Update(@class);
                     await _context.SaveChangesAsync();
+                    ViewData["result"] = "Success";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ClassExists(@class.Id))
                     {
+                        ViewData["result"] = "NoIdFound";
                         return NotFound();
                     }
                     else
                     {
+                        ViewData["result"] = "Failed";
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View(@class);
+                //return RedirectToAction(nameof(Index));
             }
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @class.CourseId);
             return View(@class);
@@ -176,8 +190,8 @@ namespace ProjectRegistration.Controllers
             {
                 @class.Deleted = true;
                 @class.DeletedDateTime = DateTime.Now;
+                ViewData["result"] = "Success";
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -205,13 +219,11 @@ namespace ProjectRegistration.Controllers
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
                     reader.Read();
-                    var @class = _context.Classes.Where(x => (x.Deleted == false && x.Id == Id)).FirstOrDefault();
-
+                    var @class = _context.Classes.Where(x => x.Deleted == false && x.Id == Id).FirstOrDefault();
                     List<ClassDetail> cd = new List<ClassDetail>();
 
                     while (reader.Read()) //Each row of the file
                     {
-
                         var user = _context.Users.Where(x => (x.UserId == reader.GetValue(1).ToString() && x.Deleted == false)).FirstOrDefault();
                         if (user == null) continue;
                         if (_context.ClassDetails.Where(x => x.ClassId == Id && x.UserId == user.Id).FirstOrDefault() != null) continue;
@@ -230,7 +242,6 @@ namespace ProjectRegistration.Controllers
                         _context.ClassDetails.Add(classDetail);
                     }
                     @class.ClassDetails = cd;
-
                 }
             }
 
@@ -333,8 +344,10 @@ namespace ProjectRegistration.Controllers
                 project.CreatedDateTime = DateTime.Now;
                 _context.Add(project);
                 await _context.SaveChangesAsync();
+                ViewData["result"] = "Success";
                 return RedirectToAction("ViewProjectList", new { id = project.ClassId });
             }
+            ViewData["result"] = "Failed";
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
@@ -414,6 +427,7 @@ namespace ProjectRegistration.Controllers
             {
                 project.Deleted = true;
                 project.DeletedDateTime = DateTime.Now;
+                ViewData["result"] = "Success";
             }
 
             await _context.SaveChangesAsync();
@@ -451,6 +465,7 @@ namespace ProjectRegistration.Controllers
         {
             if (id != project.Id)
             {
+                ViewData["result"] = "NoIdFound";
                 return NotFound();
             }
 
@@ -460,25 +475,31 @@ namespace ProjectRegistration.Controllers
                 {
                     _context.Update(project);
                     await _context.SaveChangesAsync();
+                    ViewData["result"] = "Success";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!_context.Projects.Any(x => x.Id == project.Id))
                     {
+                        ViewData["result"] = "Success";
                         return NotFound();
                     }
                     else
                     {
+                        ViewData["result"] = "Failed";
                         throw;
                     }
                 }
+                //return View(project);
                 return RedirectToAction("ViewProjectList", new { id = project.ClassId });
             }
+            ViewData["result"] = "Failed";
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
             ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
             ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
+            //return View(project);
             return RedirectToAction("EditProject", new { id = project.Id });
         }
 
@@ -512,7 +533,15 @@ namespace ProjectRegistration.Controllers
             ViewData["id"] = id;
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
             ViewData["Project"] = project;
-            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();           
+            ViewData["ProjectId"] = project.Id;
+            //var members = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
+            //if (members != null)
+            //{
+            //    var classDetail1 = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
+            //    ViewData["StudentId1"] = new SelectList(classDetail1, "UserId", "User.Fullname");
+            //    ViewData["StudentId2"] = new SelectList(members, "UserId", "User.Fullname");
+            //}
+            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();        
             ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname");
             ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname");
             return View();
@@ -528,6 +557,18 @@ namespace ProjectRegistration.Controllers
             ModelState.Remove("StudentId2");
             if (ModelState.IsValid)
             {
+                //var regStart = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId).Class.RegStart;
+                //var regEnd = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId).Class.RegEnd;
+                //if (projectMember != null && regStart != null && regStart <= DateTime.Now)
+                //{
+                //    _logger.LogError("Chưa đến thời gian đăng ký");
+                //    return View(projectMember);
+                //}
+                //if (projectMember != null && regEnd != null && regEnd >= DateTime.Now)
+                //{
+                //    _logger.LogError("Chưa đến thời gian đăng ký");
+                //    return View(projectMember);
+                //}
                 var projectMember1 = new ProjectMember
                 {
                     CreatedDateTime = DateTime.Now
@@ -552,18 +593,20 @@ namespace ProjectRegistration.Controllers
                     _context.Add(projectMember2);
                 }
                 await _context.SaveChangesAsync();
-                return RedirectToAction("ProjectDetails", new { id = projectMember1.ProjectId });
+                ViewData["result"] = "Success";
+                return View(projectMember);
+                //return RedirectToAction("ProjectDetails", new { id = projectMember1.ProjectId });
             }
 
             var project = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId);
             ViewData["Project"] = project;
             var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
 
+            ViewData["result"] = "Failed";
             ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname", StudentId1);
             ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname", StudentId2);
             return View(projectMember);
         }
-
 
         // POST: Classes/DeleteMemberFromProject/5
         [HttpPost, ActionName("DeleteMemberFromProject")]

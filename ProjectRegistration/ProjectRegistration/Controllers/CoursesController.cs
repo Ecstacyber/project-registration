@@ -67,7 +67,9 @@ namespace ProjectRegistration.Controllers
             {
                 _context.Add(course);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["result"] = "Success";
+                return View(course);
+                //return RedirectToAction(nameof(Index));
             }
             return View(course);
         }
@@ -78,12 +80,14 @@ namespace ProjectRegistration.Controllers
         {
             if (id == null || _context.Courses == null)
             {
+                ViewData["result"] = "NoIdFound";
                 return NotFound();
             }
 
             var course = await _context.Courses.FindAsync(id);
             if (course == null)
             {
+                ViewData["result"] = "Failed";
                 return NotFound();
             }
             return View(course);
@@ -99,6 +103,7 @@ namespace ProjectRegistration.Controllers
         {
             if (id != course.Id)
             {
+                ViewData["result"] = "NoIdFound";
                 return NotFound();
             }
 
@@ -108,20 +113,26 @@ namespace ProjectRegistration.Controllers
                 {
                     _context.Update(course);
                     await _context.SaveChangesAsync();
+                    ViewData["result"] = "Success";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CourseExists(course.Id))
                     {
+                        ViewData["result"] = "NoIdFound";
                         return NotFound();
                     }
                     else
                     {
+                        ViewData["result"] = "Failed";
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View(course);
+                //return RedirectToAction(nameof(Index));
             }
+
+            ViewData["result"] = "Failed";
             return View(course);
         }
 
@@ -152,6 +163,7 @@ namespace ProjectRegistration.Controllers
         {
             if (_context.Courses == null)
             {
+                ViewData["result"] = "NoIdFound";
                 return Problem("Entity set 'IDENTITYUSERContext.Courses'  is null.");
             }
             var course = await _context.Courses.FindAsync(id);
@@ -160,6 +172,7 @@ namespace ProjectRegistration.Controllers
                 //_context.Courses.Remove(course);
                 course.Deleted = true;
                 course.DeletedDateTime = DateTime.Now;
+                ViewData["result"] = "Success";
             }
             
             await _context.SaveChangesAsync();

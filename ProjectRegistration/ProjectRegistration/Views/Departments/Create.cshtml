@@ -50,4 +50,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(function () {
+            var msg = '@ViewData["result"]';
+            if (msg == 'Success') {
+                alert("Thêm khoa thành công");
+                window.location.href = "@Url.Action("Index", "Departments")";
+            }
+            if (msg == 'Failed') {
+                alert("Thêm khoa thất bại");
+                window.location.href = "@Url.Action("Index", "Departments")";
+            }
+        });
+    </script>
 }

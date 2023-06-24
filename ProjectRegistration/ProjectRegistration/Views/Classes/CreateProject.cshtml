@@ -81,4 +81,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*<script>
+        $(function () {
+            var msg = '@ViewData["result"]';
+            if (msg == 'Success') {
+                alert("Thêm đồ án thành công");
+                window.location.href = "@Url.Action("Index", "Projects")";
+            }
+            if (msg == 'Failed') {
+                alert("Thêm đồ án thất bại");
+                window.location.href = "@Url.Action("Index", "Projects")";
+            }
+        });
+    </script>*@
 }

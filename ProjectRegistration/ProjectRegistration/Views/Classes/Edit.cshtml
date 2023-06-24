@@ -118,4 +118,22 @@
             console.log("res: " + toggleRegId.className);
         }
     </script>
+
+    <script>
+        $(function () {
+            var msg = '@ViewData["result"]';
+            if (msg == 'Success') {
+                alert("Sửa lớp học thành công");
+                window.location.href = "@Url.Action("Index", "Classes")";
+            }
+            if (msg == 'Failed') {
+                alert("Sửa lớp học thất bại");
+                window.location.href = "@Url.Action("Index", "Classes")";
+            }
+            if (msg == 'NoIdFound') {
+                alert("Sửa lớp thất bại%0D%0AKhông tìm thấy lớp học");
+                window.location.href = "@Url.Action("Index", "Classes")";
+            }
+        });
+    </script>
 }

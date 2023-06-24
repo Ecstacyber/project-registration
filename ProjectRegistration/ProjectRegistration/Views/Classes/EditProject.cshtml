@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <form asp-action="EditProject">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input id="ProjectIdHere" type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Pname" class="control-label"></label>
                 <input asp-for="Pname" class="form-control" />
@@ -88,4 +88,19 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(function () {
+            var msg = '@ViewData["result"]';
+            var projectId = getElementById("ProjectIdHere")
+            if (msg == 'Success') {
+                alert("Sửa đồ án thành công");
+                window.location.href = "@Url.Action("ViewProjectList", "Classes", "projectId.Value")";
+            }
+            if (msg == 'Failed') {
+                alert("Sửa đồ án thất bại");
+                window.location.href = "@Url.Action("ViewProjectList", "Classes", "projectId.Value")";
+            }
+        });
+    </script>
 }
