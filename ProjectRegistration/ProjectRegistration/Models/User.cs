@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,6 +25,7 @@ public partial class User : IdentityUser
     //public string? UserPassword { get; set; }
 
     [Display(Name = "Ảnh đại diện")]
+    [ValidateNever]
     public string? ImagePath { get; set; }
 
     [Display(Name = "Khoa")]
