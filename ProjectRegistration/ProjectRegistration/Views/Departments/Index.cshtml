@@ -4,89 +4,104 @@
     ViewData["Title"] = "Danh sách khoa";
 }
 
-<h1>Danh sách các khoa của trường</h1>
+<link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">+ Tạo mới</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Dname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Info)
-            </th>
-            @*<th>
-            @Html.DisplayNameFor(model => model.CreatedDateTime)
-            </th>
-            <th>
-            @Html.DisplayNameFor(model => model.Deleted)
-            </th>
-            <th>
-            @Html.DisplayNameFor(model => model.DeletedDateTime)
-            </th>*@
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Dname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Info)
-                </td>
-                @*<td>
-            @Html.DisplayFor(modelItem => item.CreatedDateTime)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.DeletedDateTime)
-            </td>*@
-                <td>
-                    <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
-                    <a class="btn btn-link border-0" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Danh sách khoa</h3>
+        </div>
 
-                    <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
-                        Xoá
-                    </button>
+    </div>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="clearfix"></div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" style="z-index:1060">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Bạn có chắc muốn xoá?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Danh sách các khoa của trường</h2>
+
+                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create">
+                            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                            Thêm mới
+                        </a>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <table class="table table-hover">
+                        <thead style="font-size:large">
+                            <tr>
+                                <th>#</th>
+                                <th>@Html.DisplayNameFor(model => model.Dname)</th>
+                                <th>@Html.DisplayNameFor(model => model.Info)</th>
+                                <th class="last"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var count = 0;
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        @{
+                                            count++;
+                                        }
+                                        <th style="font-size:larger; vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => count)</th>
+                                        <th style="font-size:larger; vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Dname)</th>
+                                        <th style="font-size:larger; vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Info)</th>
+                                        <th style="font-size:larger; vertical-align: middle;" scope="rowgroup" class="w-25">
+                                            <a class="btn btn-primary btn-xs" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
+                                            @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
+                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteModal" data-id="@item.Id">
+                                                <i class="fa fa-trash-o"></i> Xoá
+                                            </button>
+                                        </th>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Xác nhận xóa</h1>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xoá?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" id="delete-btn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <form method="post" action="" id="delete-form"></form>
 @section Scripts {
     <script>
         let id;
-        var modal = document.getElementById("exampleModal");
+        var modal = document.getElementById("deleteModal");
         const deleteBtn = document.getElementById('delete-btn');
         const deleteForm = document.getElementById('delete-form');
         modal.addEventListener('show.bs.modal', function (event) {

@@ -1,16 +1,21 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjectRegistration</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
+    <link href="~/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/bootswatchTheme.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProjectRegistration.styles.css" asp-append-version="true" />
+    <link href="~/vendors/fontawesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/vendors/nprogress/nprogress.css" rel="stylesheet" />
+
+    <link href="~/css/custom.min.css" rel="stylesheet" />
 </head>
-<body>
-    <header>
+<body class="nav-md mb-0">
+    @*<header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container-fluid">
                 <a class="navbar-brand" onclick="changeactive('Home')" href="../../Home/Index">Quản lý đăng ký đồ án</a>
@@ -47,44 +52,150 @@
 
 
                     <partial name="_LoginPartial" />
-                    @*                    <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Hello @ViewData["userID"]</a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#">Cài đặt</a></li>
-                    <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
-                    </ul>
-                    </li>
-                    </ul>*@
-
-                    @*                    <form class="d-flex">
-                    <input class="form-control me-sm-2" type="search" placeholder="Search">
-                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                    </form>*@
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3 pt-5">
-            @RenderBody()
-        </main>
+    </header>*@
+
+
+
+
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="" class="site_title"><i class="fa fa-graduation-cap"></i> <span>PJ Registration</span></a>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <!-- menu profile quick info -->
+                    <div class="profile clearfix">
+                        <div class="profile_pic">
+                            <img src="../../files/default-avatar.jpg" alt="avt" class="img-circle profile_img">
+                        </div>
+                        <div class="profile_info">
+                            <span>Xin chào,</span>
+                            <h2>John Doe</h2>
+                        </div>
+                    </div>
+                    <!-- /menu profile quick info -->
+
+                    <br />
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <ul class="nav side-menu">
+                                <li>
+                                    <a><i class="fa fa-home"></i> Trang chủ <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                        <li><a asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Departments" asp-action="Index"><i class="fa fa-group"></i> Khoa</a>                                   
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-user"></i> Tài khoản <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a asp-controller="Users" asp-action="Index">Giảng viên</a></li>
+                                        <li><a asp-controller="Users" asp-action="StudentList">Sinh viên</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a asp-controller ="Courses" asp-action="Index"><i class="fa fa-book"></i> Môn học</a>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-pencil-square"></i> Lớp học <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a asp-controller="Classes" asp-action="Index">Đồ án 1</a></li>
+                                        <li><a asp-controller="Classes" asp-action="Index">Đồ án 2</a></li>
+                                        <li><a asp-controller="Classes" asp-action="Index">Khóa luận tốt nghiệp</a></li>
+                                        <li><a asp-controller="Classes" asp-action="Index">Tất cả</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <nav class="nav navbar-nav">
+                        <ul class=" navbar-right">
+                            <li class="nav-item dropdown open" style="padding-left: 15px;">
+                                <a href="javascript:;" class="user-profile dropdown-toggle pb-2" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                    <img src="../../files/default-avatar.jpg" alt="">John Doe
+                                </a>
+                                <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="javascript:;"> Hồ sơ</a>
+                                    <a class="dropdown-item" href=" "><i class="fa fa-sign-out pull-right"></i> Đăng xuất</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- /top navigation -->
+
+            <!-- page content -->
+            <main role="main" class="right_col">
+                @RenderBody()
+            </main>
+            <!-- /page content -->
+
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+                    2023 - Project Registration - Made by Nguyen Duy Hao and Chau Vinh Sinh
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
+
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - ProjectRegistration - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
+    @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/vendors/nprogress/nprogress.js"></script>
+    <script src="~/vendors/jquery/jquery.min.js"></script>
+    <script src="~/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendors/icheck/icheck.min.js"></script>
+    <script src="~/js/custom.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     @await RenderSectionAsync("Styles", required: false)
 </body>
 </html>
 <section>
-    <script>
+    @*<script>
         function changeactive(pname) {
 
             //console.log(pname);
@@ -128,9 +239,9 @@
             }
 
         })
-    </script>
+    </script>*@
 </section>
-<style>
+@*<style>
     .active-item {
         color: white !important;
         font-size: large;
@@ -143,4 +254,4 @@
     .nav-item:hover {
         font-size: large;
     }
-</style>
+</style>*@

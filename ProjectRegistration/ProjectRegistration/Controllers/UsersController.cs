@@ -51,6 +51,21 @@ namespace ProjectRegistration.Controllers
             return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
         }
 
+
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> StudentList()
+        {
+            var IDENTITYUSERContext = _context.Users.Where(u => u.UserTypeId == 100).Include(u => u.Department);
+            return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
+        }
+
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> LecturerList()
+        {
+            var IDENTITYUSERContext = _context.Users.Where(u => u.UserTypeId == 10).Include(u => u.Department);
+            return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
+        }
+
         // GET: Users/Details/5
 
         [Authorize(Roles = "Manager")]
