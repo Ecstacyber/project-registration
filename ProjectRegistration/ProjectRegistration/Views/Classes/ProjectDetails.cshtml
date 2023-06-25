@@ -145,6 +145,30 @@
 
 @section Scripts {
     <script>
+        $(function () {
+            var msg = '@TempData["message"]';
+            if (msg == 'RegNotOpened') {
+                alert("Thêm thành viên vào đồ án thất bại%0D%0AChưa đến thời gian đăng ký");
+            }
+            if (msg == 'RegClosed') {
+                alert("Thêm thành viên vào đồ án thất bại%0D%0AĐã hết thời gian đăng ký");
+            }
+            if (msg == 'MemberAddedToProject') {
+                alert("Thêm thành viên vào đồ án thành công");
+            }
+            if (msg == 'MemberNotAddedToProject') {
+                alert("Thêm thành viên vào đồ án thất bại");
+            }
+            if (msg == 'NoMemberToDeleteFromProject') {
+                alert("Xóa thành viên khỏi đồ án thất bại%0D%0AKhông tìm thấy thành viên trong đồ án");
+            }
+            if (msg == 'MemberDeletedFromProject') {
+                alert("Xóa thành viên khỏi đồ án thành công");
+            }
+        });
+    </script>
+    
+    <script>
         let memberid;
         var modal = document.getElementById("confirmDeleteModal");
         const deleteBtn = document.getElementById('delete-btn');

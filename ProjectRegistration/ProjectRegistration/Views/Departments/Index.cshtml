@@ -2,6 +2,12 @@
 
 @{
     ViewData["Title"] = "Danh sách khoa";
+    //if (TempData["message"] != null)
+    //{
+    //    <script>
+    //        alert('@TempData["message"]');
+    //    </script>
+    //}
 }
 
 <h1>Danh sách các khoa của trường</h1>
@@ -85,12 +91,38 @@
 <form method="post" action="" id="delete-form"></form>
 @section Scripts {
     <script>
+        $(function () {
+            var msg = '@TempData["message"]';
+            if (msg == 'DepartmentCreated') {
+                alert("Thêm khoa thành công");
+            }
+            if (msg == 'DepartmentNotCreated') {
+                alert("Thêm khoa thất bại");
+            }
+            if (msg == 'DepartmentEdited') {
+                alert("Sửa khoa thành công");
+            }
+            if (msg == 'DepartmentNotEdited') {
+                alert("Sửa khoa thất bại");
+            }
+            if (msg == 'NoDepartmentToEdit') {
+                alert("Sửa khoa thất bại%0D%0AKhông tìm thấy khoa");
+            }
+            if (msg == 'DepartmentDeleted') {
+                alert("Xóa khoa thành công");
+            }
+            if (msg == 'DepartmentNotDeleted') {
+                alert("Xóa khoa thất bại%0D%0AKhông tìm thấy khoa");
+            }
+        });
+    </script>
+    
+    <script>
         let id;
         var modal = document.getElementById("exampleModal");
         const deleteBtn = document.getElementById('delete-btn');
         const deleteForm = document.getElementById('delete-form');
         modal.addEventListener('show.bs.modal', function (event) {
-            // Button that triggered the modal
             const button = event.relatedTarget;
             id = button.getAttribute('data-id');
 
@@ -98,8 +130,6 @@
         deleteBtn.onclick = () => {
             deleteForm.action = '@Url.Content("~/Departments/Delete/")' + id;
             deleteForm.submit();
-            //alert("Xóa khoa thành công");
-            //window.location.href = "@Url.Action("Index", "Departments")";
         }
-    </script>
+    </script> 
 }

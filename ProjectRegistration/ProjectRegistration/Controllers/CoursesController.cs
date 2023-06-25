@@ -67,9 +67,8 @@ namespace ProjectRegistration.Controllers
             {
                 _context.Add(course);
                 await _context.SaveChangesAsync();
-                ViewData["result"] = "Success";
-                return View(course);
-                //return RedirectToAction(nameof(Index));
+                TempData["message"] = "CourseCreated";
+                return RedirectToAction(nameof(Index));
             }
             return View(course);
         }
@@ -80,14 +79,14 @@ namespace ProjectRegistration.Controllers
         {
             if (id == null || _context.Courses == null)
             {
-                ViewData["result"] = "NoIdFound";
+                TempData["message"] = "NoCourseToEdit";
                 return NotFound();
             }
 
             var course = await _context.Courses.FindAsync(id);
             if (course == null)
             {
-                ViewData["result"] = "Failed";
+                TempData["message"] = "NoCourseToEdit";
                 return NotFound();
             }
             return View(course);
@@ -103,7 +102,7 @@ namespace ProjectRegistration.Controllers
         {
             if (id != course.Id)
             {
-                ViewData["result"] = "NoIdFound";
+                TempData["message"] = "NoCourseToEdit";
                 return NotFound();
             }
 
@@ -113,26 +112,25 @@ namespace ProjectRegistration.Controllers
                 {
                     _context.Update(course);
                     await _context.SaveChangesAsync();
-                    ViewData["result"] = "Success";
+                    TempData["message"] = "CourseCreated";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CourseExists(course.Id))
                     {
-                        ViewData["result"] = "NoIdFound";
+                        TempData["message"] = "NoCourseToEdit";
                         return NotFound();
                     }
                     else
                     {
-                        ViewData["result"] = "Failed";
+                        TempData["message"] = "CourseNotCreated";
                         throw;
                     }
                 }
-                return View(course);
-                //return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 
-            ViewData["result"] = "Failed";
+            TempData["message"] = "CourseNotCreated";
             return View(course);
         }
 
@@ -163,16 +161,15 @@ namespace ProjectRegistration.Controllers
         {
             if (_context.Courses == null)
             {
-                ViewData["result"] = "NoIdFound";
+                TempData["message"] = "CourseNotFound";
                 return Problem("Entity set 'IDENTITYUSERContext.Courses'  is null.");
             }
             var course = await _context.Courses.FindAsync(id);
             if (course != null)
             {
-                //_context.Courses.Remove(course);
                 course.Deleted = true;
                 course.DeletedDateTime = DateTime.Now;
-                ViewData["result"] = "Success";
+                TempData["message"] = "CourseDeleted";
             }
             
             await _context.SaveChangesAsync();

@@ -64,21 +64,4 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    @*<script>
-        $(function () {
-            var msg = '@ViewData["result"]';
-            var projectId = document.getElementById("ProjectIdHere");
-            console.log("projectId: " + projectId.Value);
-            var id = projectId.Value;
-            if (msg == 'Success') {
-                alert("Đăng ký đồ án thành công");
-                window.location.href = "@Url.Action("ViewProjectList", "Classes", new { id = "<projectId.Value>" })";
-            }
-            if (msg == 'Failed') {
-                alert("Đăng ký đồ án thất bại");
-                window.location.href = "@Url.Action("ViewProjectList", "Classes", new { id = "<projectId.Value>" })";
-            }
-        });
-    </script>*@
 }
