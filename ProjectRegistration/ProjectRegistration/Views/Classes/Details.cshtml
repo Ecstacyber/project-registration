@@ -264,6 +264,7 @@
                         </label>
                         <div class="col-md-4 col-sm-4 ">
                             <div id="RegOpen" class="btn-group">
+                                <input id="regState" type="hidden" value="@Model.RegOpen" />
                                 <label class="btn btn-secondary" id="closeBtn">
                                     <input asp-for="RegOpen" type="radio" name="RegOpen" value="Đóng" class="join-btn"> &nbsp; Đóng đăng ký &nbsp;
                                 </label>
@@ -326,7 +327,8 @@
         let openBtn = document.getElementById('openBtn');
         let closeBtn = document.getElementById("closeBtn");
 
-        if ('@Model.RegOpen' == "Mở") {
+        let state = document.getElementById('regState');
+        if (state.value == "Mở") {
             addClass(openBtn, "btn-success");
             removeClass(openBtn, "btn-secondary");
         }
