@@ -49,6 +49,11 @@
     </dl>
 </div>
 
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Sửa</a> |
+    <a asp-action="Index">Quay lại</a>
+</div>
+
 <form method="post" asp-action="ViewProjectList" asp-route-id="@Model.Id">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
         + Thêm bằng MSSV
@@ -117,10 +122,7 @@
     </tbody>
 </table>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Sửa</a> |
-    <a asp-action="Index">Quay lại</a>
-</div>
+
 
 <!-- Delete Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" style="z-index:1060">

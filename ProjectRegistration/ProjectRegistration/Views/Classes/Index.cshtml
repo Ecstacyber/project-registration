@@ -137,6 +137,33 @@
     <script src="~/vendors/fastclick/lib/fastclick.js"></script>
 
     <script>
+        $(function () {
+            var msg = '@TempData["message"]';
+            if (msg == 'ClassCreated') {
+                alert("Thêm lớp thành công");
+            }
+            if (msg == 'ClassNotCreated') {
+                alert("Thêm lớp thất bại");
+            }
+            if (msg == 'ClassEdited') {
+                alert("Sửa lớp thành công");
+            }
+            if (msg == 'ClassNotEdited') {
+                alert("Sửa lớp thất bại");
+            }
+            if (msg == 'NoClassToEdit') {
+                alert("Sửa lớp thất bại%0D%0AKhông tìm thấy lớp");
+            }
+            if (msg == 'ClassDeleted') {
+                alert("Xóa lớp thành công");
+            }
+            if (msg == 'ClassNotDeleted') {
+                alert("Xóa lớp thất bại%0D%0AKhông tìm thấy lớp");
+            }
+        });
+    </script>
+
+    <script>
         let id;
         var modal = document.getElementById("deleteModal");
         const deleteBtn = document.getElementById('delete-btn');

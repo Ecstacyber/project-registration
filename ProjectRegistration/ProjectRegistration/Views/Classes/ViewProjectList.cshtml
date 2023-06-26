@@ -153,6 +153,33 @@
 <form method="post" action="" id="delete-form"></form>
 @section Scripts {
     <script>
+        $(function () {
+            var msg = '@TempData["message"]';
+            if (msg == 'ProjectCreated') {
+                alert("Tạo đồ án thành công");
+            }
+            if (msg == 'ProjectNotCreated') {
+                alert("Tạo đồ án thất bại");
+            }
+            if (msg == 'ProjectEdited') {
+                alert("Sửa đồ án thành công");
+            }
+            if (msg == 'DepartmentNotEdited') {
+                alert("Sửa đồ án thất bại");
+            }
+            if (msg == 'NoDepartmentToEdit') {
+                alert("Sửa đồ án thất bại%0D%0AKhông tìm thấy đồ án");
+            }
+            if (msg == 'ProjectDeleted') {
+                alert("Xóa đồ án thành công");
+            }
+            if (msg == 'ProjectNotDeleted') {
+                alert("Xóa đồ án thất bại%0D%0AKhông tìm thấy đồ án");
+            }
+        });
+    </script>
+
+    <script>
         let id;
         var modal = document.getElementById("exampleModal");
         const deleteBtn = document.getElementById('delete-btn');

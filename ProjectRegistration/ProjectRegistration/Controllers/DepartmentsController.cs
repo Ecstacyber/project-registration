@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using ProjectRegistration.Models;
 
 namespace ProjectRegistration.Controllers
@@ -72,8 +74,10 @@ namespace ProjectRegistration.Controllers
                 department.Deleted = false;
                 _context.Add(department);
                 await _context.SaveChangesAsync();
+                TempData["message"] = "DepartmentCreated";
                 return RedirectToAction(nameof(Index));
             }
+            TempData["message"] = "DepartmentNotCreated";
             return View(department);
         }
 
@@ -97,13 +101,14 @@ namespace ProjectRegistration.Controllers
         // POST: Departments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Dname,Info,CreatedDateTime,Deleted,DeletedDateTime")] Department department)
         {
             if (id != department.Id)
             {
+                TempData["message"] = "NoDepartmentToEdit";
                 return NotFound();
             }
 
@@ -113,20 +118,24 @@ namespace ProjectRegistration.Controllers
                 {
                     _context.Update(department);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "DepartmentEdited";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!DepartmentExists(department.Id))
                     {
+                        TempData["message"] = "NoDepartmentToEdit";
                         return NotFound();
                     }
                     else
                     {
+                        TempData["message"] = "DepartmentNotEdited";
                         throw;
                     }
                 }
                 return RedirectToAction(nameof(Index));
             }
+            TempData["message"] = "Failed";
             return View(department);
         }
 
@@ -157,14 +166,15 @@ namespace ProjectRegistration.Controllers
         {
             if (_context.Departments == null)
             {
+                TempData["message"] = "DepartmentNotDeleted";
                 return Problem("Entity set 'IDENTITYUSERContext.Departments'  is null.");
             }
             var department = await _context.Departments.FindAsync(id);
             if (department != null)
             {
-                //_context.Departments.Remove(department);
                 department.Deleted = true;
                 department.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "DepartmentDeleted";
             }
             
             await _context.SaveChangesAsync();

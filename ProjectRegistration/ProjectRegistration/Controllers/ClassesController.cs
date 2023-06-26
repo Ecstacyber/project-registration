@@ -7,9 +7,11 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Text.Json;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
@@ -20,10 +22,12 @@ namespace ProjectRegistration.Controllers
     public class ClassesController : Controller
     {
         private readonly IDENTITYUSERContext _context;
+        private readonly ILogger<ClassesController> _logger;
 
-        public ClassesController(IDENTITYUSERContext context)
+        public ClassesController(IDENTITYUSERContext context, ILogger<ClassesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Classes
@@ -89,9 +93,11 @@ namespace ProjectRegistration.Controllers
                 @class.CreatedDateTime = DateTime.Now;
                 _context.Add(@class);
                 await _context.SaveChangesAsync();
+                TempData["message"] = "ClassCreated";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName", @class.CourseId);
+            TempData["message"] = "ClassNotCreated";
             return View(@class);
         }
 
@@ -101,12 +107,14 @@ namespace ProjectRegistration.Controllers
         {
             if (id == null || _context.Classes == null)
             {
+                TempData["message"] = "NoClassToEdit";
                 return NotFound();
             }
 
             var @class = await _context.Classes.Include(x => x.Course).Where(x=> x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             if (@class == null)
             {
+                TempData["message"] = "NoClassToEdit";
                 return NotFound();
             }
 
@@ -134,6 +142,7 @@ namespace ProjectRegistration.Controllers
         {
             if (id != @class.Id)
             {
+                TempData["message"] = "NoClassToEdit";
                 return NotFound();
             }
 
@@ -145,15 +154,18 @@ namespace ProjectRegistration.Controllers
                     @class.RegEnd = DateTime.Parse(RegTime.Split('-')[1]); 
                     _context.Update(@class);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "ClassEdited";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ClassExists(@class.Id))
                     {
+                        TempData["message"] = "NoClassToEdit";
                         return NotFound();
                     }
                     else
                     {
+                        TempData["message"] = "ClassNotEdited";
                         throw;
                     }
                 }
@@ -197,8 +209,8 @@ namespace ProjectRegistration.Controllers
             {
                 @class.Deleted = true;
                 @class.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "ClassDeleted";
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -226,13 +238,11 @@ namespace ProjectRegistration.Controllers
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
                     reader.Read();
-                    var @class = _context.Classes.Where(x => (x.Deleted == false && x.Id == Id)).FirstOrDefault();
-
+                    var @class = _context.Classes.Where(x => x.Deleted == false && x.Id == Id).FirstOrDefault();
                     List<ClassDetail> cd = new List<ClassDetail>();
 
                     while (reader.Read()) //Each row of the file
                     {
-
                         var user = _context.Users.Where(x => (x.UserId == reader.GetValue(1).ToString() && x.Deleted == false)).FirstOrDefault();
                         if (user == null) continue;
                         if (_context.ClassDetails.Where(x => x.ClassId == Id && x.UserId == user.Id).FirstOrDefault() != null) continue;
@@ -251,7 +261,6 @@ namespace ProjectRegistration.Controllers
                         _context.ClassDetails.Add(classDetail);
                     }
                     @class.ClassDetails = cd;
-
                 }
             }
 
@@ -282,6 +291,7 @@ namespace ProjectRegistration.Controllers
             {
                 @classDetails.Deleted = true;
                 @classDetails.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "UserDeleted";
             }
 
             await _context.SaveChangesAsync();
@@ -310,6 +320,7 @@ namespace ProjectRegistration.Controllers
                 classDetail.User = user;
                 classDetail.CreatedDateTime = DateTime.Now;
                 _context.ClassDetails.Add(classDetail);
+                TempData["message"] = "UserAdded";
             }
 
             await _context.SaveChangesAsync();
@@ -354,13 +365,16 @@ namespace ProjectRegistration.Controllers
                 project.CreatedDateTime = DateTime.Now;
                 _context.Add(project);
                 await _context.SaveChangesAsync();
+                TempData["message"] = "ProjectCreated";
                 return RedirectToAction("ViewProjectList", new { id = project.ClassId });
             }
+            ViewData["result"] = "Failed";
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
             ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
             ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
+            TempData["message"] = "ProjectNotCreated";
             return RedirectToAction("CreateProject", new { id = project.ClassId });
         }
 
@@ -418,6 +432,7 @@ namespace ProjectRegistration.Controllers
             System.IO.File.Delete(filepath);
 
             await _context.SaveChangesAsync();
+            TempData["message"] = "ProjectCreated";
             return RedirectToAction("ViewProjectList", new { id = classId });
         }
 
@@ -428,6 +443,7 @@ namespace ProjectRegistration.Controllers
         {
             if (_context.Projects == null)
             {
+                TempData["message"] = "NoProjectToDelete";
                 return Problem("Entity set 'ProjectRegistrationManagementContext.Projects'  is null.");
             }
             var project = await _context.Projects.FindAsync(id);
@@ -435,6 +451,7 @@ namespace ProjectRegistration.Controllers
             {
                 project.Deleted = true;
                 project.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "ProjectDeleted";
             }
 
             await _context.SaveChangesAsync();
@@ -472,6 +489,7 @@ namespace ProjectRegistration.Controllers
         {
             if (id != project.Id)
             {
+                TempData["message"] = "NoProjectToEdit";
                 return NotFound();
             }
 
@@ -481,26 +499,31 @@ namespace ProjectRegistration.Controllers
                 {
                     _context.Update(project);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "ProjectEdited";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!_context.Projects.Any(x => x.Id == project.Id))
                     {
+                        TempData["message"] = "NoProjectToEdit";
                         return NotFound();
                     }
                     else
                     {
+                        TempData["message"] = "ProjectNotEdited";
                         throw;
                     }
                 }
                 return RedirectToAction("ViewProjectList", new { id = project.ClassId });
             }
+            ViewData["result"] = "Failed";
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
             ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
             ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
-            return RedirectToAction("EditProject", new { id = project.Id });
+            TempData["message"] = "ProjectNotEdited";
+            return View(project);
         }
 
         // GET: Projects/Details/5
@@ -533,7 +556,15 @@ namespace ProjectRegistration.Controllers
             ViewData["id"] = id;
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
             ViewData["Project"] = project;
-            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();           
+            ViewData["ProjectId"] = project.Id;
+            //var members = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
+            //if (members != null)
+            //{
+            //    var classDetail1 = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
+            //    ViewData["StudentId1"] = new SelectList(classDetail1, "UserId", "User.Fullname");
+            //    ViewData["StudentId2"] = new SelectList(members, "UserId", "User.Fullname");
+            //}
+            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();        
             ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname");
             ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname");
             return View();
@@ -547,44 +578,62 @@ namespace ProjectRegistration.Controllers
         public async Task<IActionResult> AddMemberToProject([Bind("ProjectId, GroupName")] ProjectMember projectMember, string StudentId1, string StudentId2)
         {
             ModelState.Remove("StudentId2");
+            Project saidProject = new();
             if (ModelState.IsValid)
-            {
-                var projectMember1 = new ProjectMember
+            {                              
+                saidProject = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId);
+                var regStart = saidProject.Class.RegStart;
+                var regEnd = saidProject.Class.RegEnd;
+                if (saidProject != null)
                 {
-                    CreatedDateTime = DateTime.Now
-                };
-                projectMember1.Project = _context.Projects.FirstOrDefault(x => x.Id == projectMember1.ProjectId);
-                projectMember1.ProjectId = projectMember.ProjectId;
-                projectMember1.Student = _context.Users.FirstOrDefault(x => x.Id == projectMember1.StudentId);
-                projectMember1.StudentId = StudentId1;
-                projectMember1.GroupName = projectMember.GroupName;
-                _context.Add(projectMember1);
-                if (StudentId2 != null)
-                {
-                    var projectMember2 = new ProjectMember
+                    if (projectMember != null && regStart != null && regStart <= DateTime.Now)
+                    {
+                        TempData["message"] = "RegNotOpened";
+                        return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                    }
+                    if (projectMember != null && regEnd != null && regEnd >= DateTime.Now)
+                    {
+                        TempData["message"] = "RegClosed";
+                        return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                    }
+                    var projectMember1 = new ProjectMember
                     {
                         CreatedDateTime = DateTime.Now
                     };
-                    projectMember2.Project = _context.Projects.FirstOrDefault(x => x.Id == projectMember2.ProjectId);
-                    projectMember2.ProjectId = projectMember.ProjectId;
-                    projectMember2.Student = _context.Users.FirstOrDefault(x => x.Id == projectMember2.StudentId);
-                    projectMember2.StudentId = StudentId2;
-                    projectMember2.GroupName = projectMember.GroupName;
-                    _context.Add(projectMember2);
+                    projectMember1.Project = _context.Projects.FirstOrDefault(x => x.Id == projectMember1.ProjectId);
+                    projectMember1.ProjectId = projectMember.ProjectId;
+                    projectMember1.Student = _context.Users.FirstOrDefault(x => x.Id == projectMember1.StudentId);
+                    projectMember1.StudentId = StudentId1;
+                    projectMember1.GroupName = projectMember.GroupName;
+                    _context.Add(projectMember1);
+                    if (StudentId2 != null)
+                    {
+                        var projectMember2 = new ProjectMember
+                        {
+                            CreatedDateTime = DateTime.Now
+                        };
+                        projectMember2.Project = _context.Projects.FirstOrDefault(x => x.Id == projectMember2.ProjectId);
+                        projectMember2.ProjectId = projectMember.ProjectId;
+                        projectMember2.Student = _context.Users.FirstOrDefault(x => x.Id == projectMember2.StudentId);
+                        projectMember2.StudentId = StudentId2;
+                        projectMember2.GroupName = projectMember.GroupName;
+                        _context.Add(projectMember2);
+                    }
+                    await _context.SaveChangesAsync();
+                    TempData["message"] = "MemberAddedToProject";
+                    return RedirectToAction("ProjectDetails", new { id = projectMember1.ProjectId });
                 }
-                await _context.SaveChangesAsync();
-                return RedirectToAction("ProjectDetails", new { id = projectMember1.ProjectId });
             }
 
             var project = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId);
             ViewData["Project"] = project;
             var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
 
+            TempData["message"] = "MemberNotAddedToProject";
             ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname", StudentId1);
             ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname", StudentId2);
             return View(projectMember);
         }
-
 
         // POST: Classes/DeleteMemberFromProject/5
         [HttpPost, ActionName("DeleteMemberFromProject")]
@@ -594,6 +643,7 @@ namespace ProjectRegistration.Controllers
         {
             if (_context.ProjectMembers == null)
             {
+                TempData["message"] = "NoMemberToDeleteFromProject";
                 return Problem("Entity set 'IDENTITYUSERContext.ProjectMembers'  is null.");
             }
             var member = await _context.ProjectMembers.FindAsync(id);
@@ -601,6 +651,7 @@ namespace ProjectRegistration.Controllers
             {
                 member.Deleted = true;
                 member.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "MemberDeletedFromProject";
             }
 
             await _context.SaveChangesAsync();

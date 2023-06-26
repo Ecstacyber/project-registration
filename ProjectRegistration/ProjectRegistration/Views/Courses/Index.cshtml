@@ -115,4 +115,31 @@
             deleteForm.submit();
         }
     </script>
+
+    <script>
+        $(function () {
+            var msg = '@TempData["message"]';
+            if (msg == 'CourseCreated') {
+                alert("Thêm môn học thành công");
+            }
+            if (msg == 'CourseNotCreated') {
+                alert("Thêm môn học thất bại");
+            }
+            if (msg == 'CourseEdited') {
+                alert("Sửa môn học thành công");
+            }
+            if (msg == 'CourseNotEdited') {
+                alert("Sửa môn học thất bại");
+            }
+            if (msg == 'NoCourseToEdit') {
+                alert("Sửa môn học thất bại%0D%0AKhông tìm thấy khoa");
+            }
+            if (msg == 'CourseDeleted') {
+                alert("Xóa môn học thành công");
+            }
+            if (msg == 'CourseNotDeleted') {
+                alert("Xóa môn học thất bại%0D%0AKhông tìm thấy khoa");
+            }
+        });
+    </script>
 }
