@@ -30,8 +30,9 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form asp-action="Create">
+                    <form asp-action="Edit">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
                         <div class="col-md-4 center-margin">
                             <div class="form-group row mt-2">
                                 <label asp-for="Dname"></label>

@@ -1,105 +1,215 @@
 ﻿@model IEnumerable<ProjectRegistration.Models.Class>
 
 @{
-    ViewData["Title"] = "lớp";
+    ViewData["Title"] = "Danh sách lớp";
 }
 
-<h1>Danh sách các lớp của trường</h1>
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Danh sách lớp học</h3>
+        </div>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">+ Tạo mới</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClassId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Semester)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cyear)
-            </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.RegStart)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RegEnd)
-            </th>*@
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClassId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Semester)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cyear)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.RegStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegEnd)
-            </td>*@         
-            <td>
-                <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
-                <a class="btn btn-link border-0" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
-                <button type="button" class="btn btn-link border-0" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@item.Id">
-                    Xoá
-                </button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" style="z-index:1060">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Bạn có chắc muốn xoá?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="delete-btn">Xóa</button>
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Lớp</h2>
+
+                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create">
+                            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                            Thêm mới
+                        </a>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                <table id="datatable-class" class="table table-hover " style="width:100%">
+                                    <thead>
+                                        <tr >
+                                            <th class="border-blue border-5" style="text-align: center;">#</th>
+                                            <th class="border-blue border-5">@Html.DisplayNameFor(model => model.Course.CourseName)</th>
+                                            <th class="border-blue border-5">@Html.DisplayNameFor(model => model.ClassId)</th>
+                                            <th class="border-blue border-5">@Html.DisplayNameFor(model => model.Semester)</th>
+                                            <th class="border-blue border-5">@Html.DisplayNameFor(model => model.Cyear)</th>
+                                            <th class="border-blue border-5"></th>
+                                            <th style="display:none"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            foreach (var item in Model)
+                                            {
+                                                <tr style="cursor:pointer">
+                                                    <td class="border-aero" style="font-size:larger; vertical-align: middle; text-align: center; width:5%">STT</td>
+                                                    <td class="border-aero" style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Course.CourseName)</td>
+                                                    <td class="border-aero" style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.ClassId)</td>
+                                                    <td class="border-aero" style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Semester)</td>
+                                                    <td class="border-aero" style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Cyear)</td>
+                                                    <td class="border-aero" style="white-space: nowrap; width:1%">
+                                                        <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
+                                                        @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
+                                                        <button type="button" class="btn btn-danger btn-sm openDeleteModalBtn" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
+                                                            <i class="fa fa-trash-o"></i> Xoá
+                                                        </button>
+                                                    </td>
+                                                    <td style="display:none">@item.Id</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<form method="post" action="" id="delete-form"></form>
+
+
+<!-- Bootstrap -->
+<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+<!-- Datatables -->
+<link href="~/vendors/datatables.net-bs/css/datatables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet" />
+<link href="~/vendors/datatables.net-fixedheader-bs/css/fixedheader.bootstrap.min.css" rel="stylesheet" />
+<link href="~/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<link href="~/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet" />
+
+
+<!-- Modal -->
+<form method="post" id="delete-form"></form>
+<div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Xác nhận xóa?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa lớp này</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" id="delete-btn">Xóa</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+
+    <!-- Datatables -->=
+    <script src="~/vendors/datatables.net/js/jquery.datatables.min.js"></script>
+    <script src="~/vendors/datatables.net-bs/js/datatables.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/datatables.buttons.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/vendors/datatables.net-fixedheader/js/datatables.fixedheader.min.js"></script>
+    <script src="~/vendors/datatables.net-keytable/js/datatables.keytable.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive/js/datatables.responsive.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="~/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+    <script src="~/vendors/jszip/jszip.min.js"></script>
+    <script src="~/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="~/vendors/pdfmake/build/vfs_fonts.js"></script>
+
+    <!-- FastClick -->
+    <script src="~/vendors/fastclick/lib/fastclick.js"></script>
+
     <script>
         let id;
-        var modal = document.getElementById("exampleModal");
+        var modal = document.getElementById("deleteModal");
         const deleteBtn = document.getElementById('delete-btn');
         const deleteForm = document.getElementById('delete-form');
-        modal.addEventListener('show.bs.modal', function (event) {
+
+        $(document).on('show.bs.modal', modal, function (event) {
             const button = event.relatedTarget;
             id = button.getAttribute('data-id');
-        });
+        })
+
         deleteBtn.onclick = () => {
-            deleteForm.action = '@Url.Content("~/Classes/Delete/")' + id;
+            deleteForm.action = 'Classes/Delete/' + id;
             deleteForm.submit();
+
         }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var dtb = $('#datatable-class').DataTable({
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "Không có dữ liệu trong bảng",
+                    "info": "Hiển thị _START_ đến _END_ trong tổng số _TOTAL_ kết quả",
+                    "infoEmpty": "Hiển thị 0 tới 0 trong 0 kết quả",
+                    "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Hiển thị _MENU_ kết quả",
+                    "loadingRecords": "Đang tải...",
+                    "processing": "",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy kết quả nào",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    },
+                    "aria": {
+                        "sortAscending": ": kích hoạt sắp xếp cột tăng dần",
+                        "sortDescending": ": kích hoạt sắp xếp cột giảm dần"
+                    }
+                },
+                "columnDefs": [
+                    {
+                        searchable: false,
+                        orderable: false,
+                        targets: 0,
+                    },
+                ],
+                "order": [[1, 'asc']],
+            });
+
+            dtb.on('order.dt search.dt', function () {
+                let i = 1;
+
+                dtb.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+
+
+
+            dtb.on('click', 'tr', function (e) {
+                if (!hasClass(e.target, 'openDeleteModalBtn')) {
+                    var data = dtb.row(this).data();
+                    window.location = "Classes/Details/" + data[6];
+                }
+            });
+
+        });
+    </script>
+    <script>
     </script>
 }

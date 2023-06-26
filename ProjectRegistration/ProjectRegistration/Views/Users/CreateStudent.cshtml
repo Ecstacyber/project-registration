@@ -1,0 +1,153 @@
+﻿@model ProjectRegistration.Models.User
+
+@{
+    ViewData["Title"] = "Tạo tài khoản";
+}
+
+<link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
+<link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/vendors/normalize-css/normalize.css" rel="stylesheet" />
+<link href="~/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<a class="pt-4" asp-action="LecturerList"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Tạo sinh viên mới</h3>
+        </div>
+
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Sinh viên</h2>
+
+                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <br />
+                    <form asp-action="Create" enctype="multipart/form-data" data-parsley-validate class="form-horizontal form-label-left">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="item form-group mb-4">
+                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">
+                                Mã sinh viên <span class="required">*</span>
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <input asp-for="UserId" minlength="6" type="number" id="first-name" required="required" class="form-control ">
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="Fullname" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <input asp-for="Fullname" type="text" required="required" class="form-control">
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="Gender" class="col-form-label col-md-3 col-sm-3 label-align"></label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <div id="gender" class="btn-group">
+                                    <label class="btn btn-secondary" id="maleBtn">
+                                        <input asp-for="Gender" type="radio" name="gender" value="0" class="join-btn"> &nbsp; Nam &nbsp;
+                                    </label>
+                                    <label class="btn btn-secondary" id="femaleBtn">
+                                        <input asp-for="Gender" type="radio" name="gender" value="1" class="join-btn"> &nbsp; Nữ &nbsp;
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="DateOfBirth" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <input asp-for="DateOfBirth" id="birthday" value="2000-01-01" class="date-picker form-control" placeholder="dd-mm-yyyy" type="text" required="required" onfocus="this.type='date'" onmouseover="this.type='date'" onclick="this.type='date'" onblur="this.type='text'" onmouseout="timeFunctionLong(this)">
+                                <script>
+                                    function timeFunctionLong(input) {
+                                        setTimeout(function () {
+                                            input.type = 'text';
+                                        }, 60000);
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="ImagePath" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <input asp-for="ImagePath" type="file" id="img" accept=".jpg,.gif,.png" style="display:none" value="empty">
+                                <label for="img" id="img_label" class="form-control"><i class="fa fa-image"> &nbsp; Chọn ảnh đại diện</i> </label>
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="Department" class="col-form-label col-md-3 col-sm-3 label-align"></label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select asp-for="DepartmentId" asp-items="ViewBag.Department" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                        <input asp-for="UserTypeId" value="10" type="hidden">
+
+                        <div class="ln_solid"></div>
+                        <div class="item form-group">
+                            <div class="offset-md-4 center-margin">
+                                <a class="btn btn-danger" type="button" asp-action="StudentList">Quay lại</a>
+                                <button class="btn btn-primary" type="reset">Nhập lại</button>
+                                <button type="submit" class="btn btn-success">Tạo mới</button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/vendors/fastclick/lib/fastclick.js"></script>
+<script src="~/vendors/moment/min/moment.min.js"></script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $("#img").change(function () {
+            $("#img_label").html($(this).val().split("\\").splice(-1, 1)[0] || "Chọn ảnh đại diện");
+        });
+    </script>
+
+    <script>
+        let maleBtn = document.getElementById('maleBtn');
+        let femaleBtn = document.getElementById("femaleBtn");
+
+        maleBtn.onclick = () => {
+            addClass(maleBtn, "btn-primary");
+            removeClass(maleBtn, "btn-secondary");
+            if (hasClass(femaleBtn, "btn-primary")) {
+                addClass(femaleBtn, "btn-secondary");
+                removeClass(femaleBtn, "btn-primary")
+            }
+        }
+
+        femaleBtn.onclick = () => {
+            addClass(femaleBtn, "btn-primary");
+            removeClass(femaleBtn, "btn-secondary");
+            if (hasClass(maleBtn, "btn-primary")) {
+                addClass(maleBtn, "btn-secondary");
+                removeClass(maleBtn, "btn-primary")
+            }
+        }
+    </script>
+}

@@ -74,7 +74,7 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
                 await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    $"Xin hãy <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ấn vào đây để thay đổi mật khẩu mới</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

@@ -1,4 +1,4 @@
-﻿@model ProjectRegistration.Models.Class
+﻿@*@model ProjectRegistration.Models.Class
 
 @{
     ViewData["Title"] = "Tạo lớp học mới";
@@ -54,4 +54,148 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+*@
+
+@model ProjectRegistration.Models.Class
+
+@{
+    ViewData["Title"] = "Tạo lớp học mới";
+}
+
+<link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
+<link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/vendors/normalize-css/normalize.css" rel="stylesheet" />
+<link href="~/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<link href="~/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+
+<a class="pt-4" asp-action="Index"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Tạo lớp học mới</h3>
+        </div>
+
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Lớp học</h2>
+
+                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <br />
+                    <form asp-action="Create" enctype="multipart/form-data" data-parsley-validate class="form-horizontal form-label-left">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="CourseId" class="col-form-label col-md-3 col-sm-3 label-align"></label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select id="courseId" asp-for="CourseId" asp-items="ViewBag.Course" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="ClassId" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <input id="classId" asp-for="ClassId" type="text" required="required" class="form-control">
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="Semester" class="col-form-label col-md-3 col-sm-3 label-align"></label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select asp-for="Semester" class="form-control">
+                                    <option> 1 </option>
+                                    <option> 2 </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="Cyear" class="col-form-label col-md-3 col-sm-3 label-align"></label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select asp-for="Cyear" data-size="5" asp-items="ViewBag.Year" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="RegOpen" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <div id="RegOpen" class="btn-group">
+                                    <label class="btn btn-danger" id="closeBtn">
+                                        <input asp-for="RegOpen" type="radio" name="RegOpen" value="Đóng" class="join-btn" checked="checked"> &nbsp; Đóng đăng ký &nbsp;
+                                    </label>
+                                    <label class="btn btn-secondary" id="openBtn">
+                                        <input asp-for="RegOpen" type="radio" name="RegOpen" value="Mở" class="join-btn"> &nbsp; Mở đăng ký &nbsp;
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="RegStart" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <div class="input-prepend input-group">
+                                    <input type="text" name="RegTime" id="reservation-time" class="form-control" value="01/01/2023 - 01/1/2024" />
+                                    <span class="add-on input-group-addon" style="align-items:center"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ln_solid"></div>
+                        <div class="item form-group">
+                            <div class="offset-md-4 center-margin">
+                                <a class="btn btn-danger" type="button" asp-action="Index">Quay lại</a>
+                                <button class="btn btn-primary" type="reset">Nhập lại</button>
+                                <button type="submit" class="btn btn-success">Tạo mới</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/vendors/fastclick/lib/fastclick.js"></script>
+    <script src="~/vendors/moment/min/moment.min.js"></script>
+    <script src="~/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <script>
+        var openBtn = document.getElementById('openBtn');
+        var closeBtn = document.getElementById("closeBtn");
+
+        openBtn.onclick = () => {
+            addClass(openBtn, "btn-success");
+            removeClass(openBtn, "btn-secondary");
+            if (hasClass(closeBtn, "btn-danger")) {
+                addClass(closeBtn, "btn-secondary");
+                removeClass(closeBtn, "btn-danger")
+            }
+        }
+
+        closeBtn.onclick = () => {
+            addClass(closeBtn, "btn-danger");
+            removeClass(closeBtn, "btn-secondary");
+            if (hasClass(openBtn, "btn-success")) {
+                addClass(openBtn, "btn-secondary");
+                removeClass(openBtn, "btn-success")
+            }
+        }
+    </script>
 }

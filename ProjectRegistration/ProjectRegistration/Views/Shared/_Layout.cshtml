@@ -1,12 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjectRegistration</title>
-    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
     <link href="~/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/bootswatchTheme.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProjectRegistration.styles.css" asp-append-version="true" />
     <link href="~/vendors/fontawesome/css/font-awesome.min.css" rel="stylesheet" />
@@ -15,54 +17,14 @@
     <link href="~/css/custom.min.css" rel="stylesheet" />
 </head>
 <body class="nav-md mb-0">
-    @*<header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container-fluid">
-                <a class="navbar-brand" onclick="changeactive('Home')" href="../../Home/Index">Quản lý đăng ký đồ án</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-betweene" id="navbarColor01">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item" asp-area="" asp-controller="Home" asp-action="Index">
-                            <a class="nav-link" hover="changeactive('Home')" onclick="changeactive('Home')" asp-controller="Home" asp-action="Index">
-                                Trang chủ
-                                <span class="visually-hidden">(current)</span>
-                            </a>
-                        </li>
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            if (User.IsInRole("Manager"))
-                            {
-                                <li class="nav-item active">
-                                    <a class="nav-link" hover="changeactive('Departments')" onclick="changeactive('Departments')" asp-area="" asp-controller="Departments" asp-action="Index">Khoa</a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a class="nav-link" onclick="changeactive('Users')" asp-area="" asp-controller="Users" asp-action="Index">Tài khoản</a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a class="nav-link" onclick="changeactive('Courses')" asp-area="" asp-controller="Courses" asp-action="Index">Môn học</a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a class="nav-link" onclick="changeactive('Classes')" asp-area="" asp-controller="Classes" asp-action="Index">Lớp học</a>
-                                </li>
-                            }
-                        }
-                    </ul>
+    @{
+        var user = await UserManager.GetUserAsync(User);
+        ViewData["Avatar"] = "../../files/" + user.ImagePath;
 
-
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>*@
-
-
-
-
+    }
     <div class="container body">
         <div class="main_container">
-            <div class="col-md-3 left_col">
+            <div class="col-md-3 left_col" id="left_nav">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
                         <a href="" class="site_title"><i class="fa fa-graduation-cap"></i> <span>PJ Registration</span></a>
@@ -73,11 +35,11 @@
                     <!-- menu profile quick info -->
                     <div class="profile clearfix">
                         <div class="profile_pic">
-                            <img src="../../files/default-avatar.jpg" alt="avt" class="img-circle profile_img">
+                            <img src="@ViewData["Avatar"]" alt="avt" class="img-circle profile_img">
                         </div>
                         <div class="profile_info">
                             <span>Xin chào,</span>
-                            <h2>John Doe</h2>
+                            <h2>@User.Identity?.Name</h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -96,17 +58,17 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a asp-area="" asp-controller="Departments" asp-action="Index"><i class="fa fa-group"></i> Khoa</a>                                   
+                                    <a asp-area="" asp-controller="Departments" asp-action="Index"><i class="fa fa-group"></i> Khoa</a>
                                 </li>
                                 <li>
                                     <a><i class="fa fa-user"></i> Tài khoản <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a asp-controller="Users" asp-action="Index">Giảng viên</a></li>
+                                        <li><a asp-controller="Users" asp-action="LecturerList">Giảng viên</a></li>
                                         <li><a asp-controller="Users" asp-action="StudentList">Sinh viên</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a asp-controller ="Courses" asp-action="Index"><i class="fa fa-book"></i> Môn học</a>
+                                    <a asp-controller="Courses" asp-action="Index"><i class="fa fa-book"></i> Môn học</a>
                                 </li>
                                 <li>
                                     <a><i class="fa fa-pencil-square"></i> Lớp học <span class="fa fa-chevron-down"></span></a>
@@ -122,18 +84,19 @@
 
                     </div>
                     <!-- /sidebar menu -->
+
                     <!-- /menu footer buttons -->
                     <div class="sidebar-footer hidden-small">
-                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                        <a data-toggle="tooltip" data-placement="top" title="Cài đặt">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        <a data-toggle="tooltip" data-placement="top" onclick="changeScreen(document.body)" title="Toàn màn hình">
+                            <span class="glyphicon glyphicon-fullscreen" id="fullscreenBtn" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Lock">
-                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        <a data-toggle="tooltip" data-placement="top" title="Khóa" onclick="lockNavbar()">
+                            <span class="glyphicon glyphicon-eye-close" id="lockBtn" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                        <a data-toggle="tooltip" data-placement="top" title="Đăng xuất" style="color:#0077cc" onclick="LogOut()">
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -143,7 +106,7 @@
 
             <!-- top navigation -->
             <div class="top_nav">
-                <div class="nav_menu">
+                <div class="nav_menu ">
                     <div class="nav toggle">
                         <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                     </div>
@@ -151,11 +114,11 @@
                         <ul class=" navbar-right">
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
                                 <a href="javascript:;" class="user-profile dropdown-toggle pb-2" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="../../files/default-avatar.jpg" alt="">John Doe
+                                    <img src="@ViewData["Avatar"]" alt="">@User.Identity?.Name
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="javascript:;"> Hồ sơ</a>
-                                    <a class="dropdown-item" href=" "><i class="fa fa-sign-out pull-right"></i> Đăng xuất</a>
+                                    <a class="dropdown-item" style="color:#0077cc" onclick="LogOut()"><i class="fa fa-sign-out pull-right"></i> Đăng xuất</a>
                                 </div>
                             </li>
                         </ul>
@@ -163,15 +126,13 @@
                 </div>
             </div>
             <!-- /top navigation -->
-
             <!-- page content -->
             <main role="main" class="right_col">
                 @RenderBody()
             </main>
             <!-- /page content -->
-
             <!-- footer content -->
-            <footer>
+            <footer class="footer_fixed">
                 <div class="pull-right">
                     2023 - Project Registration - Made by Nguyen Duy Hao and Chau Vinh Sinh
                 </div>
@@ -181,6 +142,10 @@
 
         </div>
     </div>
+
+
+    <form id="logoutForm" method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+    </form>
 
     @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
     @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
@@ -195,63 +160,94 @@
 </body>
 </html>
 <section>
-    @*<script>
-        function changeactive(pname) {
-
-            //console.log(pname);
-
-            sessionStorage.setItem("activepage", pname);
+    <script>
+        const form = document.getElementById('logoutForm');
+        function LogOut() {
+            form.submit();
+        }
+    </script>
+    <script>
+        function hasClass(elem, className) {
+            return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
         }
 
-        $(function () {
-            var pname = sessionStorage.getItem("activepage");
-
-            if (pname == "Home" || pname == "" || pname == null) {
-                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("active-item");
-                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
-            } else if (pname == "Departments") {
-                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("active-item");
-                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
-            } else if (pname == "Users") {
-                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("active-item");
-                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
-            } else if (pname == "Courses") {
-                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("active-item");
-                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("normal-item");
-            } else if (pname == "Classes") {
-                $("ul.navbar-nav li.nav-item:nth-child(1) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(2) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(3) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(4) a").addClass("normal-item");
-                $("ul.navbar-nav li.nav-item:nth-child(5) a").addClass("active-item");
+        function addClass(elem, className) {
+            if (!hasClass(elem, className)) {
+                elem.className += ' ' + className;
             }
+        }
 
-        })
-    </script>*@
+
+        function removeClass(elem, className) {
+            var newClass = ' ' + elem.className.replace(/[\t\r\n]/g, ' ') + ' ';
+            if (hasClass(elem, className)) {
+                while (newClass.indexOf(' ' + className + ' ') >= 0) {
+                    newClass = newClass.replace(' ' + className + ' ', ' ');
+                }
+                elem.className = newClass.replace(/^\s+|\s+$/g, '');
+            }
+        }
+    </script>
+    <script>
+        var fullScreen = false;
+
+        function changeScreen(elem) {
+            if (fullScreen) {
+                closeFullscreen();
+                fullScreen = false;
+                document.getElementById("fullscreenBtn").style.color = "";
+            }
+            else {
+                openFullscreen(elem);
+                fullScreen = true;
+                document.getElementById("fullscreenBtn").style.color = "#0077cc";
+            }
+        }
+
+        function openFullscreen(elem) {
+
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        function closeFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+    </script>
+    <script defer>
+        if (localStorage.getItem('lockNav') == 'true') {
+            addClass(left_nav, "menu_fixed");
+            document.getElementById("lockBtn").style.color = "#0077cc";
+        }
+        else {
+            removeClass(left_nav, "menu_fixed");
+            document.getElementById("lockBtn").style.color = "";
+        }
+        function lockNavbar() {
+            let left_nav = document.getElementById("left_nav");
+
+            if (localStorage.getItem('lockNav') == 'false') {
+                addClass(left_nav, "menu_fixed");
+                document.getElementById("lockBtn").style.color = "#0077cc";
+                localStorage.setItem('lockNav', 'true');
+            }
+            else {
+                removeClass(left_nav, "menu_fixed");
+                document.getElementById("lockBtn").style.color = "";
+                localStorage.setItem('lockNav', 'false');
+            }
+        }
+    </script>
 </section>
-@*<style>
-    .active-item {
-        color: white !important;
-        font-size: large;
-    }
-
-    .normal-item {
-        /*color: silver !important;*/
-    }
-
-    .nav-item:hover {
-        font-size: large;
-    }
-</style>*@

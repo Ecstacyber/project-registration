@@ -148,6 +148,7 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
             if (_userManager.FindByNameAsync("admin").Result == null)
             {
                 var user = CreateUser();
+                user.ImagePath = "default-avatar.jpg";
                 await _userStore.SetUserNameAsync(user, "admin", CancellationToken.None);
                 await _userManager.CreateAsync(user, "admin");
                 await _userManager.AddToRoleAsync(user, "Manager");

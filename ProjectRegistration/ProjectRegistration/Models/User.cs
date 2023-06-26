@@ -34,6 +34,9 @@ public partial class User : IdentityUser
     [Display(Name = "Loại tài khoản")]
     public int? UserTypeId { get; set; }
 
+    [Display(Name = "Giới tính")]
+    public int? Gender { get; set; }
+
     public DateTime? CreatedDateTime { get; set; }
 
     public bool? Deleted { get; set; } = false;

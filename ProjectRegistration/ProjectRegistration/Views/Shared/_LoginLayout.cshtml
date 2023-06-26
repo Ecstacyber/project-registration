@@ -13,9 +13,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#2A3F54">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Quản lý đăng ký đồ án</a>
+                <a class="navbar-brand" asp-area="Identity" asp-page="/Account/Login">Quản lý đăng ký đồ án</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -30,6 +30,13 @@
         </main>
     </div>
 
+    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 navbar fixed-bottom" style="background-color:#2A3F54">
+        <!-- Copyright -->
+        <div class="text-white mb-3 mb-md-0">
+            2023 - Project Registration - Made by Nguyen Duy Hao and Chau Vinh Sinh
+        </div>
+        <!-- Copyright -->
+    </div>
     @*    <footer class="border-top footer text-muted">
     <div class="container">
     &copy; 2023 - ProjectRegistration - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

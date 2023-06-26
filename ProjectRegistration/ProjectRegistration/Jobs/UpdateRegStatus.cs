@@ -21,7 +21,7 @@ namespace ProjectRegistration.Jobs
             {
                 foreach (Class cls in startClasses)
                 {
-                    cls.RegOpen = "Mở đăng ký";
+                    cls.RegOpen = "Mở";
                 }
                 _context.SaveChanges();
             }
@@ -30,7 +30,7 @@ namespace ProjectRegistration.Jobs
             {
                 foreach (Class cls in endClasses)
                 {
-                    cls.RegOpen = "Đóng đăng ký";
+                    cls.RegOpen = "Đóng";
                 }
                 _context.SaveChanges();
             }

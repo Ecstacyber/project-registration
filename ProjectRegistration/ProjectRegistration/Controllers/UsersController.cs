@@ -92,10 +92,23 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public IActionResult Create()
         {
-            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Dname");
+            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Info");
             return View();
         }
 
+        [Authorize(Roles = "Manager")]
+        public IActionResult CreateLecturer()
+        {
+            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Info");
+            return View();
+        }
+
+        [Authorize(Roles = "Manager")]
+        public IActionResult CreateStudent()
+        {
+            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Info");
+            return View();
+        }
         // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -103,7 +116,7 @@ namespace ProjectRegistration.Controllers
         [ValidateAntiForgeryToken]
 
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Create([Bind("UserId,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
+        public async Task<IActionResult> Create([Bind("UserId,Fullname,Gender,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
             ModelState.Remove("ImagePath");
             if (ModelState.IsValid)
@@ -123,6 +136,7 @@ namespace ProjectRegistration.Controllers
 
                     newUser.Fullname = user.Fullname;
                     newUser.PhoneNumber = user.PhoneNumber;
+                    newUser.Gender = user.Gender;
                     newUser.DateOfBirth = user.DateOfBirth;
                     newUser.DepartmentId = user.DepartmentId;
                     newUser.UserTypeId = user.UserTypeId;
@@ -152,10 +166,22 @@ namespace ProjectRegistration.Controllers
 
                         newUser.ImagePath = filename;
                     }
+                    else
+                    {
+                        newUser.ImagePath = "default-avatar.jpg";
+                    }
 
                     _context.Update(newUser);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+
+                    if (newUser.UserTypeId == 10)
+                    {
+                        return RedirectToAction(nameof(LecturerList));
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(StudentList));
+                    }
                 }
                 foreach (var error in result.Errors)
                 {
@@ -163,13 +189,45 @@ namespace ProjectRegistration.Controllers
                 }
             }
             ViewData["Department"] = new SelectList(_context.Departments.Where(x => x.Deleted == false), "Dname", "Dname", user.DepartmentId);
-            return View(user);
+            return View(nameof(CreateLecturer), user);
         }
 
         // GET: Users/Edit/5
 
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(string? id)
+        {
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Dname");
+            return View(user);
+        }
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> EditLecturer(string? id)
+        {
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Dname");
+            return View(user);
+        }
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> EditStudent(string? id)
         {
             if (id == null || _context.Users == null)
             {
@@ -191,13 +249,8 @@ namespace ProjectRegistration.Controllers
         [HttpPost]
         [Authorize(Roles = "Manager")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
+        public async Task<IActionResult> Edit([Bind("Id,UserId,Gender,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
-            if (id != user.Id)
-            {
-                return NotFound();
-            }
-
             ModelState.Remove("ImagePath");
             if (ModelState.IsValid)
             {
@@ -207,6 +260,7 @@ namespace ProjectRegistration.Controllers
 
                     updatedUser.UserId = user.UserId;
                     updatedUser.Fullname = user.Fullname;
+                    updatedUser.Gender = user.Gender;
                     updatedUser.DateOfBirth = user.DateOfBirth;
                     updatedUser.DepartmentId = user.DepartmentId;
                     updatedUser.UserTypeId = user.UserTypeId;
@@ -254,7 +308,14 @@ namespace ProjectRegistration.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                if (user.UserTypeId == 10)
+                {
+                    return RedirectToAction(nameof(LecturerList));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(StudentList));
+                }
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", user.DepartmentId);
             return View(user);
@@ -276,10 +337,21 @@ namespace ProjectRegistration.Controllers
             {
                 user.Deleted = true;
                 user.DeletedDateTime = DateTime.Now;
+                await _context.SaveChangesAsync();
+                if (user.UserTypeId == 10)
+                {
+                    return RedirectToAction(nameof(LecturerList));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(StudentList));
+                }
+            }
+            else
+            {
+                return RedirectToAction("Home", "ERROR_500", new { id = "" });
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(string id)

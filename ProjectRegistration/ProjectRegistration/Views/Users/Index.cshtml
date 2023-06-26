@@ -57,7 +57,7 @@
                     <td>
                         <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
                         @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
-                        <button class="btn btn-link border-0" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.Id">
+                        <button class="btn btn-link border-0" type="button" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.Id">
                             Xoá
                         </button>
                     </td>
@@ -128,6 +128,7 @@
     </tbody>
 </table>
 
+<form method="post" id="delete-form"></form>
 <!-- Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" style="z-index:1060">
     <div class="modal-dialog">
@@ -148,7 +149,6 @@
 </div>
 
 
-<form method="post" id="delete-form"></form>
 <form method="post" enctype="multipart/form-data" name="add-file-form" id="add-file-form" asp-asp-controller="Users" asp-action="AddUserFromFileExcel">
     <!-- Modal -->
     <div class="modal fade" id="addFromExcelModal" tabindex="-1" style="z-index:1060">

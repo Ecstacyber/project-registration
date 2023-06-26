@@ -62,7 +62,15 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public IActionResult Create()
         {
-            ViewData["Course"] = new SelectList(_context.Courses, "Id", "CourseName");
+            int currentYear = DateTime.Now.Year;
+            var yearList = new List<string>();
+            for (int i = 2000; i <= currentYear; i++)
+            {
+                yearList.Add(i.ToString() + " - " + (i + 1).ToString());
+            }
+            yearList.Reverse();
+            ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName");
+            ViewData["Year"] = new SelectList(yearList);
             return View();
         }
 
@@ -72,17 +80,18 @@ namespace ProjectRegistration.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Create([Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart,RegEnd,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
+        public async Task<IActionResult> Create([Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart")] Class @class, string RegTime)
         {
             if (ModelState.IsValid)
             {
+                @class.RegStart = DateTime.Parse(RegTime.Split("-")[0]);
+                @class.RegEnd = DateTime.Parse(RegTime.Split('-')[1]);
                 @class.CreatedDateTime = DateTime.Now;
-                @class.RegOpen = "Đóng đăng ký";
                 _context.Add(@class);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Course"] = new SelectList(_context.Courses, "CourseName", "CourseName", @class.CourseId);
+            ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName", @class.CourseId);
             return View(@class);
         }
 
@@ -95,12 +104,23 @@ namespace ProjectRegistration.Controllers
                 return NotFound();
             }
 
-            var @class = await _context.Classes.Include(x=>x.Course).Where(x=> x.Id == id).FirstOrDefaultAsync();
+            var @class = await _context.Classes.Include(x => x.Course).Where(x=> x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             if (@class == null)
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @class.CourseId);
+
+            int currentYear = DateTime.Now.Year;
+            var yearList = new List<string>();
+            for (int i = 2000; i <= currentYear; i++)
+            {
+                yearList.Add(i.ToString() + " - " + (i + 1).ToString());
+            }
+            yearList.Reverse();
+            ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName", @class.CourseId);
+            ViewData["Year"] = new SelectList(yearList);
+
+            ViewData["RegTime"] = @class.RegStart.Value + " - " + @class.RegEnd.Value;
             return View(@class);
         }
 
@@ -110,7 +130,7 @@ namespace ProjectRegistration.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart,RegEnd,CreatedDateTime,Deleted,DeletedDateTime")] Class @class)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart")] Class @class, string RegTime)
         {
             if (id != @class.Id)
             {
@@ -121,7 +141,8 @@ namespace ProjectRegistration.Controllers
             {
                 try
                 {
-                    Debug.WriteLine(@class.RegOpen + "\n" + @class.RegStart.ToString() + "\n" + @class.RegEnd.ToString());
+                    @class.RegStart = DateTime.Parse(RegTime.Split("-")[0]);
+                    @class.RegEnd = DateTime.Parse(RegTime.Split('-')[1]); 
                     _context.Update(@class);
                     await _context.SaveChangesAsync();
                 }

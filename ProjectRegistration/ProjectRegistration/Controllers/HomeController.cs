@@ -46,6 +46,10 @@ namespace ProjectRegistration.Controllers
         {
             return View();
         }
+        public IActionResult ERROR_500()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

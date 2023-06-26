@@ -35,16 +35,16 @@
                 </div>
                 <div class="x_content">
 
-                    <table class="table table-hover">
+                    <table class="table table-hover table-bordered">
                         <thead style="font-size:large">
                             <tr>
-                                <th>#</th>
+                                <th style="text-align: center;">#</th>
                                 <th>@Html.DisplayNameFor(model => model.Dname)</th>
                                 <th>@Html.DisplayNameFor(model => model.Info)</th>
                                 <th class="last"></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="font-size:medium">
                             @{
                                 var count = 0;
                                 foreach (var item in Model)
@@ -53,16 +53,16 @@
                                         @{
                                             count++;
                                         }
-                                        <th style="font-size:larger; vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => count)</th>
-                                        <th style="font-size:larger; vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Dname)</th>
-                                        <th style="font-size:larger; vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Info)</th>
-                                        <th style="font-size:larger; vertical-align: middle;" scope="rowgroup" class="w-25">
+                                        <td style="text-align: center; vertical-align: middle; width:5%" scope="row">@Html.DisplayFor(modelItem => count) </td>
+                                        <td style="vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Dname)</td>
+                                        <td style="vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Info)</td>
+                                        <td style="vertical-align: middle;  white-space: nowrap; width:1%" scope="rowgroup">
                                             <a class="btn btn-primary btn-xs" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
                                             @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
-                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteModal" data-id="@item.Id">
+                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
                                                 <i class="fa fa-trash-o"></i> Xoá
                                             </button>
-                                        </th>
+                                        </td>
                                     </tr>
                                 }
                             }
@@ -76,42 +76,42 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" style="z-index:1060">
+<form method="post" action="" id="delete-form"></form>
+<div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteModalLabel">Xác nhận xóa</h1>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                <h4>Xác nhận xóa?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
             </div>
             <div class="modal-body">
-                Bạn có chắc muốn xoá?
+                <h5>Bạn có chắc chắn muốn xóa khoa này</h5>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                 <button type="button" class="btn btn-danger" id="delete-btn">Xóa</button>
             </div>
+
         </div>
     </div>
 </div>
 
-
-
-
-<form method="post" action="" id="delete-form"></form>
 @section Scripts {
     <script>
         let id;
         var modal = document.getElementById("deleteModal");
         const deleteBtn = document.getElementById('delete-btn');
         const deleteForm = document.getElementById('delete-form');
-        modal.addEventListener('show.bs.modal', function (event) {
-            // Button that triggered the modal
+
+        $(document).on('show.bs.modal', modal, function (event) {
             const button = event.relatedTarget;
             id = button.getAttribute('data-id');
+        })
 
-        });
         deleteBtn.onclick = () => {
-            deleteForm.action = 'Delete/' + id;
+            deleteForm.action = 'Departments/Delete/' + id;
             deleteForm.submit();
         }
     </script>
