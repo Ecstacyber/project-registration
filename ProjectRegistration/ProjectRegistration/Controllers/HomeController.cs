@@ -38,37 +38,44 @@ namespace ProjectRegistration.Controllers
                     };
                     _context.Add(department);
                 }
-                var courseIds = new string[] { "SE121", "SE122", "SE123" };
-                var courseNames = new string[] { "Đồ án 1", "Đồ án 2", "Đồ án 3" };
-                for (int i = 0; i < courseIds.Length; i++)
-                {
-                    var course = new Course
-                    {
-                        CourseId = courseIds[i],
-                        CourseName = courseNames[i],
-                        CreatedDateTime = DateTime.Now,
-                        Deleted = false
-                    };
-                    _context.Add(course);
-                }
                 _context.SaveChanges();
             }
-            if (_context.Departments.Count() > 0 && _context.Courses.Count() == 0)
+
+            if (_context.Courses.Where(x => x.CourseId == "SE121").FirstOrDefault() == null)
             {
-                var courseIds = new string[] { "SE121", "SE122", "SE123" };
-                var courseNames = new string[] { "Đồ án 1", "Đồ án 2", "Đồ án 3" };
-                for (int i = 0; i < courseIds.Length; i++)
+                var course = new Course
                 {
-                    var course = new Course
-                    {
-                        CourseId = courseIds[i],
-                        CourseName = courseNames[i],
-                        CreatedDateTime = DateTime.Now,
-                        Deleted = false
-                    };
-                    _context.Add(course);
-                }
+                    CourseId = "SE121",
+                    CourseName = "Đồ án 1",
+                    CreatedDateTime = DateTime.Now
+                };
+                _context.Add(course);
                 _context.SaveChanges();
+
+            }
+            if (_context.Courses.Where(x => x.CourseId == "SE122").FirstOrDefault() == null)
+            {
+                var course = new Course
+                {
+                    CourseId = "SE122",
+                    CourseName = "Đồ án 2",
+                    CreatedDateTime = DateTime.Now
+                };
+                _context.Add(course);
+                _context.SaveChanges();
+
+            }
+            if (_context.Courses.Where(x => x.CourseId == "SE123").FirstOrDefault() == null)
+            {
+                var course = new Course
+                {
+                    CourseId = "SE123",
+                    CourseName = "Đồ án 3",
+                    CreatedDateTime = DateTime.Now
+                };
+                _context.Add(course);
+                _context.SaveChanges();
+
             }
             return View();
 

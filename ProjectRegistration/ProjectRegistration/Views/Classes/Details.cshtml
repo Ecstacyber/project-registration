@@ -350,33 +350,51 @@
             </div>
         </div>
         <div class="col-md-4 col-sm-4">
+
             <div class="col-md-12 col-sm-12">
                 <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Lớp</h2>
 
-                    <h2>Danh sách đồ án</h2>
-                    <table id="datatable-project" class="table table-hover" style="width:100%">
-                        <thead>
-                            <tr hidden>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                                int i = 0;
-                                foreach (var item in Model.ProjectClasses)
-                                {
-                                    i++;
-                                    <tr>
-                                        <td style="font-size:larger; vertical-align: middle; text-align: center">STT</td>
-                                        <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Pname)</td>
-                                    </tr>
-                                    if (i == 5) break;
-                                }
+                        <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                            <li>
+                                <a asp-action="ViewProjectList" asp-route-id="@Model.Id">Xem danh sách đồ án</a>
+                            </li>
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="row d-flex justify-content-center">
+                            @if (Model.RegOpen == "Đóng")
+                            {
+                                <p class="font-weight-bolder text-danger"> Đã đóng đăng ký đồ án</p>
                             }
-                        </tbody>
-                    </table>
-                    <a class="btn-link alignright" asp-action="ViewProjectList" asp-route-id="@Model.Id">Xem thêm</a>
+                            else
+                            {
+                                <div id="countdown">
+                                    <div class="cd-box">
+                                        <p class="numbers days">00</p><br>
+                                        <p class="strings timeRefDays">Ngày</p>
+                                    </div>
+                                    <div class="cd-box">
+                                        <p class="numbers hours">00</p><br>
+                                        <p class="strings timeRefHours">Giờ</p>
+                                    </div>
+                                    <div class="cd-box">
+                                        <p class="numbers minutes">00</p><br>
+                                        <p class="strings timeRefMinutes">Phút</p>
+                                    </div>
+                                    <div class="cd-box">
+                                        <p class="numbers seconds">00</p><br>
+                                        <p class="strings timeRefSeconds">Giây</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-12 col-sm-12">
@@ -473,7 +491,7 @@
 
                             <div class="clearfix mt-5"></div>
                             <h2>Kết quả tìm kiếm</h2>
-                            
+
                             <br />
                             <table id="datatable-findclassmate" class="table table-striped jambo_table table-hover table-bordered" style="width:100%">
                                 <thead>
@@ -738,6 +756,84 @@
             }).draw();
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            //
+            (function (e) {
+                e.fn.countdown = function (t, n) {
+                    function i() {
+                        eventDate = Date.parse(r.date) / 1e3;
+                        currentDate = Math.floor(e.now() / 1e3);
+                        //
+                        if (eventDate <= currentDate) {
+                            n.call(this);
+                            clearInterval(interval)
+                        }
+                        //
+                        seconds = eventDate - currentDate;
+                        days = Math.floor(seconds / 86400);
+                        seconds -= days * 60 * 60 * 24;
+                        hours = Math.floor(seconds / 3600);
+                        seconds -= hours * 60 * 60;
+                        minutes = Math.floor(seconds / 60);
+                        seconds -= minutes * 60;
+                        //
+                        days == 1 ? thisEl.find(".timeRefDays").text("Days") : thisEl.find(".timeRefDays").text("Days");
+                        hours == 1 ? thisEl.find(".timeRefHours").text("Hours") : thisEl.find(".timeRefHours").text("Hours");
+                        minutes == 1 ? thisEl.find(".timeRefMinutes").text("Minutes") : thisEl.find(".timeRefMinutes").text("Minutes");
+                        seconds == 1 ? thisEl.find(".timeRefSeconds").text("Seconds") : thisEl.find(".timeRefSeconds").text("Seconds");
+                        //
+                        if (r["format"] == "on") {
+                            days = String(days).length >= 2 ? days : "0" + days;
+                            hours = String(hours).length >= 2 ? hours : "0" + hours;
+                            minutes = String(minutes).length >= 2 ? minutes : "0" + minutes;
+                            seconds = String(seconds).length >= 2 ? seconds : "0" + seconds
+                        }
+                        //
+                        if (!isNaN(eventDate)) {
+                            thisEl.find(".days").text(days);
+                            thisEl.find(".hours").text(hours);
+                            thisEl.find(".minutes").text(minutes);
+                            thisEl.find(".seconds").text(seconds)
+                        }
+                        else {
+                            errorMessage = "Invalid date. Example: 27 March 2015 17:00:00";
+                            alert(errorMessage);
+                            console.log(errorMessage);
+                            clearInterval(interval)
+                        }
+                    }
+                    //
+                    var thisEl = e(this);
+                    var r = {
+                        date: null,
+                        format: null
+                    };
+                    //
+                    t && e.extend(r, t);
+                    i();
+                    interval = setInterval(i, 1e3)
+                }
+            })(jQuery);
+            //
+            $(document).ready(function () {
+                function e() {
+                    var e = new Date;
+                    e.setDate(e.getDate() + 60);
+                    dd = e.getDate();
+                    mm = e.getMonth() + 1;
+                    y = e.getFullYear();
+                    futureFormattedDate = mm + "/" + dd + "/" + y;
+                    return futureFormattedDate
+                }
+                //
+                $("#countdown").countdown({
+                    date: "@Model.RegEnd", // change date/time here - do not change the format!
+                    format: "on"
+                });
+            });
+        });
+    </script>
 }
 <style>
     .first_row_center {
@@ -747,5 +843,38 @@
 
     .cursor_pointer {
         cursor: pointer;
+    }
+
+    div#countdown {
+        color: #353535;
+    }
+
+        div#countdown p {
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+        }
+
+    p.numbers {
+        font-size:xx-large;
+        width: 100%;
+        height: 85%;
+        background: #FFFFFF;
+    }
+
+    p.strings {
+        width: 100%;
+        height: auto;
+        background: #FF5722;
+        color: #FFFFFF;
+    }
+
+    div.cd-box {
+        width: 60px;
+        height: 45px;
+        background: #FFFFFF;
+        float: left;
+        padding-bottom: 50px;
+        margin: 10px 15px 0 0;
     }
 </style>
