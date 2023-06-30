@@ -11,7 +11,7 @@ public partial class Project
     [Display(Name = "Tên đề tài")]
     public string? Pname { get; set; }
 
-    [Display(Name = "Yêu cầu")]
+    [Display(Name = "Mô tả đồ án")]
     public string? Info { get; set; }
 
     [Display(Name = "Khoa")]

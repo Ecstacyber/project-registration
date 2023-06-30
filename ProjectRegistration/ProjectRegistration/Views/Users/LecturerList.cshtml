@@ -35,7 +35,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card-box table-responsive">
-                                <table id="datatable-lecturer" class="table table-striped table-hover table-bordered" style="width:100%">
+                                <table id="datatable-lecturer" class="table table-striped jambo_table table-hover table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;">#</th>
@@ -49,26 +49,26 @@
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style="font-size:larger; vertical-align: middle;">
                                         @{
                                             foreach (var item in Model)
                                             {
                                                 <tr>
-                                                    <td style="font-size:larger; vertical-align: middle; text-align: center">STT</td>
-                                                    <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.UserId)</td>
-                                                    <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Fullname)</td>
+                                                    <td style=" text-align: center">STT</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.UserId)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.Fullname)</td>
                                                     @if (item.Gender == 0)
                                                     {
-                                                        <td style="font-size:larger; vertical-align: middle;">Nam</td>
+                                                        <td style="">Nam</td>
                                                     }
                                                     @if (item.Gender == 1)
                                                     {
-                                                        <td style="font-size:larger; vertical-align: middle;">Nữ</td>
+                                                        <td style="">Nữ</td>
                                                     }
-                                                    <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.DateOfBirth)</td>
-                                                    <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Department.Dname)</td>
-                                                    <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Email)</td>
-                                                    <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.DateOfBirth)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.Department.Dname)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                                                     <td style="white-space: nowrap; width:1%">
                                                         <a class="btn btn-primary btn-sm" asp-action="EditLecturer" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
                                                         @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@

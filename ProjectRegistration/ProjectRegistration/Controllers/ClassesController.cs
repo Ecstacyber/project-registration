@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using ProjectRegistration.Models;
+using NuGet.Versioning;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace ProjectRegistration.Controllers
@@ -51,6 +52,7 @@ namespace ProjectRegistration.Controllers
             var @class = await _context.Classes
                 .Where(x => x.Deleted == false)
                 .Include(x => x.Course)
+                .Include(x => x.ProjectClasses)
                 .Include(x => x.ClassDetails)
                 .ThenInclude(x => x.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -112,7 +114,7 @@ namespace ProjectRegistration.Controllers
                 return NotFound();
             }
 
-            var @class = await _context.Classes.Include(x => x.Course).Where(x=> x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
+            var @class = await _context.Classes.Include(x => x.Course).Where(x => x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             if (@class == null)
             {
                 TempData["message"] = "NoClassToEdit";
@@ -152,7 +154,7 @@ namespace ProjectRegistration.Controllers
                 try
                 {
                     @class.RegStart = DateTime.Parse(RegTime.Split("-")[0]);
-                    @class.RegEnd = DateTime.Parse(RegTime.Split('-')[1]); 
+                    @class.RegEnd = DateTime.Parse(RegTime.Split('-')[1]);
                     _context.Update(@class);
                     await _context.SaveChangesAsync();
                     TempData["message"] = "ClassEdited";
@@ -258,7 +260,7 @@ namespace ProjectRegistration.Controllers
                         userCd = user.ClassDetails.ToList();
                         userCd.Add(classDetail);
                         user.ClassDetails = userCd;
-                        cd.Add(classDetail);                       
+                        cd.Add(classDetail);
                         _context.ClassDetails.Add(classDetail);
                     }
                     @class.ClassDetails = cd;
@@ -268,13 +270,38 @@ namespace ProjectRegistration.Controllers
             System.IO.File.Delete(filepath);
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Details", new { id = Id} );
+            return RedirectToAction("Details", new { id = Id });
         }
 
-        [HttpPost, ActionName("GetUsersInClass")]
-        public IActionResult GetUsersInClass(int id)
+        private class UserTemp
         {
-            return RedirectToAction("GetUsersInClass", "ClassDetailsController", id);
+            public int stt;
+            public string Id { get; set; }
+            public string UserId { get; set; }
+            public string Name { get; set; }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUsersNotInClass(string classId, string userId)
+        {
+            if (userId == null)
+            {
+                return Json(new List<UserTemp>());
+            }
+            var allusers = _context.Users.Include(x => x.ClassDetails).Where(x => x.Deleted == false && x.UserId.Contains(userId));
+            var classDetails = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == int.Parse(classId)).ToList();
+            var userList = new List<UserTemp>();
+            foreach (var item in allusers)
+            {
+                if (classDetails.Where(x => x.User.Id == item.Id).FirstOrDefault() == null)
+                {
+                    var temp = new UserTemp();
+                    temp.Id = item.UserId;
+                    temp.UserId = item.UserId;
+                    temp.Name = item.Fullname;
+                    userList.Add(temp);
+                }
+            }
+            return Json(userList);
         }
 
         [HttpPost, ActionName("DeleteUser")]
@@ -285,7 +312,7 @@ namespace ProjectRegistration.Controllers
             if (_context.Classes == null)
             {
                 return Problem("Entity set 'ProjectRegistrationManagementContext.Classes'  is null.");
-            }            
+            }
             string[] ids = id.Split('-');
             var @classDetails = _context.ClassDetails.Where(x => x.UserId == ids[0] && x.ClassId == int.Parse(ids[1])).FirstOrDefault();
             if (@classDetails != null)
@@ -310,7 +337,7 @@ namespace ProjectRegistration.Controllers
             }
             string[] ids = id.Split('-');
 
-            var user = _context.Users.Where(x => (x.UserId == ids[0] && x.Deleted == false)).FirstOrDefault();            
+            var user = _context.Users.Where(x => (x.UserId == ids[0] && x.Deleted == false)).FirstOrDefault();
             var @class = _context.Classes.Where(x => (x.Id == int.Parse(ids[1]) && x.Deleted == false)).Include(x => x.ClassDetails).FirstOrDefault();
             if (!@class.ClassDetails.Any(x => x.UserId == user.Id))
             {
@@ -334,6 +361,7 @@ namespace ProjectRegistration.Controllers
             var @class = _context.Classes.Where(x => x.Deleted == false && x.Id == id)
                 .Include(x => x.ProjectClasses).ThenInclude(x => x.GuidingLecturer)
                 .Include(x => x.ProjectClasses).ThenInclude(x => x.GradingLecturer)
+                .Include(x => x.ProjectClasses).ThenInclude(x => x.ProjectMembers).ThenInclude(x=> x.Student)
                 .FirstOrDefault();
             var projectList = new List<Project>();
             projectList = @class.ProjectClasses.Where(x => x.Deleted == false).ToList();
@@ -458,8 +486,8 @@ namespace ProjectRegistration.Controllers
                             project.ClassId = classId;
                             cd.Add(project);
                             _context.Projects.Add(project);
+                        
                         }
-
                         @class.ProjectClasses = cd;
                     }
                 }
@@ -598,8 +626,10 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Projects/Details/5
-        public async Task<IActionResult> ProjectDetails(int? id)
+        public async Task<IActionResult> ProjectDetails(string? id)
         {
+            int pId = int.Parse(id.Split('-')[0]);
+            int cId = int.Parse(id.Split('-')[1]);
             if (id == null || _context.Projects == null)
             {
                 return NotFound();
@@ -612,11 +642,13 @@ namespace ProjectRegistration.Controllers
                 .ThenInclude(p => p.Student)
                 .Include(p => p.GradingLecturer)
                 .Include(p => p.GuidingLecturer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(p => p.Products)
+                .FirstOrDefaultAsync(m => m.Id == pId);
             if (project == null)
             {
                 return NotFound();
             }
+            ViewData["cId"] = cId;
 
             return View(project);
         }
@@ -635,7 +667,7 @@ namespace ProjectRegistration.Controllers
             //    ViewData["StudentId1"] = new SelectList(classDetail1, "UserId", "User.Fullname");
             //    ViewData["StudentId2"] = new SelectList(members, "UserId", "User.Fullname");
             //}
-            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();        
+            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
             ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname");
             ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname");
             return View();
@@ -651,7 +683,7 @@ namespace ProjectRegistration.Controllers
             ModelState.Remove("StudentId2");
             Project saidProject = new();
             if (ModelState.IsValid)
-            {                              
+            {
                 saidProject = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId);
                 var regStart = saidProject.Class.RegStart;
                 var regEnd = saidProject.Class.RegEnd;

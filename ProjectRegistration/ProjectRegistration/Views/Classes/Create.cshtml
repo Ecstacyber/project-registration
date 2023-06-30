@@ -138,7 +138,8 @@
                         <div class="item form-group mb-4">
                             <label asp-for="Cyear" class="col-form-label col-md-3 col-sm-3 label-align"></label>
                             <div class="col-md-4 col-sm-4 ">
-                                <select asp-for="Cyear" data-size="5" asp-items="ViewBag.Year" class="form-control">
+                                <select onfocus='this.size=5;' onblur='this.size=1;'
+                                        onchange='this.size=1; this.blur();' asp-for="Cyear" asp-items="ViewBag.Year" class="form-control">
                                 </select>
                             </div>
                         </div>
