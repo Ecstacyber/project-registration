@@ -65,12 +65,12 @@ namespace ProjectRegistration.Controllers
                 _context.SaveChanges();
 
             }
-            if (_context.Courses.Where(x => x.CourseId == "SE123").FirstOrDefault() == null)
+            if (_context.Courses.Where(x => x.CourseId == "KLTN").FirstOrDefault() == null)
             {
                 var course = new Course
                 {
-                    CourseId = "SE123",
-                    CourseName = "Đồ án 3",
+                    CourseId = "KLTN",
+                    CourseName = "Khóa luận tốt nghiệp",
                     CreatedDateTime = DateTime.Now
                 };
                 _context.Add(course);
