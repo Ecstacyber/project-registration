@@ -364,7 +364,7 @@ namespace ProjectRegistration.Controllers
                 .Include(x => x.ProjectClasses).ThenInclude(x => x.ProjectMembers).ThenInclude(x=> x.Student)
                 .FirstOrDefault();
             var projectList = new List<Project>();
-            projectList = @class.ProjectClasses.Where(x => x.Deleted == false).ToList();
+            projectList = @class.ProjectClasses.Where(x => x.Deleted == false && x.IsVerified == true).ToList();
             ViewData["id"] = id;
             return View(projectList);
         }
@@ -393,7 +393,7 @@ namespace ProjectRegistration.Controllers
                 var currentClass = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
                 if (currentClass != null && currentClass.Course != null)
                 {
-                    if (currentClass.Course.CourseName == "Đồ án 1")
+                    if (currentClass.Course.CourseName == "Đồ án 1" || currentClass.Course.CourseName == "Đồ án 2")
                     {
                         if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
                         {
@@ -763,6 +763,7 @@ namespace ProjectRegistration.Controllers
 
         // GET Unverified projects
         [ActionName("ViewUnverifiedProjects")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> ViewUnverifiedProjects(int id)
         {
             return _context.Projects != null ?
@@ -787,7 +788,7 @@ namespace ProjectRegistration.Controllers
             {
                 TempData["message"] = "CouldNotVerifyProject";
             }
-            return View(project);
+            return RedirectToAction("Details", new { id = project.ClassId });
         }
     }
 }
