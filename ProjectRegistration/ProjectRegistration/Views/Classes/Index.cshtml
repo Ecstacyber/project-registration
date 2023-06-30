@@ -140,25 +140,53 @@
         $(function () {
             var msg = '@TempData["message"]';
             if (msg == 'ClassCreated') {
-                alert("Thêm lớp thành công");
+                new PNotify({
+                    text: 'Thêm lớp thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ClassNotCreated') {
-                alert("Thêm lớp thất bại");
+                new PNotify({
+                    text: 'Thêm lớp thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ClassEdited') {
-                alert("Sửa lớp thành công");
+                new PNotify({
+                    text: 'Sửa lớp thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ClassNotEdited') {
-                alert("Sửa lớp thất bại");
+                new PNotify({
+                    text: 'Sửa lớp thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'NoClassToEdit') {
-                alert("Sửa lớp thất bại%0D%0AKhông tìm thấy lớp");
+                new PNotify({
+                    text: 'Sửa lớp thất bại%0D%0AKhông tìm thấy lớp.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ClassDeleted') {
-                alert("Xóa lớp thành công");
+                new PNotify({
+                    text: 'Sửa lớp thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ClassNotDeleted') {
-                alert("Xóa lớp thất bại%0D%0AKhông tìm thấy lớp");
+                new PNotify({
+                    text: 'Xóa lớp thất bại%0D%0AKhông tìm thấy lớp.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
         });
     </script>

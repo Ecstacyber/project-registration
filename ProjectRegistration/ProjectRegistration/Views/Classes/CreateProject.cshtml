@@ -87,10 +87,18 @@
             var msg = '@TempData["message"]';
             var lim = '@TempData["limit"]';
             if (msg == 'Project1GuidingLimitReached') {
-                alert("Sửa đồ án thất bại%0D%0Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng đồ án 1: " + lim);
+                new PNotify({
+                    text: 'Thêm đồ án thất bại%0D%0Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng đồ án: ' + lim,
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'GraduationThesisGuidingLimitReached') {
-                alert("Sửa đồ án thất bại%0D%0Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng khóa luận tốt nghiệp: " + lim);
+                new PNotify({
+                    text: 'Thêm đồ án thất bại%0D%0Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng khóa luận tốt nghiệp: ' + lim,
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
         });
     </script>

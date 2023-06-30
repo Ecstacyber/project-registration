@@ -68,7 +68,6 @@
                             }
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -103,25 +102,53 @@
         $(function () {
             var msg = '@TempData["message"]';
             if (msg == 'DepartmentCreated') {
-                alert("Thêm khoa thành công");
+                new PNotify({
+                    text: 'Thêm khoa thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'DepartmentNotCreated') {
-                alert("Thêm khoa thất bại");
+                new PNotify({
+                    text: 'Thêm khoa thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'DepartmentEdited') {
-                alert("Sửa khoa thành công");
+                new PNotify({
+                    text: 'Sửa khoa thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'DepartmentNotEdited') {
-                alert("Sửa khoa thất bại");
+                new PNotify({
+                    text: 'Sửa khoa thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'NoDepartmentToEdit') {
-                alert("Sửa khoa thất bại%0D%0AKhông tìm thấy khoa");
+                new PNotify({
+                    text: 'Sửa khoa thất bại%0D%0AKhông tìm thấy khoa.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'DepartmentDeleted') {
-                alert("Xóa khoa thành công");
+                new PNotify({
+                    text: 'Xóa khoa thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'DepartmentNotDeleted') {
-                alert("Xóa khoa thất bại%0D%0AKhông tìm thấy khoa");
+                new PNotify({
+                    text: 'Xóa khoa thất bại%0D%0AKhông tìm thấy khoa.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
         });
     </script>

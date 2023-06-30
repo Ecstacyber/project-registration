@@ -120,25 +120,53 @@
         $(function () {
             var msg = '@TempData["message"]';
             if (msg == 'CourseCreated') {
-                alert("Thêm môn học thành công");
+                new PNotify({
+                    text: 'Thêm môn học thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'CourseNotCreated') {
-                alert("Thêm môn học thất bại");
+                new PNotify({
+                    text: 'Thêm khoa thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'CourseEdited') {
-                alert("Sửa môn học thành công");
+               new PNotify({
+                    text: 'Sửa môn học thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'CourseNotEdited') {
-                alert("Sửa môn học thất bại");
+                new PNotify({
+                    text: 'Sửa môn học thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'NoCourseToEdit') {
-                alert("Sửa môn học thất bại%0D%0AKhông tìm thấy khoa");
+                new PNotify({
+                    text: 'Sửa môn học thất bại%0D%0AKhông tìm thấy môn học.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'CourseDeleted') {
-                alert("Xóa môn học thành công");
+                new PNotify({
+                    text: 'Xóa môn học thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'CourseNotDeleted') {
-                alert("Xóa môn học thất bại%0D%0AKhông tìm thấy khoa");
+                new PNotify({
+                    text: 'Xóa môn học thất bại%0D%0AKhông tìm thấy môn học.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
         });
     </script>

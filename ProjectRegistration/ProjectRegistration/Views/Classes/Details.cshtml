@@ -401,19 +401,28 @@
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>Đồ án chưa duyệt</h2>
-
-                        <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                            <li>
-                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <br />
-
-
-                        <div class="ln_solid"></div>
+                        <table id="datatable-project-not-verified" class="table table-hover" style="width:100%">
+                            <thead>
+                                <tr hidden>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    foreach (var item in Model.ProjectClasses)
+                                    {
+                                        if (item.IsVerified == false)
+                                        {
+                                            <tr data-id="@item.Id">
+                                                <td style="font-size:larger; vertical-align: middle; text-align: center">@i</td>
+                                                <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Pname)</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -521,6 +530,29 @@
     </div>
 </div>
 <form method="post" id="add-form"></form>
+
+<!-- Verify Project Modal -->
+<form method="post" id="verify-project-form"></form>
+<div class="modal fade verifyProjectForm" id="verifyProjectModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog .modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Duyệt đồ án</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-cancel-verify-project" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="btn-verify-project">Duyệt</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @{
@@ -754,6 +786,62 @@
                     this.data(i++);
                 });
             }).draw();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var dtb = $('#datatable-project-not-verified').DataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "searching": false,
+                "paging": false,
+            });
+
+            let id;
+
+            dtb.on('click', 'tr', function (e) {
+                id = this.getAttribute('data-id');
+                if (id != null) {
+                    $('#verifyProjectModal').modal('toggle');
+                }
+            });
+
+            dtb.on('order.dt search.dt', function () {
+                let i = 1;
+
+                dtb.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+
+            var modal = document.getElementById("verifyProjectModal");
+            const confirm = document.getElementById('btn-verify-project');
+            const cancel = document.getElementById('btn-cancel-verify-project');
+            const verifyProjectForm = document.getElementById('verify-project-form');
+
+            confirm.onclick = () => {
+                verifyProjectForm.action = '@Url.Content("~/Classes/VerifyProject/")' + id;
+                verifyProjectForm.submit();
+            }
+
+            $(function () {
+                var msg = '@TempData["message"]';
+                if (msg == 'ProjectVerified') {
+                    new PNotify({
+                        text: 'Duyệt lớp thành công.',
+                        type: 'success',
+                        styling: 'bootstrap3',
+                    });
+                }
+                if (msg == 'CouldNotVerifyProject') {
+                    new PNotify({
+                        text: 'Duyệt lớp thất bại.',
+                        type: 'error',
+                        styling: 'bootstrap3',
+                    });
+                }
+            });
         });
     </script>
     <script>

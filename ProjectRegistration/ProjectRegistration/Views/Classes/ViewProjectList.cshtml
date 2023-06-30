@@ -333,25 +333,53 @@
         $(function () {
             var msg = '@TempData["message"]';
             if (msg == 'ProjectCreated') {
-                alert("Tạo đồ án thành công");
+                new PNotify({
+                    text: 'Tạo đồ án thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ProjectNotCreated') {
-                alert("Tạo đồ án thất bại");
+                new PNotify({
+                    text: 'Tạo đồ án thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ProjectEdited') {
-                alert("Sửa đồ án thành công");
+                new PNotify({
+                    text: 'Sửa đồ án thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
-            if (msg == 'DepartmentNotEdited') {
-                alert("Sửa đồ án thất bại");
+            if (msg == 'ProjectNotEdited') {
+                new PNotify({
+                    text: 'Sửa đồ án thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
-            if (msg == 'NoDepartmentToEdit') {
-                alert("Sửa đồ án thất bại%0D%0AKhông tìm thấy đồ án");
+            if (msg == 'NoProjectToEdit') {
+                new PNotify({
+                    text: 'Sửa đồ án thất bại%0D%0AKhông tìm thấy đồ án.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
             if (msg == 'ProjectDeleted') {
-                alert("Xóa đồ án thành công");
+                new PNotify({
+                    text: 'Xóa đồ án thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
             }
-            if (msg == 'ProjectNotDeleted') {
-                alert("Xóa đồ án thất bại%0D%0AKhông tìm thấy đồ án");
+            if (msg == 'NoProjectToDelete') {
+                new PNotify({
+                    text: 'Xóa đồ án thất bại%0D%0AKhông tìm thấy đồ án.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
             }
         });
     </script>
