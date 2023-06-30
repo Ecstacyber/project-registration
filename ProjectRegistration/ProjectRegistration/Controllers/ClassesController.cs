@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using ProjectRegistration.Models;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace ProjectRegistration.Controllers
 {
@@ -361,6 +362,38 @@ namespace ProjectRegistration.Controllers
         {
             if (ModelState.IsValid)
             {
+                var currentClass = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
+                if (currentClass != null && currentClass.Course != null)
+                {
+                    if (currentClass.Course.CourseName == "Đồ án 1")
+                    {
+                        if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
+                        {
+                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
+                            var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
+                            var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
+                            if (guLecProjects.Count() > 20)
+                            {
+                                TempData["message"] = "Project1GuidingLimitReached";
+                                TempData["limit"] = 20;
+                                return View(project);
+                            }
+                        }
+                    }
+                    if (currentClass.Course.CourseName == "Khóa luận")
+                    {
+                        var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
+                        var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
+                        var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
+                        if (guLecProjects.Count() > 5)
+                        {
+                            TempData["message"] = "GraduationThesisGuidingLimitReached";
+                            TempData["limit"] = 5;
+                            return View(project);
+                        }
+                    }
+                }
+
                 project.Id = 0;
                 project.CreatedDateTime = DateTime.Now;
                 _context.Add(project);
@@ -382,58 +415,67 @@ namespace ProjectRegistration.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProjectFromFileExcel(IFormCollection form, IFormFile fileSelect)
         {
-            int classId = int.Parse(form["classId"]);
-            var fileextension = Path.GetExtension(fileSelect.FileName);
-            var filename = Guid.NewGuid().ToString() + fileextension;
-            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
-            using (FileStream fs = System.IO.File.Create(filepath))
+            try
             {
-                fileSelect.CopyTo(fs);
-            }
-
-            using (var stream = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read))
-            {
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                int classId = int.Parse(form["classId"]);
+                var fileextension = Path.GetExtension(fileSelect.FileName);
+                var filename = Guid.NewGuid().ToString() + fileextension;
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+                using (FileStream fs = System.IO.File.Create(filepath))
                 {
-                    reader.Read();
-                    reader.Read();
-                    reader.Read();
-                    var @class = _context.Classes.Where(x => (x.Deleted == false && x.Id == classId)).FirstOrDefault();
-
-                    var cd = new List<Project>();
-                    foreach (var x in @class.ProjectClasses)
-                    {
-                        cd.Add(x);
-                    }
-
-                    while (reader.Read()) //Each row of the file
-                    {
-                        if (reader.GetValue(1) == null) continue;
-                        var existProject = _context.Projects
-                            .Where(x => x.Deleted == false && x.Pname == reader.GetValue(1).ToString() && x.ClassId == classId).FirstOrDefault();
-                        if (existProject != null) continue;
-                        var project = new Project();
-                        project.Pname = reader.GetValue(1).ToString();
-                        var user = _context.Users.Where(x => (x.Fullname == reader.GetValue(3).ToString() && x.Deleted == false)).FirstOrDefault();
-                        if (user == null) continue;
-                        project.GuidingLecturer = user;
-                        project.GuidingLecturerId = user.Id;
-                        project.Info = reader.GetValue(2) == null? "" : reader.GetValue(2).ToString();
-                        project.CreatedDateTime = DateTime.Now;
-                        project.ClassId = classId;
-                        cd.Add(project);
-                        _context.Projects.Add(project);
-                    }
-
-                    @class.ProjectClasses = cd;
+                    fileSelect.CopyTo(fs);
                 }
+
+                using (var stream = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        reader.Read();
+                        reader.Read();
+                        reader.Read();
+                        var @class = _context.Classes.Where(x => (x.Deleted == false && x.Id == classId)).FirstOrDefault();
+
+                        var cd = new List<Project>();
+                        foreach (var x in @class.ProjectClasses)
+                        {
+                            cd.Add(x);
+                        }
+
+                        while (reader.Read()) //Each row of the file
+                        {
+                            if (reader.GetValue(1) == null) continue;
+                            var existProject = _context.Projects
+                                .Where(x => x.Deleted == false && x.Pname == reader.GetValue(1).ToString() && x.ClassId == classId).FirstOrDefault();
+                            if (existProject != null) continue;
+                            var project = new Project();
+                            project.Pname = reader.GetValue(1).ToString();
+                            var user = _context.Users.Where(x => (x.Fullname == reader.GetValue(3).ToString() && x.Deleted == false)).FirstOrDefault();
+                            if (user == null) continue;
+                            project.GuidingLecturer = user;
+                            project.GuidingLecturerId = user.Id;
+                            project.Info = reader.GetValue(2) == null ? "" : reader.GetValue(2).ToString();
+                            project.CreatedDateTime = DateTime.Now;
+                            project.ClassId = classId;
+                            cd.Add(project);
+                            _context.Projects.Add(project);
+                        }
+
+                        @class.ProjectClasses = cd;
+                    }
+                }
+
+                System.IO.File.Delete(filepath);
+
+                await _context.SaveChangesAsync();
+                TempData["message"] = "ProjectCreated";
+                return RedirectToAction("ViewProjectList", new { id = classId });
             }
-
-            System.IO.File.Delete(filepath);
-
-            await _context.SaveChangesAsync();
-            TempData["message"] = "ProjectCreated";
-            return RedirectToAction("ViewProjectList", new { id = classId });
+            catch
+            {
+                int classId = int.Parse(form["classId"]);
+                TempData["message"] = "ProjectNotCreated";
+                return RedirectToAction("ViewProjectList", new { id = classId });
+            }
         }
 
         // POST: Projects/Delete/5
@@ -495,6 +537,35 @@ namespace ProjectRegistration.Controllers
 
             if (ModelState.IsValid)
             {
+                var currentClass = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
+                if (currentClass != null && currentClass.Course != null)
+                {
+                    if (currentClass.Course.CourseName == "Đồ án 1")
+                    {
+                        if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
+                        {
+                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
+                            var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
+                            var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);                          
+                            if (guLecProjects.Count() > 20)
+                            {
+                                TempData["message"] = "Project1GuidingLimitReached";
+                                return View(project);
+                            }
+                        }
+                    }
+                    if (currentClass.Course.CourseName == "Khóa luận")
+                    {
+                        var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
+                        var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
+                        var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
+                        if (guLecProjects.Count() > 5)
+                        {
+                            TempData["message"] = "GraduationThesisGuidingLimitReached";
+                            return View(project);
+                        }
+                    }
+                }
                 try
                 {
                     _context.Update(project);
@@ -656,6 +727,35 @@ namespace ProjectRegistration.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction("ProjectDetails", new { id = id });
+        }
+
+        // GET Unverified projects
+        [ActionName("ViewUnverifiedProjects")]
+        public async Task<IActionResult> ViewUnverifiedProjects(int id)
+        {
+            return _context.Projects != null ?
+                          View(await _context.Projects.Where(x => x.ClassId == id && x.Deleted == false && x.IsVerified == false).ToListAsync()) :
+                          Problem("Entity set 'IDENTITYUSERContext.Projects'  is null.");
+        }
+
+        // POST
+        [HttpPost, ActionName("VerifyProject")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> VerifyProject (int id)
+        {
+            var project = _context.Projects.FirstOrDefault(x => x.Id == id);
+            if (project != null) 
+            {
+                project.IsVerified = true;
+                _context.SaveChanges();
+                TempData["message"] = "ProjectVerified";
+            }
+            else
+            {
+                TempData["message"] = "CouldNotVerifyProject";
+            }
+            return View(project);
         }
     }
 }

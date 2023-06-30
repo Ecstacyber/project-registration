@@ -91,15 +91,13 @@
 
     <script>
         $(function () {
-            var msg = '@ViewData["result"]';
-            var projectId = getElementById("ProjectIdHere")
-            if (msg == 'Success') {
-                alert("Sửa đồ án thành công");
-                window.location.href = "@Url.Action("ViewProjectList", "Classes", "projectId.Value")";
+            var msg = '@TempData["message"]';
+            var lim = '@TempData["limit"]';
+            if (msg == 'Project1GuidingLimitReached') {
+                alert("Sửa đồ án thất bại%0D%0Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng đồ án 1: " + lim);
             }
-            if (msg == 'Failed') {
-                alert("Sửa đồ án thất bại");
-                window.location.href = "@Url.Action("ViewProjectList", "Classes", "projectId.Value")";
+            if (msg == 'GraduationThesisGuidingLimitReached') {
+                alert("Sửa đồ án thất bại%0D%0Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng khóa luận tốt nghiệp: " + lim);
             }
         });
     </script>

@@ -16,7 +16,7 @@ namespace ProjectRegistration.Jobs
         {
             // Note: This method must always return a value 
             // This is especially important for trigger listers watching job execution 
-            List<Class> startClasses = _context.Classes.Where(x => x.RegStart == DateTime.Now && x.RegOpen == "Đóng").ToList();
+            List<Class> startClasses = _context.Classes.Where(x => x.RegStart >= DateTime.Now && x.RegOpen == "Đóng").ToList();
             if (startClasses.Count > 0)
             {
                 foreach (Class cls in startClasses)
@@ -25,7 +25,7 @@ namespace ProjectRegistration.Jobs
                 }
                 _context.SaveChanges();
             }
-            List<Class> endClasses = _context.Classes.Where(x => x.RegEnd == DateTime.Now && x.RegOpen == "Mở").ToList();
+            List<Class> endClasses = _context.Classes.Where(x => x.RegEnd >= DateTime.Now && x.RegOpen == "Mở").ToList();
             if (endClasses.Count > 0)
             {
                 foreach (Class cls in endClasses)

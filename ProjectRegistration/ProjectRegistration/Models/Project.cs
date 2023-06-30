@@ -34,6 +34,9 @@ public partial class Project
     [Display(Name = "Học kỳ")]
     public int? Semester { get; set; }
 
+    [Display(Name = "Trạng thái duyệt")]
+    public bool? IsVerified { get; set; }
+
     [Display(Name = "Ngày tạo")]
     public DateTime? CreatedDateTime { get; set; }
 
