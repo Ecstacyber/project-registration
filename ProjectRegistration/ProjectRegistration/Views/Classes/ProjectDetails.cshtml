@@ -1,4 +1,4 @@
-﻿@model ProjectRegistration.Models.Project
+﻿@*@model ProjectRegistration.Models.Project
 
 @{
     ViewData["Title"] = "Thông tin chi tiết của đồ án";
@@ -21,7 +21,7 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Info)
         </dd>
-        @*<dt class = "col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Pyear)
         </dt>
         <dd class = "col-sm-10">
@@ -32,8 +32,8 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Semester)
-        </dd>*@
-        @*<dt class = "col-sm-2">
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedDateTime)
         </dt>
         <dd class = "col-sm-10">
@@ -68,7 +68,7 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Department.Id)
-        </dd>*@
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.GradingLecturer)
         </dt>
@@ -167,7 +167,7 @@
             }
         });
     </script>
-    
+
     <script>
         let memberid;
         var modal = document.getElementById("confirmDeleteModal");
@@ -177,9 +177,9 @@
             const button = event.relatedTarget;
             console.log(button);
             memberid = button.getAttribute('data-id');
-            
+
         });
-        
+
         console.log("MemberID: " + memberid);
         deleteBtn.onclick = () => {
             console.log("MemberID: " + memberid);
@@ -187,8 +187,243 @@
             deleteForm.submit();
         }
     </script>
-    @*<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
-    <script src="/js/data-table.js"></script>*@
+    <script src="/js/data-table.js"></script>
+}*@
+
+@model ProjectRegistration.Models.Project
+
+@{
+    ViewData["Title"] = "Thông tin chi tiết của đồ án";
+}
+<link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
+<a class="pt-4" asp-action="ViewProjectList" asp-route-id="@ViewData["cId"]"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@Model.Pname</h3>
+        </div>
+
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Chi tiết của đồ án</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="x_content">
+
+                    <div class="col-md-9 col-sm-9  ">
+
+                        <ul class="stats-overview">
+                            @{
+                                int i = 1;
+                                foreach (var item in Model.ProjectMembers)
+                                {
+                                    <li>
+                                        <span class="name"> Thành viên @i </span>
+                                        <span class="value text-success"> @item.Student.Fullname </span>
+                                    </li>
+                                    i++;
+                                }
+                            }
+                            <li class="hidden-phone">
+                                <span class="name"> Giảng viên hướng dẫn </span>
+                                <span class="value text-success"> @Model.GuidingLecturer.Fullname </span>
+                            </li>
+                        </ul>
+                        <br />
+
+                        
+
+                        <div>
+
+                            <h4>Nhận xét</h4>
+
+                            <!-- end of user messages -->
+                            <ul class="messages">
+                                <li>
+                                    <img src="" class="avatar" alt="Avatar">
+                                    <div class="message_date">
+                                        <h3 class="date text-info">24</h3>
+                                        <p class="month">May</p>
+                                    </div>
+                                    <div class="message_wrapper">
+                                        <h4 class="heading">Desmond Davison</h4>
+                                        <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                        <br />
+                                        <p class="url">
+                                            <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                            <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                        </p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <img src="" class="avatar" alt="Avatar">
+                                    <div class="message_date">
+                                        <h3 class="date text-error">21</h3>
+                                        <p class="month">May</p>
+                                    </div>
+                                    <div class="message_wrapper">
+                                        <h4 class="heading">Brian Michaels</h4>
+                                        <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                        <br />
+                                        <p class="url">
+                                            <span class="fs1" aria-hidden="true" data-icon=""></span>
+                                            <a href="#" data-original-title="">Download</a>
+                                        </p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <img src="" class="avatar" alt="Avatar">
+                                    <div class="message_date">
+                                        <h3 class="date text-info">24</h3>
+                                        <p class="month">May</p>
+                                    </div>
+                                    <div class="message_wrapper">
+                                        <h4 class="heading">Desmond Davison</h4>
+                                        <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                        <br />
+                                        <p class="url">
+                                            <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                            <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                        </p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- end of user messages -->
+
+
+                        </div>
+
+
+                    </div>
+
+                    <!-- start project-detail sidebar -->
+                    <div class="col-md-3 col-sm-3  ">
+
+                        <section class="panel">
+
+                            <div class="x_title">
+                                <h2>@Html.DisplayNameFor(model => model.Info)</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="panel-body">
+
+                                <p>@Model.Info</p>
+                                <br />
+
+                                <div class="project_detail">
+
+                                    <p class="title">@Html.DisplayNameFor(model => model.ClassId)</p>
+                                    <p>@Model.Class.ClassId</p>
+                                    <p class="title">@Html.DisplayNameFor(model => model.Class.Semester)</p>
+                                    <p>@Model.Class.Semester</p>
+                                    <p class="title">@Html.DisplayNameFor(model => model.Class.Cyear)</p>
+                                    <p>@Model.Class.Cyear</p>
+                                </div>
+
+                                <br />
+                                <h5>Project files</h5>
+                                <ul class="list-unstyled project_files">
+                                    <li>
+                                        <a href=""><i class="fa fa-file-word-o"></i> Functional-requirements.docx</a>
+                                    </li>
+                                    <li>
+                                        <a href=""><i class="fa fa-file-pdf-o"></i> UAT.pdf</a>
+                                    </li>
+                                    <li>
+                                        <a href=""><i class="fa fa-mail-forward"></i> Email-from-flatbal.mln</a>
+                                    </li>
+                                    <li>
+                                        <a href=""><i class="fa fa-picture-o"></i> Logo.png</a>
+                                    </li>
+                                    <li>
+                                        <a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                                    </li>
+                                </ul>
+                                <br />
+
+                                <div class="text-center mtop20">
+                                    <a href="#" class="btn btn-sm btn-primary">Add files</a>
+                                </div>
+                            </div>
+
+                        </section>
+
+                    </div>
+                    <!-- end project-detail sidebar -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/vendors/fastclick/lib/fastclick.js"></script>
+    <script src="~/vendors/echarts/dist/echarts.min.js"></script>
+    <script>
+        $(function () {
+            var msg = '@TempData["message"]';
+            if (msg == 'RegNotOpened') {
+                alert("Thêm thành viên vào đồ án thất bại%0D%0AChưa đến thời gian đăng ký");
+            }
+            if (msg == 'RegClosed') {
+                alert("Thêm thành viên vào đồ án thất bại%0D%0AĐã hết thời gian đăng ký");
+            }
+            if (msg == 'MemberAddedToProject') {
+                alert("Thêm thành viên vào đồ án thành công");
+            }
+            if (msg == 'MemberNotAddedToProject') {
+                alert("Thêm thành viên vào đồ án thất bại");
+            }
+            if (msg == 'NoMemberToDeleteFromProject') {
+                alert("Xóa thành viên khỏi đồ án thất bại%0D%0AKhông tìm thấy thành viên trong đồ án");
+            }
+            if (msg == 'MemberDeletedFromProject') {
+                alert("Xóa thành viên khỏi đồ án thành công");
+            }
+        });
+    </script>
+
+    <script>
+        //let memberid;
+        //var modal = document.getElementById("confirmDeleteModal");
+        //const deleteBtn = document.getElementById('delete-btn');
+        //const deleteForm = document.getElementById('delete-form');
+        //modal.addEventListener('show.bs.modal', function (event) {
+        //    const button = event.relatedTarget;
+        //    console.log(button);
+        //    memberid = button.getAttribute('data-id');
+
+        //});
+
+        //console.log("MemberID: " + memberid);
+        //deleteBtn.onclick = () => {
+        //    console.log("MemberID: " + memberid);
+        //    deleteForm.action = '/Classes/DeleteMemberFromProject/' + memberid;
+        //    deleteForm.submit();
+        //}
+    </script>
 }

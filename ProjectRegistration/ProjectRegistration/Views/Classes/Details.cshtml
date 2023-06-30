@@ -199,13 +199,15 @@
 
 @{
     ViewData["Title"] = "Thông tin chi tiết của lớp học";
+    ViewBag.FindCount = 0;
 }
 
 <link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
 <link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
 <link href="~/vendors/normalize-css/normalize.css" rel="stylesheet" />
-<link href="~/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
-<link href="~/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+<link href="~/vendors/pnotify/pnotify.buttons.css" rel="stylesheet" />
+<link href="~/vendors/pnotify/pnotify.nonblock.css" rel="stylesheet" />
+<link href="~/vendors/pnotify/pnotify.css" rel="stylesheet" />
 
 <a class="pt-4" asp-action="Index"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
 
@@ -221,80 +223,286 @@
     <div class="clearfix"></div>
 
     <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>@Model.CourseId</h2>
+        <div class="col-md-8 col-sm-8">
+            <div class="col-md-12 col-sm-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>@Model.ClassId</h2>
 
-                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                        <li>
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                    </ul>
-                    <div class="clearfix"></div>
+                        <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+
+                                    <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.Course): </td>
+                                    <th class="" style="width:65%">@Html.DisplayFor(model => model.Course.CourseId)</th>
+                                </tr>
+                                <tr>
+
+                                    <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.ClassId): </td>
+                                    <th class="">@Html.DisplayFor(model => model.ClassId)</th>
+                                </tr>
+                                <tr>
+
+                                    <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.Semester): </td>
+                                    <th class="">@Html.DisplayFor(model => model.Semester)</th>
+                                </tr>
+                                <tr>
+
+                                    <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.Cyear): </td>
+                                    <th class="">@Html.DisplayFor(model => model.Cyear)</th>
+                                </tr>
+                                <tr>
+
+                                    <td class="d-flex justify-content-end">Cho phép đăng ký đồ án: </td>
+                                    @if (Model.RegOpen == "Mở")
+                                    {
+                                        <th class="text-success">@Html.DisplayFor(model => model.RegOpen)</th>
+                                    }
+                                    else
+                                    {
+                                        <th class="text-danger">@Html.DisplayFor(model => model.RegOpen)</th>
+                                    }
+                                </tr>
+                                <tr>
+
+                                    <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.RegStart): </td>
+                                    <th class="">@Html.DisplayFor(model => model.RegStart)</th>
+                                </tr>
+                                <tr>
+
+                                    <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.RegEnd): </td>
+                                    <th class="">@Html.DisplayFor(model => model.RegEnd)</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="x_content" style="vertical-align:central">
-                    <br />
-                    <div class="item form-group mb-4">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align">@Html.DisplayNameFor(model => model.Course)</label>
-                        <div class="col-md-4 col-sm-4">
-                            @Html.DisplayFor(model => model.Course.CourseId)
-                        </div>
-                    </div>
-                    <div class="item form-group mb-4">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align">
-                            @Html.DisplayNameFor(model => model.ClassId)
-                        </label>
-                        <div class="col-md-4 col-sm-4 ">
-                            @Html.DisplayFor(model => model.ClassId)
-                        </div>
-                    </div>
-                    <div class="item form-group mb-4">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align">@Html.DisplayNameFor(model => model.Semester)</label>
-                        <div class="col-md-4 col-sm-4 ">
-                            @Html.DisplayFor(model => model.Semester)
-                        </div>
-                    </div>
-                    <div class="item form-group mb-4">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align">@Html.DisplayNameFor(model => model.Cyear)</label>
-                        <div class="col-md-4 col-sm-4 ">
-                            @Html.DisplayFor(model => model.Cyear)
-                        </div>
-                    </div>
-                    <div class="item form-group mb-4">
-                        <label asp-for="RegOpen" class="col-form-label col-md-3 col-sm-3 label-align">
-                        </label>
-                        <div class="col-md-4 col-sm-4 ">
-                            <div id="RegOpen" class="btn-group">
-                                <input id="regState" type="hidden" value="@Model.RegOpen" />
-                                <label class="btn btn-secondary" id="closeBtn">
-                                    <input asp-for="RegOpen" type="radio" name="RegOpen" value="Đóng" class="join-btn"> &nbsp; Đóng đăng ký &nbsp;
-                                </label>
-                                <label class="btn btn-secondary" id="openBtn">
-                                    <input asp-for="RegOpen" type="radio" name="RegOpen" value="Mở" class="join-btn"> &nbsp; Mở đăng ký &nbsp;
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item form-group mb-4">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align">@Html.DisplayNameFor(model => model.RegStart)</label>
-                        <div class="col-md-4 col-sm-4 ">
-                            @Html.DisplayFor(model => model.RegStart)
-                        </div>
-                    </div>
-                    <div class="item form-group mb-4">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align">@Html.DisplayNameFor(model => model.RegEnd)</label>
-                        <div class="col-md-4 col-sm-4 ">
-                            @Html.DisplayFor(model => model.RegEnd)
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Danh sách lớp</h2>
 
-                    <div class="ln_solid"></div>
+                        <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+
+                            <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addUserModal">
+                                <i class="glyphicon glyphicon-plus"></i> Thêm sinh viên
+                            </button>
+
+                            <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addFromExcelModal">
+                                <i class="fa fa-file-excel-o"></i> Thêm sinh viên file excel
+                            </button>
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="datatable-classmate" class="table table-striped jambo_table table-hover table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">#</th>
+                                    <th>MSSV/MSGV</th>
+                                    <th>Họ và tên</th>
+                                    <th>Vai trò</th>
+                                    <th>Email</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    foreach (var item in Model.ClassDetails)
+                                    {
+                                        <tr>
+                                            <td style="font-size:larger; vertical-align: middle; text-align: center">STT</td>
+                                            <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.User.UserId)</td>
+                                            <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.User.Fullname)</td>
+                                            @if (item.User.UserTypeId == 10)
+                                            {
+                                                <td style="font-size:larger; vertical-align: middle;">Giảng viên</td>
+                                            }
+                                            else
+                                            {
+                                                <td style="font-size:larger; vertical-align: middle;">Sinh viên</td>
+                                            }
+                                            <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.User.Email)</td>
+                                            <td style="white-space: nowrap; width:1%">
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="@item.User.Id">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="col-md-12 col-sm-12">
+                <div class="x_panel">
+
+                    <h2>Danh sách đồ án</h2>
+                    <table id="datatable-project" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr hidden>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int i = 0;
+                                foreach (var item in Model.ProjectClasses)
+                                {
+                                    i++;
+                                    <tr>
+                                        <td style="font-size:larger; vertical-align: middle; text-align: center">STT</td>
+                                        <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Pname)</td>
+                                    </tr>
+                                    if (i == 5) break;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <a class="btn-link alignright" asp-action="ViewProjectList" asp-route-id="@Model.Id">Xem thêm</a>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Đồ án chưa duyệt</h2>
+
+                        <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+
+
+                        <div class="ln_solid"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal thêm bằng excel -->
+<form method="post" enctype="multipart/form-data" name="add-file-form" id="add-file-form" asp-asp-controller="Users" asp-action="AddUserFromFileExcel">
+    <input type="hidden" asp-for="Id" />
+    <div class="modal fade" id="addFromExcelModal" tabindex="-1" style="z-index:1060">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Thêm tài khoản bằng file excel</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="fileSelect" required="required" name="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none" />
+                    <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file excel </label>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-success" id="add-file-btn">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Delete Modal -->
+<form method="post" id="delete-form"></form>
+<div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog .modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Xác nhận xóa?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa người này khỏi lớp</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" id="delete-btn">Xóa</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5">Thêm sinh viên vào lớp</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 col-sm-12">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <label class="col-form-label col-md-4 col-sm-4 text-center font-weight-bolder text-dark"> Nhập MSSV/MSGV:</label>
+                            <div class="col-md-8 col-sm-8">
+                                <input type="text" id="userIdText" required="required" class="form-control border border-dark">
+                            </div>
+
+                            <div class="clearfix mt-5"></div>
+                            <h2>Kết quả tìm kiếm</h2>
+                            
+                            <br />
+                            <table id="datatable-findclassmate" class="table table-striped jambo_table table-hover table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center; width:5%">#</th>
+                                        <th>Mã số sinh viên/Mã số giảng viên</th>
+                                        <th class="w-50">Họ và tên</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="font-size:larger; vertical-align: middle;">
+                                    <tr style="cursor:pointer">
+                                        <td style="text-align: center;"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-success" id="add-btn">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="add-form"></form>
 
 @section Scripts {
     @{
@@ -302,9 +510,25 @@
     }
     <script src="~/vendors/fastclick/lib/fastclick.js"></script>
     <script src="~/vendors/moment/min/moment.min.js"></script>
-    <script src="~/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-
-    <script>
+    <script src="~/vendors/datatables.net/js/jquery.datatables.min.js"></script>
+    <script src="~/vendors/datatables.net-bs/js/datatables.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/datatables.buttons.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/vendors/datatables.net-fixedheader/js/datatables.fixedheader.min.js"></script>
+    <script src="~/vendors/datatables.net-keytable/js/datatables.keytable.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive/js/datatables.responsive.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="~/vendors/datatables.net-scroller/js/datatables.scroller.min.js"></script>
+    <script src="~/vendors/jszip/jszip.min.js"></script>
+    <script src="~/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="~/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <script src="~/vendors/pnotify/pnotify.js"></script>
+    <script src="~/vendors/pnotify/pnotify.nonblock.js"></script>
+    <script src="~/vendors/pnotify/pnotify.buttons.js"></script>
+    @*    <script>
         function hasClass(elem, className) {
             return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
         }
@@ -325,29 +549,17 @@
                 elem.className = newClass.replace(/^\s+|\s+$/g, '');
             }
         }
+    </script>*@
 
-        let openBtn = document.getElementById('openBtn');
-        let closeBtn = document.getElementById("closeBtn");
-
-        let state = document.getElementById('regState');
-        if (state.value == "Mở") {
-            addClass(openBtn, "btn-success");
-            removeClass(openBtn, "btn-secondary");
-        }
-        else {
-            addClass(closeBtn, "btn-danger");
-            removeClass(closeBtn, "btn-secondary");
-        }
-
-    </script>
     <script>
         let id;
         let classId = document.getElementById("ClassIdHere");
-        var modal = document.getElementById("confirmDeleteModal");
+        var modal = document.getElementById("deleteModal");
         const deleteBtn = document.getElementById('delete-btn');
         const deleteForm = document.getElementById('delete-form');
         modal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
+            console.log(event.relatedTarget);
             id = button.getAttribute('data-id');
         });
         deleteBtn.onclick = () => {
@@ -362,9 +574,178 @@
         const addForm = document.getElementById('add-form');
 
         addBtn.onclick = () => {
-            console.log("here!");
-            addForm.action = '@Url.Content("~/Classes/AddUser/")' + userId.value + '-' + classId.value;
-            addForm.submit();
+            if (localStorage.getItem('UserFound') == 'NotFound') {
+                new PNotify({
+                    text: 'Yêu cầu nhập đúng mã số sinh viên/giảng viên.',
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+            else {
+                addForm.action = '/Classes/AddUser/' + userId.value + '-' + classId.value;
+                addForm.submit();
+            }
         }
     </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var dtb = $('#datatable-classmate').DataTable({
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "Không có sinh viên trong lớp",
+                    "info": "Hiển thị _START_ đến _END_ trong tổng số _TOTAL_ kết quả",
+                    "infoEmpty": "Hiển thị 0 tới 0 trong 0 kết quả",
+                    "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "loadingRecords": "Đang tải...",
+                    "processing": "",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy kết quả nào",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    },
+                    "aria": {
+                        "sortAscending": ": kích hoạt sắp xếp cột tăng dần",
+                        "sortDescending": ": kích hoạt sắp xếp cột giảm dần"
+                    }
+                },
+                "columnDefs": [
+                    {
+                        searchable: false,
+                        orderable: false,
+                        targets: 0,
+                    },
+                ],
+                "order": [[3, 'asc']],
+                "bLengthChange": false,
+                "bInfo": false,
+                "searching": false,
+            });
+
+            dtb.on('order.dt search.dt', function () {
+                let i = 1;
+
+                dtb.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+
+            localStorage.setItem('UserFound', 'NotFound');
+        });
+    </script>
+    <script type="text/javascript">
+        function LoadClassmate(classid, userid) {
+            let count = 0;
+            var finduser = [];
+            $.ajax({
+                type: "GET",
+                url: "/Classes/GetUsersNotInClass",
+                dataType: "json",
+                async: false,
+                data: { classId: classid, userId: userid },
+                success: function (data) {
+                    localStorage.setItem('UserFindCount', data.length);
+                    $.each(data, function (key, value) {
+                        finduser.push([value.id, value.userId, value.name]);
+                    })
+                },
+                failure: function (err) {
+                }
+            })
+
+            var dtb = $('#datatable-findclassmate').DataTable({
+                "destroy": true,
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "Không tìm thấy sinh viên nào",
+                    "loadingRecords": "Đang tìm kiếm...",
+                    "processing": "",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    },
+                    "aria": {
+                        "sortAscending": ": kích hoạt sắp xếp cột tăng dần",
+                        "sortDescending": ": kích hoạt sắp xếp cột giảm dần"
+                    }
+                },
+                "columnDefs": [
+                    {
+                        searchable: false,
+                        orderable: false,
+                        targets: 0,
+                    },
+                ],
+                "order": [[1, 'asc']],
+                "bLengthChange": false,
+                "bInfo": false,
+                "searching": false,
+                "paging": false,
+                "data": finduser,
+                "columnDefs": [
+                    { className: "first_row_center", "targets": [0] },
+                    { className: "cursor_pointer", "targets": '_all' },
+                ],
+            });
+
+            dtb.on('order.dt search.dt', function () {
+                let i = 1;
+
+                dtb.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+
+            dtb.on('click', 'tr', function (e) {
+                $('#userIdText').val(dtb.row(this).data()[1]);
+                LoadClassmate("@Model.Id", dtb.row(this).data()[1]);
+            });
+
+            if (finduser.length == 1) {
+                localStorage.setItem('UserFound', finduser[0][1])
+                console.log(localStorage.getItem('UserFound'));
+            }
+            else {
+                localStorage.setItem('UserFound', 'NotFound');
+            }
+        }
+
+        $("#userIdText").on("input", function () {
+            LoadClassmate('@Model.Id', this.value);
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var dtb = $('#datatable-project').DataTable({
+                "bLengthChange": false,
+                "bInfo": false,
+                "searching": false,
+                "paging": false,
+            });
+
+            dtb.on('order.dt search.dt', function () {
+                let i = 1;
+
+                dtb.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        });
+    </script>
 }
+<style>
+    .first_row_center {
+        text-align: center;
+        width: 5%;
+    }
+
+    .cursor_pointer {
+        cursor: pointer;
+    }
+</style>
