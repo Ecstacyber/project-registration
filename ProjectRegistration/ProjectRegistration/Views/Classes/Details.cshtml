@@ -412,12 +412,14 @@
                                 @{
                                     foreach (var item in Model.ProjectClasses)
                                     {
+                                        int i = 1;
                                         if (item.IsVerified == false)
                                         {
                                             <tr data-id="@item.Id">
                                                 <td style="font-size:larger; vertical-align: middle; text-align: center">@i</td>
                                                 <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Pname)</td>
                                             </tr>
+                                            i++;
                                         }
                                     }
                                 }
