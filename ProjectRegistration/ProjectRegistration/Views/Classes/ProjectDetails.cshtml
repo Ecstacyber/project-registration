@@ -470,6 +470,20 @@
                     styling: 'bootstrap3',
                 });
             }
+            if (msg == 'MemberLimitReached') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại.%0D%0ASố lượng sinh viên trong nhóm đã đủ.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'Student1HadProject') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại.%0D%0ASinh viên 1 đã có đồ án khác trong lớp.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
             if (msg == 'NoMemberToDeleteFromProject') {
                 new PNotify({
                     text: 'Xóa thành viên khỏi đồ án thất bại%0D%0AKhông tìm thấy thành viên trong đồ án.',

@@ -417,7 +417,7 @@
                                     foreach (var item in Model.ProjectClasses)
                                     {
                                         int i = 1;
-                                        if (item.IsVerified == false)
+                                        if (item.State == "Chưa chấp thuận")
                                         {
                                             <tr data-id="@item.Id">
                                                 <td style="font-size:larger; vertical-align: middle; text-align: center">@i</td>

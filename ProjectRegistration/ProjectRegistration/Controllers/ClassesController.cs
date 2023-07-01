@@ -18,6 +18,7 @@ using NuGet.Protocol;
 using ProjectRegistration.Models;
 using NuGet.Versioning;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Quartz;
 
 namespace ProjectRegistration.Controllers
 {
@@ -411,7 +412,7 @@ namespace ProjectRegistration.Controllers
                 .Include(x => x.ProjectClasses).ThenInclude(x => x.ProjectMembers).ThenInclude(x => x.Student)
                 .FirstOrDefault();
             var projectList = new List<Project>();
-            projectList = @class.ProjectClasses.Where(x => x.Deleted == false && x.IsVerified == true).ToList();
+            projectList = @class.ProjectClasses.Where(x => x.Deleted == false && x.State != "Chưa chấp thuận").ToList();
             ViewData["ClassId"] = id;
             return View(projectList);
         }
@@ -448,7 +449,12 @@ namespace ProjectRegistration.Controllers
                     {
                         if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
                         {
-                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
+                            var pj1 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE121");
+                            var pj2 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE122");
+                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester
+                                                                                && x.Class.Cyear == currentClass.Cyear
+                                                                                && x.Class.CourseId == pj1.Id
+                                                                                && x.Class.CourseId == pj2.Id).ToList();
                             var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
                             var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
                             if (guLecProjects.Count() > 20)
@@ -474,6 +480,7 @@ namespace ProjectRegistration.Controllers
                 }
 
                 project.CreatedDateTime = DateTime.Now;
+                project.State = "Chưa chấp thuận";
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 TempData["message"] = "ProjectCreated";
@@ -536,9 +543,9 @@ namespace ProjectRegistration.Controllers
                             project.Info = reader.GetValue(2) == null ? "" : reader.GetValue(2).ToString();
                             project.CreatedDateTime = DateTime.Now;
                             project.ClassId = classId;
+                            project.State = "Chưa đăng ký";
                             cd.Add(project);
                             _context.Projects.Add(project);
-
                         }
                         @class.ProjectClasses = cd;
                     }
@@ -652,6 +659,11 @@ namespace ProjectRegistration.Controllers
                 }
                 try
                 {
+                    if (project.PGrade >= 5)
+                        project.State = "Đã hoàn thành";
+                    if (project.PGrade < 5)
+                        project.State = "Rớt";
+
                     _context.Update(project);
                     await _context.SaveChangesAsync();
                     TempData["message"] = "ProjectEdited";
@@ -747,10 +759,13 @@ namespace ProjectRegistration.Controllers
             if (ModelState.IsValid)
             {
                 saidProject = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId);
+                
                 var regStart = saidProject.Class.RegStart;
                 var regEnd = saidProject.Class.RegEnd;
                 if (saidProject != null)
                 {
+                    var currentClass = _context.Classes.FirstOrDefault(x => x.Id == saidProject.ClassId);
+                    var projectsInCurrentClass = _context.Projects.Where(x => x.ClassId == currentClass.Id).ToList();
                     if (projectMember != null && regStart != null && regStart <= DateTime.Now)
                     {
                         TempData["message"] = "RegNotOpened";
@@ -760,6 +775,27 @@ namespace ProjectRegistration.Controllers
                     {
                         TempData["message"] = "RegClosed";
                         return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                    }
+                    if (saidProject.ProjectMembers.Count == 2)
+                    {
+                        TempData["message"] = "MemberLimitReached";
+                        return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                    }
+                    foreach (Project pj in projectsInCurrentClass)
+                    {
+                        if (pj.ProjectMembers.Any(x => x.StudentId == StudentId1 && x.Deleted == false))
+                        {
+                            TempData["message"] = "Student1HadProject";
+                            return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                        }
+                    }
+                    foreach (Project pj in projectsInCurrentClass)
+                    {
+                        if (pj.ProjectMembers.Any(x => x.StudentId == StudentId2 && x.Deleted == false))
+                        {
+                            TempData["message"] = "Student2HadProject";
+                            return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                        }
                     }
                     var projectMember1 = new ProjectMember
                     {
@@ -784,6 +820,7 @@ namespace ProjectRegistration.Controllers
                         projectMember2.GroupName = projectMember.GroupName;
                         _context.Add(projectMember2);
                     }
+                    saidProject.State = "Đang thực hiện";
                     await _context.SaveChangesAsync();
                     TempData["message"] = "MemberAddedToProject";
                     return RedirectToAction("ProjectDetails", new { id = projectMember1.ProjectId });
@@ -817,21 +854,17 @@ namespace ProjectRegistration.Controllers
             {
                 member.Deleted = true;
                 member.DeletedDateTime = DateTime.Now;
-                TempData["message"] = "MemberDeletedFromProject";
+                TempData["message"] = "MemberDeletedFromProject";               
             }
 
             await _context.SaveChangesAsync();
+            var currentProject = _context.Projects.FirstOrDefault(x => x.Id == member.ProjectId);
+            if (currentProject != null && currentProject.ProjectMembers.Where(x => x.Deleted == false).Count() == 0)
+            {
+                currentProject.State = "Chưa đăng ký";
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("ProjectDetails", new { id = id });
-        }
-
-        // GET Unverified projects
-        [ActionName("ViewUnverifiedProjects")]
-        [Authorize(Roles = "Manager, Lecturer, Student")]
-        public async Task<IActionResult> ViewUnverifiedProjects(int id)
-        {
-            return _context.Projects != null ?
-                          View(await _context.Projects.Where(x => x.ClassId == id && x.Deleted == false && x.IsVerified == false).ToListAsync()) :
-                          Problem("Entity set 'IDENTITYUSERContext.Projects'  is null.");
         }
 
         // POST
@@ -843,7 +876,7 @@ namespace ProjectRegistration.Controllers
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
             if (project != null)
             {
-                project.IsVerified = true;
+                project.State = "Chưa đăng ký";
                 _context.SaveChanges();
                 TempData["message"] = "ProjectVerified";
             }

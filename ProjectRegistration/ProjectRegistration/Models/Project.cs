@@ -37,6 +37,12 @@ public partial class Project
     [Display(Name = "Trạng thái duyệt")]
     public bool? IsVerified { get; set; } = false;
 
+    [Display(Name = "Trạng thái")]
+    public string? State { get; set; }
+
+    [Display(Name = "Điểm đồ án")]
+    public double? PGrade { get; set; }
+
     [Display(Name = "Ngày tạo")]
     public DateTime? CreatedDateTime { get; set; }
 
