@@ -19,6 +19,7 @@ using ProjectRegistration.Models;
 using NuGet.Versioning;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Quartz;
+using Microsoft.AspNetCore.Identity;
 
 namespace ProjectRegistration.Controllers
 {
@@ -26,11 +27,13 @@ namespace ProjectRegistration.Controllers
     {
         private readonly IDENTITYUSERContext _context;
         private readonly ILogger<ClassesController> _logger;
+        private readonly UserManager<User> _userManager;
 
-        public ClassesController(IDENTITYUSERContext context, ILogger<ClassesController> logger)
+        public ClassesController(IDENTITYUSERContext context, ILogger<ClassesController> logger, UserManager<User> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         // GET: Classes
@@ -479,7 +482,10 @@ namespace ProjectRegistration.Controllers
                     }
                 }
 
-                project.CreatedDateTime = DateTime.Now;
+                project.CreatedDateTime = DateTime.Now; 
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
                 project.State = "Chưa chấp thuận";
                 _context.Add(project);
                 await _context.SaveChangesAsync();
@@ -723,7 +729,6 @@ namespace ProjectRegistration.Controllers
             return View(project);
         }
 
-        // GET: ProjectMembers/Create
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public IActionResult AddMemberToProject(string id)
         {
@@ -746,7 +751,6 @@ namespace ProjectRegistration.Controllers
             return View();
         }
 
-        // POST: ProjectMembers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
