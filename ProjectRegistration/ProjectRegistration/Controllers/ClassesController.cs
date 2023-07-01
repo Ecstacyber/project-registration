@@ -19,6 +19,7 @@ using ProjectRegistration.Models;
 using NuGet.Versioning;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Quartz;
+using Microsoft.AspNetCore.Identity;
 
 namespace ProjectRegistration.Controllers
 {
@@ -26,11 +27,13 @@ namespace ProjectRegistration.Controllers
     {
         private readonly IDENTITYUSERContext _context;
         private readonly ILogger<ClassesController> _logger;
+        private readonly UserManager<User> _userManager;
 
-        public ClassesController(IDENTITYUSERContext context, ILogger<ClassesController> logger)
+        public ClassesController(IDENTITYUSERContext context, ILogger<ClassesController> logger, UserManager<User> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         // GET: Classes
@@ -459,7 +462,7 @@ namespace ProjectRegistration.Controllers
                             var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
                             if (guLecProjects.Count() > 20)
                             {
-                                TempData["message"] = "Project1GuidingLimitReached";
+                                TempData["message"] = "ProjectGuidingLimitReached";
                                 TempData["limit"] = 20;
                                 return View(project);
                             }
@@ -631,16 +634,22 @@ namespace ProjectRegistration.Controllers
                 var currentClass = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
                 if (currentClass != null && currentClass.Course != null)
                 {
-                    if (currentClass.Course.CourseName == "Đồ án 1")
+                    if (currentClass.Course.CourseName == "Đồ án 1" || currentClass.Course.CourseName == "Đồ án 2")
                     {
                         if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
                         {
-                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
+                            var pj1 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE121");
+                            var pj2 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE122");
+                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester
+                                                                                && x.Class.Cyear == currentClass.Cyear
+                                                                                && x.Class.CourseId == pj1.Id
+                                                                                && x.Class.CourseId == pj2.Id).ToList();
                             var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
                             var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
                             if (guLecProjects.Count() > 20)
                             {
-                                TempData["message"] = "Project1GuidingLimitReached";
+                                TempData["message"] = "ProjectGuidingLimitReached";
+                                TempData["limit"] = 20;
                                 return View(project);
                             }
                         }
@@ -653,6 +662,7 @@ namespace ProjectRegistration.Controllers
                         if (guLecProjects.Count() > 5)
                         {
                             TempData["message"] = "GraduationThesisGuidingLimitReached";
+                            TempData["limit"] = 5;
                             return View(project);
                         }
                     }
@@ -759,7 +769,7 @@ namespace ProjectRegistration.Controllers
             if (ModelState.IsValid)
             {
                 saidProject = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId);
-                
+
                 var regStart = saidProject.Class.RegStart;
                 var regEnd = saidProject.Class.RegEnd;
                 if (saidProject != null)
@@ -854,7 +864,7 @@ namespace ProjectRegistration.Controllers
             {
                 member.Deleted = true;
                 member.DeletedDateTime = DateTime.Now;
-                TempData["message"] = "MemberDeletedFromProject";               
+                TempData["message"] = "MemberDeletedFromProject";
             }
 
             await _context.SaveChangesAsync();
@@ -905,6 +915,143 @@ namespace ProjectRegistration.Controllers
             response.GuidingLecturerId = pj.GuidingLecturerId;
             response.GuidingLecturerName = pj.GuidingLecturer.Fullname;
             return Json(response);
+        }
+
+        [HttpPost, ActionName("UploadDocument")]
+        [Authorize(Roles = "Manager, Lecturer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadDocument(int Id, IFormFile fileSelect)
+        {
+            var fileextension = Path.GetExtension(fileSelect.FileName);
+            var filename = Guid.NewGuid().ToString() + fileextension;
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", filename);
+            using (FileStream fs = System.IO.File.Create(filepath))
+            {
+                fileSelect.CopyTo(fs);
+            }
+            Project project = _context.Projects.FirstOrDefault(x => x.Id == Id);
+            Product product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+            if (project != null)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
+                if (product == null)
+                {
+                    product = new Product
+                    {
+                        Project = project,
+                        ProjectId = Id,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    _context.Products.Add(product);
+                    _context.SaveChanges();
+                    product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        UserId = currentUserName,
+                        User = user,
+                        Type = "File",
+                        Info = filename,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                }
+                if (product != null)
+                {
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        UserId = currentUserName,
+                        User = user,
+                        CreatedDateTime = DateTime.Now,
+                        Type = "File",
+                        Info = filename
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ProjectDetails", new { id = Id });
+        }
+
+        [HttpPost, ActionName("UploadStudentProduct")]
+        [Authorize(Roles = "Student")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadStudentProduct(int Id, IFormFile fileSelect)
+        {
+            var fileextension = Path.GetExtension(fileSelect.FileName);
+            var filename = Guid.NewGuid().ToString() + fileextension;
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "studentproduct", filename);
+            using (FileStream fs = System.IO.File.Create(filepath))
+            {
+                fileSelect.CopyTo(fs);
+            }
+            Project project = _context.Projects.FirstOrDefault(x => x.Id == Id);
+            Product product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+
+            if (project != null)
+            {
+                if (product == null)
+                {
+                    product = new Product
+                    {
+                        Project = project,
+                        ProjectId = Id,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    _context.Products.Add(product);
+                    _context.SaveChanges();
+                    product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        Type = "File",
+                        Info = filename,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                    return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+                }
+                if (product != null)
+                {
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        CreatedDateTime = DateTime.Now,
+                        Type = "File",
+                        Info = filename
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                    return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+                }
+            }
+
+            return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
         }
     }
 }

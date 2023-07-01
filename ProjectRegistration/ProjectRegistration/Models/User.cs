@@ -54,6 +54,8 @@ public partial class User : IdentityUser
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 
+    public virtual ICollection<ProductDetail> ProductDetails { get; set; } = new List<ProductDetail>();
+
     public virtual ICollection<Project> ProjectGradingLecturers { get; set; } = new List<Project>();
 
     public virtual ICollection<Project> ProjectGuidingLecturers { get; set; } = new List<Project>();

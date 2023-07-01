@@ -407,11 +407,15 @@
                                     </li>
                                 </ul>
                                 <br />
-
-                                <div class="text-center mtop20">
+                               
+                                @*<div class="text-center mtop20">
                                     <input type="file" id="project-file" style="display:none;" />
-                                    <a onclick="$('#project-file').trigger('click');" class="btn btn-sm btn-primary font-weight-bold" style="color:white">Add files</a>
-                                </div>
+                                    <a onclick="$('#project-file').trigger('click');" class="btn btn-sm btn-primary font-weight-bold" style="color:white">Thêm tài liệu</a>
+                                </div>*@
+                                <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadDocumentModal">
+                                    <i class="fa fa-file-excel-o"></i> Thêm tài liệu
+                                </button>
+                                
                             </div>
 
                         </section>
@@ -424,6 +428,32 @@
         </div>
     </div>
 </div>
+
+<!-- Add document modal -->
+<form method="post" enctype="multipart/form-data" name="add-file-form" id="add-file-form" asp-asp-controller="Users" asp-action="UploadDocument">
+    <input type="hidden" asp-for="Id" value="@Model.Id"/>
+    <div class="modal fade" id="uploadDocumentModal" tabindex="-1" style="z-index:1060">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Thêm tài liệu</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="fileSelect" required="required" name="fileSelect" type="file" style="display:none" />
+                    <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file </label>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-success" id="add-file-btn">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 @section Scripts {
     @{
@@ -499,25 +529,5 @@
                 });
             }
         });
-    </script>
-
-    <script>
-        //let memberid;
-        //var modal = document.getElementById("confirmDeleteModal");
-        //const deleteBtn = document.getElementById('delete-btn');
-        //const deleteForm = document.getElementById('delete-form');
-        //modal.addEventListener('show.bs.modal', function (event) {
-        //    const button = event.relatedTarget;
-        //    console.log(button);
-        //    memberid = button.getAttribute('data-id');
-
-        //});
-
-        //console.log("MemberID: " + memberid);
-        //deleteBtn.onclick = () => {
-        //    console.log("MemberID: " + memberid);
-        //    deleteForm.action = '/Classes/DeleteMemberFromProject/' + memberid;
-        //    deleteForm.submit();
-        //}
     </script>
 }

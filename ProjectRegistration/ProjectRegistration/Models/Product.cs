@@ -9,11 +9,11 @@ public partial class Product
 
     public int? ProjectId { get; set; }
 
-    public string? StudentId { get; set; }
+    public string? UserId { get; set; }
 
     public DateTime? CreatedDateTime { get; set; }
 
-    public bool? Deleted { get; set; }
+    public bool? Deleted { get; set; } = false;
 
     public DateTime? DeletedDateTime { get; set; }
 
@@ -21,5 +21,5 @@ public partial class Product
 
     public virtual Project? Project { get; set; }
 
-    public virtual User? Student { get; set; }
+    public virtual User? User { get; set; }
 }

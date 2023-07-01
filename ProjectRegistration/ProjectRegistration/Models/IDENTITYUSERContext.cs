@@ -140,8 +140,8 @@ namespace ProjectRegistration.Models
                     .HasForeignKey(d => d.ProjectId)
                     .HasConstraintName("FK_Products_ProjectId");
 
-                entity.HasOne(d => d.Student).WithMany(p => p.Products)
-                    .HasForeignKey(d => d.StudentId)
+                entity.HasOne(d => d.User).WithMany(p => p.Products)
+                    .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Products_StudentId");
             });
 
