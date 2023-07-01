@@ -42,7 +42,7 @@
                         <div class="item form-group mb-4">
                             <label asp-for="CourseId" class="col-form-label col-md-3 col-sm-3 label-align"></label>
                             <div class="col-md-4 col-sm-4 ">
-                                <select id="courseId" asp-for="CourseId" asp-items="ViewBag.Course" class="form-control">
+                                <select id="courseId" asp-for="CourseId" onchange="checkCourseId()" asp-items="ViewBag.Course" class="form-control">
                                 </select>
                             </div>
                         </div>
@@ -173,5 +173,26 @@
             addClass(closeBtn, "btn-danger");
             removeClass(closeBtn, "btn-secondary");
         }
+    </script>
+    <script>
+        function checkCourseId() {
+            var course = $('#courseId').find(":selected").val();
+            let classInput = document.getElementById('classId');
+            classInput.value = classInput.value.toUpperCase();
+
+            $.ajax({
+                type: "GET",
+                url: "/Courses/FindCourse",
+                async: false,
+                data: { id: course },
+                success: function (data) {
+                    if ($('#classId').val().toString().substr(0, data.courseId.length + 1) != data.courseId + ".") {
+                        $('#classId').val(data.courseId + ".");
+                    }
+                }
+            })
+        }
+        $('#classId').on('input', checkCourseId);
+        checkCourseId();
     </script>
 }

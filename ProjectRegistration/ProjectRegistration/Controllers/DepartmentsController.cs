@@ -68,6 +68,10 @@ namespace ProjectRegistration.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Dname,Info,CreatedDateTime,Deleted,DeletedDateTime")] Department department)
         {
+            if (_context.Departments.Where(x => x.Deleted == false && x.Dname == department.Dname).FirstOrDefault() != null)
+            {
+                ModelState.AddModelError("Dname", "Mã khoa đã tồn tại");
+            }
             if (ModelState.IsValid)
             {
                 department.CreatedDateTime = DateTime.Now;
@@ -110,6 +114,10 @@ namespace ProjectRegistration.Controllers
             {
                 TempData["message"] = "NoDepartmentToEdit";
                 return NotFound();
+            }
+            if (_context.Departments.Where(x => x.Deleted == false && x.Dname == department.Dname).FirstOrDefault() != null)
+            {
+                ModelState.AddModelError("Dname", "Mã khoa đã tồn tại");
             }
 
             if (ModelState.IsValid)

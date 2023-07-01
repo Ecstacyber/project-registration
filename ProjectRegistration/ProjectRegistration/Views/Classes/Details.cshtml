@@ -230,6 +230,10 @@
                         <h2>@Model.ClassId</h2>
 
                         <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                            <a class="btn btn-danger btn-round" style="margin-right:20px" asp-action="Edit" asp-route-id="@Model.Id">
+                                <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
+
+                            </a>
                             <li>
                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>
@@ -358,7 +362,7 @@
 
                         <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
                             <li>
-                                <a asp-action="ViewProjectList" asp-route-id="@Model.Id">Xem danh sách đồ án</a>
+                                <a asp-action="ViewProjectList" class="text-primary" asp-route-id="@Model.Id">Xem danh sách đồ án</a>
                             </li>
                             <li>
                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -504,7 +508,7 @@
                             <h2>Kết quả tìm kiếm</h2>
 
                             <br />
-                            <table id="datatable-findclassmate" class="table table-striped jambo_table table-hover table-bordered" style="width:100%">
+                            <table id="datatable-findclassmate" class="table table-hover table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center; width:5%">#</th>
@@ -544,12 +548,34 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">
-                
+            <div class="modal-body w-75" style="margin-left:10%">
+                <table class="table-borderless">
+                    <thead>
+                        <tr>
+                            <th class="w-50"></th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:left">
+                        <tr>
+                            <td style="margin-left:30px">Tên đồ án:</td>
+                            <th > <div id="pname"></div></th>
+                        </tr>
+                        <tr>
+                            <td>Mô tả:</td>
+                            <th><div id="pinfo"></div></th>
+                        </tr>
+                        <tr>
+                            <td>Giảng viên hưỡng dẫn:</td>
+                            <th><div id="pguide"></div></th>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btn-cancel-verify-project" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-danger" id="btn-verify-project">Duyệt</button>
+                <button type="button" class="btn btn-success" id="btn-verify-project">Duyệt</button>
             </div>
 
         </div>
@@ -794,6 +820,9 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var dtb = $('#datatable-project-not-verified').DataTable({
+                "language": {
+                    "emptyTable": "Không có đồ án nào cần duyệt",
+                },
                 "bLengthChange": false,
                 "bInfo": false,
                 "searching": false,
@@ -805,6 +834,18 @@
             dtb.on('click', 'tr', function (e) {
                 id = this.getAttribute('data-id');
                 if (id != null) {
+                    $.ajax({
+                        type: 'get',
+                        url: "/Classes/GetProjectDetail",
+                        async: false,
+                        data: { id: id },
+                        success: function (data) {
+                            document.getElementById("pname").innerHTML = data.pname;
+                            document.getElementById("pinfo").innerHTML = data.info;
+                            document.getElementById("pguide").innerHTML = data.guidingLecturerName;
+                        }
+
+                    });
                     $('#verifyProjectModal').modal('toggle');
                 }
             });
@@ -868,10 +909,10 @@
                         minutes = Math.floor(seconds / 60);
                         seconds -= minutes * 60;
                         //
-                        days == 1 ? thisEl.find(".timeRefDays").text("Days") : thisEl.find(".timeRefDays").text("Days");
-                        hours == 1 ? thisEl.find(".timeRefHours").text("Hours") : thisEl.find(".timeRefHours").text("Hours");
-                        minutes == 1 ? thisEl.find(".timeRefMinutes").text("Minutes") : thisEl.find(".timeRefMinutes").text("Minutes");
-                        seconds == 1 ? thisEl.find(".timeRefSeconds").text("Seconds") : thisEl.find(".timeRefSeconds").text("Seconds");
+                        days == 1 ? thisEl.find(".timeRefDays").text("Days") : thisEl.find(".timeRefDays").text("Ngày");
+                        hours == 1 ? thisEl.find(".timeRefHours").text("Hours") : thisEl.find(".timeRefHours").text("Giờ");
+                        minutes == 1 ? thisEl.find(".timeRefMinutes").text("Minutes") : thisEl.find(".timeRefMinutes").text("Phút");
+                        seconds == 1 ? thisEl.find(".timeRefSeconds").text("Seconds") : thisEl.find(".timeRefSeconds").text("Giây");
                         //
                         if (r["format"] == "on") {
                             days = String(days).length >= 2 ? days : "0" + days;
@@ -946,7 +987,7 @@
         }
 
     p.numbers {
-        font-size:xx-large;
+        font-size: xx-large;
         width: 100%;
         height: 85%;
         background: #FFFFFF;

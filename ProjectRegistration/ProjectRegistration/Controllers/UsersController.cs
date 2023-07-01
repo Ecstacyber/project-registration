@@ -119,6 +119,10 @@ namespace ProjectRegistration.Controllers
         public async Task<IActionResult> Create([Bind("UserId,Fullname,Gender,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
             ModelState.Remove("ImagePath");
+            if (_context.Users.Where(x => x.Deleted == false && x.UserId == user.UserId).FirstOrDefault() != null)
+            {
+                ModelState.AddModelError("UserId", "Mã số sinh viên/giảng viên đã tồn tại");
+            }
             if (ModelState.IsValid)
             {
                 var newUser = CreateUser();
@@ -183,12 +187,8 @@ namespace ProjectRegistration.Controllers
                         return RedirectToAction(nameof(StudentList));
                     }
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
-            ViewData["Department"] = new SelectList(_context.Departments.Where(x => x.Deleted == false), "Dname", "Dname", user.DepartmentId);
+            ViewData["Department"] = new SelectList(_context.Departments.Where(x => x.Deleted == false), "Id", "Info", user.DepartmentId);
             return View(nameof(CreateLecturer), user);
         }
 
@@ -252,6 +252,10 @@ namespace ProjectRegistration.Controllers
         public async Task<IActionResult> Edit([Bind("Id,UserId,Gender,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
             ModelState.Remove("ImagePath");
+            if (_context.Users.Where(x => x.Deleted == false && x.UserId == user.UserId).FirstOrDefault() != null)
+            {
+                ModelState.AddModelError("UserId", "Mã số sinh viên/giảng viên đã tồn tại");
+            }
             if (ModelState.IsValid)
             {
                 try

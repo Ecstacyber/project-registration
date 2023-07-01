@@ -59,11 +59,15 @@
                                                     <td>@Html.DisplayFor(modelItem => item.Fullname)</td>
                                                     @if (item.Gender == 0)
                                                     {
-                                                        <td style="">Nam</td>
+                                                        <td>Nam</td>
                                                     }
-                                                    @if (item.Gender == 1)
+                                                    else if (item.Gender == 1)
                                                     {
-                                                        <td style="">Nữ</td>
+                                                        <td>Nữ</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
                                                     }
                                                     <td>@Html.DisplayFor(modelItem => item.DateOfBirth)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.Department.Dname)</td>

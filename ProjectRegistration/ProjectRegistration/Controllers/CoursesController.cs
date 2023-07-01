@@ -63,6 +63,10 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Create([Bind("Id,CourseId,CourseName,Semester,Cyear,CreatedDateTime,Deleted,DeletedDateTime")] Course course)
         {
+            if (_context.Courses.Where(x => x.Deleted == false && x.CourseId == course.CourseId).FirstOrDefault() != null)
+            {
+                ModelState.AddModelError("CourseId", "Mã môn học đã tồn tại");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(course);
@@ -179,6 +183,13 @@ namespace ProjectRegistration.Controllers
         private bool CourseExists(int id)
         {
           return (_context.Courses?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> FindCourse(int id)
+        {
+            var response = await _context.Courses.FindAsync(id);
+            return Json(response);
+
         }
     }
 }

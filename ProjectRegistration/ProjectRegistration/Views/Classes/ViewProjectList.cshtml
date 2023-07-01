@@ -162,7 +162,7 @@
 <link href="~/vendors/pnotify/pnotify.nonblock.css" rel="stylesheet" />
 <link href="~/vendors/pnotify/pnotify.css" rel="stylesheet" />
 
-<a class="pt-4" asp-action="Details" asp-route-id="@ViewData["id"]"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
+<a class="pt-4" asp-action="Details" asp-route-id="@ViewData["ClassId"]"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
 
 <div class="">
     <div class="page-title">
@@ -180,7 +180,7 @@
             <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel
         </button>
 
-        <a class="btn btn-success btn-round pull-right" style="margin-right:20px" asp-action="CreateProject" asp-route-id="@ViewData["id"]">
+        <a class="btn btn-success btn-round pull-right" style="margin-right:20px" asp-action="CreateProject" asp-route-id="@ViewData["ClassId"]">
             <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
             Thêm mới
         </a>
@@ -239,10 +239,19 @@
                             <label class="text-info">Đang tiến hành</label>
                         </td>
                         <td style="white-space: nowrap; width:1%">
-                            <a class="btn btn-primary btn-xs" asp-action="EditProject" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
-                            <button type="button" class="btn btn-danger btn-xs openDeleteModalBtn" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
-                                <i class="fa fa-trash-o"></i> Xoá
-                            </button>
+                            @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                            {
+                                <a class="btn btn-primary btn-xs" asp-action="EditProject" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
+                                <button type="button" class="btn btn-danger btn-xs openDeleteModalBtn" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
+                                    <i class="fa fa-trash-o"></i> Xoá
+                                </button>
+                            }
+                            else if (User.IsInRole("Student"))
+                            {
+                                <button type="button" class="btn btn-success btn-xs openDeleteModalBtn" id="GoToAddMemberBtn" data-id="@item.Id">
+                                    <i class="fa fa-pencil-square"></i> Đăng ký
+                                </button>
+                            }
                         </td>
                     </tr>
                 }
@@ -271,12 +280,12 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-success" value=@ViewData["id"] id="add-file-btn">Thêm</button>
+                    <button type="submit" class="btn btn-success" value=@ViewData["ClassId"] id="add-file-btn">Thêm</button>
                 </div>
             </div>
         </div>
     </div>
-    <input type="hidden" name="classId" value="@ViewData["id"]" />
+    <input type="hidden" name="classId" value="@ViewData["ClassId"]" />
 </form>
 
 
@@ -306,6 +315,8 @@
 
 <!-- Form ProjectDetails-->
 <form id="projectDetailForm" method="post"></form>
+<!-- Form Add Member-->
+<form id="addMemberForm" method="get"></form>
 
 @section Scripts {
     <script src="~/vendors/fastclick/lib/fastclick.js"></script>
@@ -386,6 +397,11 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var dtb = $('#datatable-project').DataTable({
+                "language": {
+
+                    "emptyTable": "Hiện tại không có đồ án nào",
+                    "zeroRecords": "Không tìm thấy đồ án nào",
+                },
                 "bLengthChange": false,
                 "bInfo": false,
                 "searching": true,
@@ -416,7 +432,7 @@
                     var id = this.getAttribute('data-id');
                     if (id != null) {
                         const detailForm = document.getElementById('projectDetailForm');
-                        detailForm.action = '@Url.Content("~/Classes/ProjectDetails/")' + id + '-' + '@ViewData["id"]';
+                        detailForm.action = '@Url.Content("~/Classes/ProjectDetails/")' + id + '-' + '@ViewData["ClassId"]';
                         detailForm.submit();
 
                     }
@@ -441,6 +457,13 @@
             deleteForm.submit();
 
         }
+    </script>
+    <script>
+        $('#GoToAddMemberBtn').on('click', function (e) {
+            const addMemberForm = document.getElementById('addMemberForm');
+            addMemberForm.action = '@Url.Content("~/Classes/AddMemberToProject/")' + e.target.getAttribute('data-id') + '-' + '@ViewData["ClassId"]';
+            addMemberForm.submit();
+        });
     </script>
 }
 <style>

@@ -33,15 +33,33 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Classes
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> Index()
         {
-            var IDENTITYUSERContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false).OrderBy(x => x.Id);
+            var IDENTITYUSERContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false).OrderBy(x => x.Id).Reverse();
             return View(await IDENTITYUSERContext.ToListAsync());
+        }
+        public async Task<IActionResult> SE121()
+        {
+            var IDENTITYUSERContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false && x.Course.CourseId == "SE121").OrderBy(x => x.Cyear).Reverse();
+            ViewData["CourseId"] = "SE121";
+            return View("Index", await IDENTITYUSERContext.ToListAsync());
+        }
+        public async Task<IActionResult> SE122()
+        {
+            var IDENTITYUSERContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false && x.Course.CourseId == "SE122").OrderBy(x => x.Cyear).Reverse();
+            ViewData["CourseId"] = "SE122";
+            return View("Index", await IDENTITYUSERContext.ToListAsync());
+        }
+        public async Task<IActionResult> KLTN()
+        {
+            var IDENTITYUSERContext = _context.Classes.Include(x => x.Course).Where(x => x.Deleted == false && x.Course.CourseId == "KLTN").OrderBy(x => x.Cyear).Reverse();
+            ViewData["CourseId"] = "KLTN";
+            return View("Index", await IDENTITYUSERContext.ToListAsync());
         }
 
         // GET: Classes/Details/5
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Classes == null)
@@ -67,8 +85,14 @@ namespace ProjectRegistration.Controllers
 
         // GET: Classes/Create
         [Authorize(Roles = "Manager")]
-        public IActionResult Create()
+        public IActionResult Create(string? id)
         {
+            Class @class = new Class();
+            if (id != null)
+            {
+                @class.CourseId = _context.Courses.Where(x => x.CourseId == id).FirstOrDefault().Id;
+            }
+
             int currentYear = DateTime.Now.Year;
             var yearList = new List<string>();
             for (int i = 2000; i <= currentYear; i++)
@@ -76,9 +100,9 @@ namespace ProjectRegistration.Controllers
                 yearList.Add(i.ToString() + " - " + (i + 1).ToString());
             }
             yearList.Reverse();
-            ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName");
             ViewData["Year"] = new SelectList(yearList);
-            return View();
+            ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName");
+            return View(@class);
         }
 
         // POST: Classes/Create
@@ -87,8 +111,13 @@ namespace ProjectRegistration.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Create([Bind("Id,CourseId,ClassId,Semester,Cyear,RegOpen,RegStart")] Class @class, string RegTime)
+        public async Task<IActionResult> Create([Bind("CourseId,ClassId,Semester,Cyear,RegOpen,RegStart")] Class @class, string RegTime)
         {
+            if (@class.ClassId.Split('.')[1] == "")
+            {
+                ModelState.AddModelError("ClassId", "Vui lòng nhập mã lớp");
+            }
+
             if (ModelState.IsValid)
             {
                 @class.RegStart = DateTime.Parse(RegTime.Split("-")[0]);
@@ -99,6 +128,14 @@ namespace ProjectRegistration.Controllers
                 TempData["message"] = "ClassCreated";
                 return RedirectToAction(nameof(Index));
             }
+            int currentYear = DateTime.Now.Year;
+            var yearList = new List<string>();
+            for (int i = 2000; i <= currentYear; i++)
+            {
+                yearList.Add(i.ToString() + " - " + (i + 1).ToString());
+            }
+            yearList.Reverse();
+            ViewData["Year"] = new SelectList(yearList);
             ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName", @class.CourseId);
             TempData["message"] = "ClassNotCreated";
             return View(@class);
@@ -174,7 +211,15 @@ namespace ProjectRegistration.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @class.CourseId);
+            int currentYear = DateTime.Now.Year;
+            var yearList = new List<string>();
+            for (int i = 2000; i <= currentYear; i++)
+            {
+                yearList.Add(i.ToString() + " - " + (i + 1).ToString());
+            }
+            yearList.Reverse();
+            ViewData["Year"] = new SelectList(yearList);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "CourseId", @class.CourseId);
             return View(@class);
         }
 
@@ -281,6 +326,7 @@ namespace ProjectRegistration.Controllers
             public string Name { get; set; }
         }
         [HttpGet]
+        [Authorize(Roles = "Manager, Lecturer")]
         public async Task<IActionResult> GetUsersNotInClass(string classId, string userId)
         {
             if (userId == null)
@@ -328,7 +374,7 @@ namespace ProjectRegistration.Controllers
 
         [HttpPost, ActionName("AddUser")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer")]
         public async Task<IActionResult> AddUser(string id)
         {
             if (_context.Classes == null)
@@ -356,28 +402,32 @@ namespace ProjectRegistration.Controllers
         }
 
         [ActionName("ViewProjectList")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> ViewProjectList(int id)
         {
             var @class = _context.Classes.Where(x => x.Deleted == false && x.Id == id)
                 .Include(x => x.ProjectClasses).ThenInclude(x => x.GuidingLecturer)
                 .Include(x => x.ProjectClasses).ThenInclude(x => x.GradingLecturer)
-                .Include(x => x.ProjectClasses).ThenInclude(x => x.ProjectMembers).ThenInclude(x=> x.Student)
+                .Include(x => x.ProjectClasses).ThenInclude(x => x.ProjectMembers).ThenInclude(x => x.Student)
                 .FirstOrDefault();
             var projectList = new List<Project>();
             projectList = @class.ProjectClasses.Where(x => x.Deleted == false && x.IsVerified == true).ToList();
-            ViewData["id"] = id;
+            ViewData["ClassId"] = id;
             return View(projectList);
         }
 
         // GET: Projects/Create
+        [Authorize(Roles = "Manager, Lecturer")]
         public IActionResult CreateProject(int id)
         {
+            var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == id && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
+            ViewData["GradingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
+            ViewData["GuidingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
+
             ViewData["id"] = id;
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id");
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id");
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id");
-            ViewData["GradingLecturerId"] = new SelectList(_context.Users.Where(x => x.UserTypeId == 10), "Id", "Fullname");
-            ViewData["GuidingLecturerId"] = new SelectList(_context.Users.Where(x => x.UserTypeId == 10), "Id", "Fullname");
             return View();
         }
 
@@ -386,7 +436,8 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("CreateProject")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateProject([Bind("Id,Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project)
+        [Authorize(Roles = "Manager, Lecturer")]
+        public async Task<IActionResult> CreateProject([Bind("Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project)
         {
             if (ModelState.IsValid)
             {
@@ -422,7 +473,6 @@ namespace ProjectRegistration.Controllers
                     }
                 }
 
-                project.Id = 0;
                 project.CreatedDateTime = DateTime.Now;
                 _context.Add(project);
                 await _context.SaveChangesAsync();
@@ -433,14 +483,16 @@ namespace ProjectRegistration.Controllers
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
-            ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
-            ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
+            var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
+            ViewData["GradingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
+            ViewData["GuidingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
             TempData["message"] = "ProjectNotCreated";
             return RedirectToAction("CreateProject", new { id = project.ClassId });
         }
 
         [HttpPost, ActionName("AddProjectFromFileExcel")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> AddProjectFromFileExcel(IFormCollection form, IFormFile fileSelect)
         {
             try
@@ -486,7 +538,7 @@ namespace ProjectRegistration.Controllers
                             project.ClassId = classId;
                             cd.Add(project);
                             _context.Projects.Add(project);
-                        
+
                         }
                         @class.ProjectClasses = cd;
                     }
@@ -509,6 +561,7 @@ namespace ProjectRegistration.Controllers
         // POST: Projects/Delete/5
         [HttpPost, ActionName("DeleteProject")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager, Lecturer")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             if (_context.Projects == null)
@@ -529,6 +582,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: Projects/Edit/5
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> EditProject(int? id)
         {
             if (id == null || _context.Projects == null)
@@ -545,8 +599,9 @@ namespace ProjectRegistration.Controllers
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
-            ViewData["GradingLecturerId"] = new SelectList(_context.Users.Where(x => x.Deleted == false && x.UserTypeId == 10), "Id", "Fullname", project.GradingLecturerId);
-            ViewData["GuidingLecturerId"] = new SelectList(_context.Users.Where(x => x.Deleted == false && x.UserTypeId == 10), "Id", "Fullname", project.GuidingLecturerId);
+            var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == id && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
+            ViewData["GradingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
+            ViewData["GuidingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
             return View(project);
         }
 
@@ -555,6 +610,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("EditProject")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> EditProject(int id, [Bind("Id,Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project)
         {
             if (id != project.Id)
@@ -574,7 +630,7 @@ namespace ProjectRegistration.Controllers
                         {
                             var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
                             var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
-                            var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);                          
+                            var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
                             if (guLecProjects.Count() > 20)
                             {
                                 TempData["message"] = "Project1GuidingLimitReached";
@@ -619,13 +675,15 @@ namespace ProjectRegistration.Controllers
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
             ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
-            ViewData["GradingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GradingLecturerId);
-            ViewData["GuidingLecturerId"] = new SelectList(_context.Users, "Id", "Id", project.GuidingLecturerId);
+            var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == id && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
+            ViewData["GradingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
+            ViewData["GuidingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
             TempData["message"] = "ProjectNotEdited";
             return View(project);
         }
 
         // GET: Projects/Details/5
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> ProjectDetails(string? id)
         {
             int pId = int.Parse(id.Split('-')[0]);
@@ -654,10 +712,13 @@ namespace ProjectRegistration.Controllers
         }
 
         // GET: ProjectMembers/Create
-        public IActionResult AddMemberToProject(int id)
+        [Authorize(Roles = "Manager, Lecturer, Student")]
+        public IActionResult AddMemberToProject(string id)
         {
-            ViewData["id"] = id;
-            var project = _context.Projects.FirstOrDefault(x => x.Id == id);
+            int pId = int.Parse(id.Split('-')[0]);
+            int cId = int.Parse(id.Split('-')[1]);
+            var project = _context.Projects.FirstOrDefault(x => x.Id == pId);
+            ViewData["ClassId"] = cId;
             ViewData["Project"] = project;
             ViewData["ProjectId"] = project.Id;
             //var members = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
@@ -667,9 +728,9 @@ namespace ProjectRegistration.Controllers
             //    ViewData["StudentId1"] = new SelectList(classDetail1, "UserId", "User.Fullname");
             //    ViewData["StudentId2"] = new SelectList(members, "UserId", "User.Fullname");
             //}
-            var classDetails = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
-            ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname");
-            ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname");
+            var classDetails = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.User.UserTypeId == 100).ToList();
+            ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname" + ' ' + "User.UserId");
+            ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname" + ' ' + "User.UserId");
             return View();
         }
 
@@ -678,6 +739,7 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> AddMemberToProject([Bind("ProjectId, GroupName")] ProjectMember projectMember, string StudentId1, string StudentId2)
         {
             ModelState.Remove("StudentId2");
@@ -739,6 +801,7 @@ namespace ProjectRegistration.Controllers
         }
 
         // POST: Classes/DeleteMemberFromProject/5
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         [HttpPost, ActionName("DeleteMemberFromProject")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
@@ -763,7 +826,7 @@ namespace ProjectRegistration.Controllers
 
         // GET Unverified projects
         [ActionName("ViewUnverifiedProjects")]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> ViewUnverifiedProjects(int id)
         {
             return _context.Projects != null ?
@@ -775,10 +838,10 @@ namespace ProjectRegistration.Controllers
         [HttpPost, ActionName("VerifyProject")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> VerifyProject (int id)
+        public async Task<IActionResult> VerifyProject(int id)
         {
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
-            if (project != null) 
+            if (project != null)
             {
                 project.IsVerified = true;
                 _context.SaveChanges();
@@ -789,6 +852,26 @@ namespace ProjectRegistration.Controllers
                 TempData["message"] = "CouldNotVerifyProject";
             }
             return RedirectToAction("Details", new { id = project.ClassId });
+        }
+
+        private class UnverifyProjectDetail
+        {
+            public string Pname { get; set; }
+            public string? Info { get; set; }
+            public string GuidingLecturerId { get; set; }
+            public string GuidingLecturerName { get; set; }
+
+        }
+        [Authorize(Roles = "Manager, Lecturer, Student")]
+        public async Task<IActionResult> GetProjectDetail(int id)
+        {
+            var pj = await _context.Projects.Include(x => x.GuidingLecturer).Where(x => x.Deleted == false && x.Id == id).FirstOrDefaultAsync();
+            var response = new UnverifyProjectDetail();
+            response.Pname = pj.Pname;
+            response.Info = pj.Info;
+            response.GuidingLecturerId = pj.GuidingLecturerId;
+            response.GuidingLecturerName = pj.GuidingLecturer.Fullname;
+            return Json(response);
         }
     }
 }

@@ -45,12 +45,14 @@
                             <div class="col-md-4 col-sm-4 ">
                                 <input asp-for="UserId" minlength="6" type="number" id="first-name" required="required" class="form-control ">
                             </div>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
                         </div>
                         <div class="item form-group mb-4">
                             <label asp-for="Fullname" class="col-form-label col-md-3 col-sm-3 label-align">
                             </label>
                             <div class="col-md-4 col-sm-4 ">
                                 <input asp-for="Fullname" type="text" required="required" class="form-control">
+                                <span asp-validation-for="Fullname" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="item form-group mb-4">
@@ -65,6 +67,7 @@
                                     </label>
                                 </div>
                             </div>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                         <div class="item form-group mb-4">
                             <label asp-for="DateOfBirth" class="col-form-label col-md-3 col-sm-3 label-align">

@@ -21,7 +21,7 @@
                     <h2>Lớp</h2>
 
                     <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create">
+                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create" asp-route-id="@ViewData["CourseId"]">
                             <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
                             Thêm mới
                         </a>
@@ -243,7 +243,6 @@
                         targets: 0,
                     },
                 ],
-                "order": [[1, 'asc']],
             });
 
             dtb.on('order.dt search.dt', function () {
@@ -259,7 +258,7 @@
             dtb.on('click', 'tr', function (e) {
                 if (!hasClass(e.target, 'openDeleteModalBtn')) {
                     var data = dtb.row(this).data();
-                    window.location = "Classes/Details/" + data[6];
+                    window.location = '@Url.Content("~/Classes/Details/")' + data[6];
                 }
             });
 

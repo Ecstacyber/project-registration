@@ -1,10 +1,10 @@
-﻿@model ProjectRegistration.Models.ProjectMember
+﻿@*@model ProjectRegistration.Models.ProjectMember
 
 @{
     ViewData["Title"] = "AddMemberToProject";
 }
 
-<h1>Thêm sinh viên vào đồ án</h1>
+<h1>Đăng ký đồ án</h1>
 
 <h4>@ViewData["id"]</h4>
 <hr />
@@ -16,7 +16,7 @@
                 <label asp-for="ProjectId" class="control-label"></label>
                 <select asp-for="ProjectId" class ="form-control" asp-items="ViewBag.ProjectId"></select>
             </div>*@
-            <div class="form-group">
+@*<div class="form-group">
                 <label asp-for="GroupName" id="GroupName" class="control-label">Tên nhóm</label>
                 <input asp-for="GroupName" id="GroupName" class="form-control" />
                 <span asp-validation-for="GroupName" class="text-danger"></span>
@@ -30,8 +30,8 @@
                 <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
                     <option value="" selected="selected" hidden="hidden">Chọn sinh viên thứ 2 (nếu có)</option>
                 </select>
-            </div>
-            @*<div class="form-group">
+            </div>*@
+@*<div class="form-group">
                 <label asp-for="Grade" class="control-label"></label>
                 <input asp-for="Grade" class="form-control" />
                 <span asp-validation-for="Grade" class="text-danger"></span>
@@ -51,7 +51,7 @@
                 <input asp-for="DeletedDateTime" class="form-control" />
                 <span asp-validation-for="DeletedDateTime" class="text-danger"></span>
             </div>*@
-            <div class="form-group">
+@*<div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -64,4 +64,79 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+*@
+
+@model ProjectRegistration.Models.ProjectMember
+
+@{
+    ViewData["Title"] = "AddMemberToProject";
+}
+<a class="pt-4" asp-action="ViewProjectList" asp-route-id="@ViewData["ClassId"]"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Tạo khoa mới</h3>
+        </div>
+
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Khoa</h2>
+
+                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form asp-action="AddProjectToMember" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="ProjectId" name="ProjectIdHere" id="ProjectIdHere" hidden value="@ViewData["ProjectId"]" />
+                        <div class="col-md-4 center-margin">
+                            <div class="form-group row mt-2">
+                                <label asp-for="GroupName"></label>
+                                <input required asp-for="GroupName" type="text" class="form-control">
+                                <span asp-validation-for="GroupName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 1</label>
+                                <select name="StudentId1" class="form-control" asp-items="ViewBag.StudentId1">
+                                </select>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 2</label>
+                                <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="item form-group">
+                            <div class="offset-md-4 center-margin">
+                                <a class="btn btn-danger" type="button" asp-action="ViewProjectList" asp-route-id="@ViewData["ClassId"]">Quay lại</a>
+                                <button class="btn btn-primary" type="reset">Nhập lại</button>
+                                <button type="submit" class="btn btn-success">Đăng ký</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
