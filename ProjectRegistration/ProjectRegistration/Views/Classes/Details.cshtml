@@ -405,7 +405,7 @@
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>Đồ án chưa duyệt</h2>
-                        <table id="datatable-project-not-verified" class="table table-hover" style="width:100%">
+                        <table id="datatable-project-not-verified" class="table table-hover table-bordered" style="width:100%">
                             <thead>
                                 <tr hidden>
                                     <th></th>
@@ -420,7 +420,7 @@
                                         if (item.State == "Chưa chấp thuận")
                                         {
                                             <tr data-id="@item.Id">
-                                                <td style="font-size:larger; vertical-align: middle; text-align: center">@i</td>
+                                                <td style="font-size:larger; vertical-align: middle; text-align: center; width:5%">@i</td>
                                                 <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Pname)</td>
                                             </tr>
                                             i++;

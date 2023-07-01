@@ -482,7 +482,10 @@ namespace ProjectRegistration.Controllers
                     }
                 }
 
-                project.CreatedDateTime = DateTime.Now;
+                project.CreatedDateTime = DateTime.Now; 
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
                 project.State = "Chưa chấp thuận";
                 _context.Add(project);
                 await _context.SaveChangesAsync();
@@ -733,7 +736,6 @@ namespace ProjectRegistration.Controllers
             return View(project);
         }
 
-        // GET: ProjectMembers/Create
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public IActionResult AddMemberToProject(string id)
         {
@@ -756,7 +758,6 @@ namespace ProjectRegistration.Controllers
             return View();
         }
 
-        // POST: ProjectMembers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
