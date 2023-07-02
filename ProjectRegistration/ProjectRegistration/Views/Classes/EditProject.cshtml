@@ -4,87 +4,95 @@
     ViewData["Title"] = "Sửa đồ án";
 }
 
-<h1>Sửa đồ án</h1>
+<link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
+<link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/vendors/normalize-css/normalize.css" rel="stylesheet" />
+<link href="~/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
-<h4>@Model.Pname</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditProject">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input id="ProjectIdHere" type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Pname" class="control-label"></label>
-                <input asp-for="Pname" class="form-control" />
-                <span asp-validation-for="Pname" class="text-danger"></span>
+<a class="pt-4" asp-action="ViewProjectList" asp-route-id="@ViewData["id"]"><i class="fa fa-chevron-left"></i> Quay trở lại</a>
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Sửa đồ án</h3>
+        </div>
+
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Đồ án</h2>
+
+                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <br />
+                    <form asp-action="CreateProject" enctype="multipart/form-data" data-parsley-validate class="form-horizontal form-label-left">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="item form-group mb-4">
+                            <label asp-for="Pname" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <input asp-for="Pname" required="required" class="form-control">
+                            </div>
+                            <span asp-validation-for="Pname" class="text-danger"></span>
+                        </div>
+
+                        <div class="item form-group mb-4">
+                            <label asp-for="Info" class="col-form-label col-md-3 col-sm-3 label-align">
+                            </label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <input asp-for="Info" class="form-control">
+                            </div>
+                            <span asp-validation-for="Info" class="text-danger"></span>
+                        </div>
+
+                        <div class="item form-group mb-4">
+                            <label asp-for="GuidingLecturerId" class="col-form-label col-md-3 col-sm-3 label-align"></label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select asp-for="GuidingLecturerId" asp-items="ViewBag.GuidingLecturerId" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="item form-group mb-4">
+                            <label asp-for="GradingLecturerId" class="col-form-label col-md-3 col-sm-3 label-align"></label>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select asp-for="GradingLecturerId" asp-items="ViewBag.GradingLecturerId" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <input type="hidden" asp-for="ClassId" value="@ViewData["id"]" />
+                        <div class="ln_solid"></div>
+                        <div class="item form-group">
+                            <div class="offset-md-4 center-margin">
+                                <a class="btn btn-danger" type="button" asp-action="ViewProjectList" asp-route-id="@ViewData["id"]">Quay lại</a>
+                                <button class="btn btn-primary" type="reset">Nhập lại</button>
+                                <button type="submit" class="btn btn-success">Tạo mới</button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Info" class="control-label"></label>
-                <input asp-for="Info" class="form-control" />
-                <span asp-validation-for="Info" class="text-danger"></span>
-            </div>
-            @*<div class="form-group">
-                <label asp-for="DepartmentId" class="control-label"></label>
-                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
-                <span asp-validation-for="DepartmentId" class="text-danger"></span>
-            </div>*@
-            @*<div class="form-group">
-                <label asp-for="ClassId" class="control-label"></label>
-                <select asp-for="ClassId" class="form-control" asp-items="ViewBag.ClassId"></select>
-                <span asp-validation-for="ClassId" class="text-danger"></span>
-            </div>*@
-            @*<div class="form-group">
-                <label asp-for="ClassId2" class="control-label"></label>
-                <select asp-for="ClassId2" class="form-control" asp-items="ViewBag.ClassId2"></select>
-                <span asp-validation-for="ClassId2" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="GuidingLecturerId" class="control-label"></label>
-                <select asp-for="GuidingLecturerId" class="form-control" asp-items="ViewBag.GuidingLecturerId"></select>
-                <span asp-validation-for="GuidingLecturerId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GradingLecturerId" class="control-label"></label>
-                <select asp-for="GradingLecturerId" class="form-control" asp-items="ViewBag.GradingLecturerId"></select>
-                <span asp-validation-for="GradingLecturerId" class="text-danger"></span>
-            </div>
-            @*<div class="form-group">
-                <label asp-for="Pyear" class="control-label"></label>
-                <input asp-for="Pyear" class="form-control" />
-                <span asp-validation-for="Pyear" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Semester" class="control-label"></label>
-                <input asp-for="Semester" class="form-control" />
-                <span asp-validation-for="Semester" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDateTime" class="control-label"></label>
-                <input asp-for="CreatedDateTime" class="form-control" />
-                <span asp-validation-for="CreatedDateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Deleted" class="control-label"></label>
-                <input asp-for="Deleted" class="form-control" />
-                <span asp-validation-for="Deleted" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeletedDateTime" class="control-label"></label>
-                <input asp-for="DeletedDateTime" class="form-control" />
-                <span asp-validation-for="DeletedDateTime" class="text-danger"></span>
-            </div>*@
-            
-            <input type="hidden" asp-for="ClassId" value="@ViewData["id"]" />
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="ViewProjectList" asp-route-id="@ViewData["id"]">Quay lại danh sách đồ án</a>
-</div>
+<script src="~/vendors/fastclick/lib/fastclick.js"></script>
+<script src="~/vendors/moment/min/moment.min.js"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

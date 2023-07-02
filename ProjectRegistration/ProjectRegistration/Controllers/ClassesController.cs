@@ -1178,9 +1178,7 @@ namespace ProjectRegistration.Controllers
             return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + @class.Id });
         }
 
-        [HttpPost, ActionName("DeleteStudentDocument")]
         [Authorize(Roles = "Manager, Lecturer, Student")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteStudentDocument(int id)
         {
             if (_context.Products == null)
@@ -1217,9 +1215,7 @@ namespace ProjectRegistration.Controllers
         //}
 
 
-        [HttpPost, ActionName("AddComment")]
         [Authorize(Roles = "Manager, Lecturer")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComment(int id, string descr)
         {
             var project = _context.Projects.Include(x => x.Products).ThenInclude(x => x.ProductDetails).FirstOrDefault(x => x.Id == id);

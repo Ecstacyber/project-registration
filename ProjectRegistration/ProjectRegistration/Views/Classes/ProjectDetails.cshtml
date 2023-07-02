@@ -272,7 +272,7 @@
                                             {
                                                 <li style="font-size: large; cursor: pointer">
                                                     <a href="/documents/@Model.Id/@item.Info" download><i class="fa fa-file-archive-o"></i>@item.Info</a>
-                                                    <button type="button" class="btn btn-danger btn-xs pull-right" data-toggle="modal" data-target="#deleteStuDocModel" data-id="@item.Id">
+                                                    <button type="button" class="btn btn-danger btn-xs pull-right" data-toggle="modal" data-target="#deleteStuDocModal" data-id="@item.Id">
                                                         <i class="fa fa-trash-o"></i>
                                                     </button>
                                                 </li>
@@ -514,7 +514,7 @@
 </form>
 
 <form id="removeUserForm">
-    <input id="removeUserId" name="userId" hidden/>
+    <input id="removeUserId" name="userId" hidden />
 </form>
 <div class="modal fade" id="removeUserModal" tabindex="-1" style="z-index:1060">
     <div class="modal-dialog modal-lg">
@@ -571,26 +571,26 @@
 </div>
 
 <!-- Delete Student Doc Confirmation Modal -->
-<form method="post" action="DeleteStudentDocument" id="delete-stu-doc-form">
-    <div class="modal fade deleteModal" id="deleteStuDocModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>Xác nhận xóa</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h5>Bạn có chắc chắn muốn xóa bài nộp?</h5>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-danger" id="delete-stu-doc-btn">Xóa</button>
-                </div>
+<div class="modal fade" id="deleteStuDocModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Xác nhận xóa</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Bạn có chắc chắn muốn xóa bài nộp?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" id="delete-stu-doc-btn">Xóa</button>
             </div>
         </div>
     </div>
+</div>
+<form method="post" action="DeleteStudentDocument" id="delete-stu-doc-form">
 </form>
 
 @section Scripts {
@@ -618,7 +618,7 @@
         })
 
         deleteBtn.onclick = () => {
-            deleteForm.action = 'Classes/DeleteStudentDocument/' + id;
+            deleteForm.action = '@Url.Content("~/Classes/DeleteStudentDocument/")' + id;
             deleteForm.submit();
         }
     </script>
