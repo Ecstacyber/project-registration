@@ -24,7 +24,7 @@ namespace ProjectRegistration.Controllers
 
         // GET: Departments
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> Index()
         {
               return _context.Departments != null ? 

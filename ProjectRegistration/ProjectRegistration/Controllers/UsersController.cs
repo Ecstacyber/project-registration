@@ -44,7 +44,7 @@ namespace ProjectRegistration.Controllers
 
         // GET: Users
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> Index()
         {
             var IDENTITYUSERContext = _context.Users.Include(u => u.Department);
@@ -52,14 +52,14 @@ namespace ProjectRegistration.Controllers
         }
 
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> StudentList()
         {
             var IDENTITYUSERContext = _context.Users.Where(u => u.UserTypeId == 100).Include(u => u.Department);
             return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
         }
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> LecturerList()
         {
             var IDENTITYUSERContext = _context.Users.Where(u => u.UserTypeId == 10).Include(u => u.Department);
@@ -402,7 +402,7 @@ namespace ProjectRegistration.Controllers
                             user.CreatedDateTime = DateTime.Now;
                             user.Fullname = reader.GetValue(2).ToString();
                             user.UserTypeId = 100;
-
+                            user.ImagePath = "default-avatar.jpg";
                             await _userManager.AddToRoleAsync(user, "Student");
 
 

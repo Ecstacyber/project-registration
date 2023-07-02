@@ -230,10 +230,13 @@
                         <h2>@Model.ClassId</h2>
 
                         <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                            <a class="btn btn-danger btn-round" style="margin-right:20px" asp-action="Edit" asp-route-id="@Model.Id">
-                                <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
+                            @if (User.IsInRole("Manager"))
+                            {
+                                <a class="btn btn-danger btn-round" style="margin-right:20px" asp-action="Edit" asp-route-id="@Model.Id">
+                                    <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
 
-                            </a>
+                                </a>
+                            }
                             <li>
                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>
@@ -296,14 +299,16 @@
                         <h2>Danh sách lớp</h2>
 
                         <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                            @if(User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                            {
+                                <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addUserModal">
+                                    <i class="glyphicon glyphicon-plus"></i> Thêm sinh viên
+                                </button>
 
-                            <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addUserModal">
-                                <i class="glyphicon glyphicon-plus"></i> Thêm sinh viên
-                            </button>
-
-                            <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addFromExcelModal">
-                                <i class="fa fa-file-excel-o"></i> Thêm sinh viên bằng file excel
-                            </button>
+                                <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addFromExcelModal">
+                                    <i class="fa fa-file-excel-o"></i> Thêm sinh viên bằng file excel
+                                </button>
+                            }
                             <li>
                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>
@@ -319,7 +324,14 @@
                                     <th>Họ và tên</th>
                                     <th>Vai trò</th>
                                     <th>Email</th>
-                                    <th></th>
+                                    @if (User.IsInRole("Manager") || User.IsInRole("Manager"))
+                                    {
+                                        <th></th>
+                                    }
+                                    else
+                                    {
+                                        <th hidden></th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -339,11 +351,19 @@
                                                 <td style="font-size:larger; vertical-align: middle;">Sinh viên</td>
                                             }
                                             <td style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.User.Email)</td>
-                                            <td style="white-space: nowrap; width:1%">
-                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="@item.User.Id">
-                                                    <i class="fa fa-trash-o"></i>
-                                                </button>
-                                            </td>
+
+                                            @if (User.IsInRole("Manager") || User.IsInRole("Manager"))
+                                            {
+                                                <td style="white-space: nowrap; width:1%">
+                                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="@item.User.Id">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </button>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td hidden></td>
+                                            }
                                         </tr>
                                     }
                                 }
@@ -378,6 +398,7 @@
                             }
                             else
                             {
+                                <p class="font-weight-bolder text-success"> Thời gian kết thúc đăng ký đồ án:</p>
                                 <div id="countdown">
                                     <div class="cd-box">
                                         <p class="numbers days">00</p><br>
@@ -407,12 +428,12 @@
                         <h2>Đồ án chưa duyệt</h2>
                         <table id="datatable-project-not-verified" class="table table-hover table-bordered" style="width:100%">
                             <thead>
-                                <tr hidden>
-                                    <th></th>
-                                    <th></th>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên đồ án</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="cursor:pointer">
                                 @{
                                     foreach (var item in Model.ProjectClasses)
                                     {
@@ -449,6 +470,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-4">
+                        <a href="~/files/File mẫu sinh viên 25.xlsx" class="pull-right mb-5" download><i class="fa fa-download"></i>Tải file mẫu</a>
+                    </div>
                     <input id="fileSelect" required="required" name="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none" />
                     <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file excel </label>
 
@@ -508,7 +532,7 @@
                             <h2>Kết quả tìm kiếm</h2>
 
                             <br />
-                            <table id="datatable-findclassmate" class="table table-hover table-bordered" style="width:100%">
+                            <table id="datatable-findclassmate" class="table table-hover table-bordered bulk_action" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center; width:5%">#</th>
@@ -560,7 +584,7 @@
                     <tbody style="text-align:left">
                         <tr>
                             <td style="margin-left:30px">Tên đồ án:</td>
-                            <th > <div id="pname"></div></th>
+                            <th> <div id="pname"></div></th>
                         </tr>
                         <tr>
                             <td>Mô tả:</td>
@@ -787,7 +811,6 @@
 
             if (finduser.length == 1) {
                 localStorage.setItem('UserFound', finduser[0][1])
-                console.log(localStorage.getItem('UserFound'));
             }
             else {
                 localStorage.setItem('UserFound', 'NotFound');
@@ -930,7 +953,6 @@
                         else {
                             errorMessage = "Invalid date. Example: 27 March 2015 17:00:00";
                             alert(errorMessage);
-                            console.log(errorMessage);
                             clearInterval(interval)
                         }
                     }

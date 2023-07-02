@@ -224,10 +224,13 @@
                     <h2>Chi tiết của đồ án</h2>
                     <ul class="nav navbar-right panel_toolbox">
                         <li>
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            <button class="btn btn-danger btn-round" style="margin-right:20px" id="RemoveMemberBtn" data-toggle="modal" data-target="#removeUserModal">
+                                <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
+
+                            </button>
                         </li>
                         <li>
-                            <a class="close-link"><i class="fa fa-close"></i></a>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
 
                     </ul>
@@ -241,7 +244,7 @@
                         <ul class="stats-overview">
                             @{
                                 int i = 1;
-                                foreach (var item in Model.ProjectMembers)
+                                foreach (var item in Model.ProjectMembers.Where(x => x.Deleted == false))
                                 {
                                     <li>
                                         <span class="name"> Thành viên @i </span>
@@ -422,9 +425,9 @@
                                 <h5>Tài liệu tham khảo</h5>
                                 <ul class="list-unstyled project_files">
                                     @{
-                                        foreach (var product in Model.Products)
+                                        foreach (var product in Model.Products.Where(x => x.Deleted == false))
                                         {
-                                            foreach (var item in product.ProductDetails)
+                                            foreach (var item in product.ProductDetails.Where(x => x.Deleted == false))
                                             {
                                                 if (item.Type == "LecturerFile" && item.Deleted == false)
                                                 {
@@ -509,6 +512,63 @@
         </div>
     </div>
 </form>
+
+<form id="removeUserForm">
+    <input id="removeUserId" name="userId" hidden/>
+</form>
+<div class="modal fade" id="removeUserModal" tabindex="-1" style="z-index:1060">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5">@Model.Pname</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 col-sm-12">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <h2>Sinh viên thực hiện đồ án</h2>
+
+                            <br />
+                            <table id="datatable-findclassmate" class="table table-hover jambo_table table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center; width:5%">#</th>
+                                        <th>Mã số sinh viên</th>
+                                        <th class="w-50">Họ và tên</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody style="font-size:larger; vertical-align: middle;">
+                                    @{
+                                        foreach (var item in Model.ProjectMembers.Where(x => x.Deleted == false))
+                                        {
+                                            <tr>
+                                                <td style="text-align: center;"></td>
+                                                <td>@item.Student.UserId</td>
+                                                <td>@item.Student.Fullname</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm" id="deleteMember" data-id="@item.StudentId">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Delete Student Doc Confirmation Modal -->
 <form method="post" action="DeleteStudentDocument" id="delete-stu-doc-form">
@@ -615,6 +675,37 @@
                     styling: 'bootstrap3',
                 });
             }
+        });
+    </script>
+
+    <script>
+        //let memberid;
+        //var modal = document.getElementById("confirmDeleteModal");
+        //const deleteBtn = document.getElementById('delete-btn');
+        //const deleteForm = document.getElementById('delete-form');
+        //modal.addEventListener('show.bs.modal', function (event) {
+        //    const button = event.relatedTarget;
+        //    console.log(button);
+        //    memberid = button.getAttribute('data-id');
+
+        //});
+
+        //console.log("MemberID: " + memberid);
+        //deleteBtn.onclick = () => {
+        //    console.log("MemberID: " + memberid);
+        //    deleteForm.action = '/Classes/DeleteMemberFromProject/' + memberid;
+        //    deleteForm.submit();
+        //}
+    </script>
+    <script>
+        $('#deleteMember').click(function (e) {
+            var pId = "@Model.Id";
+            var cId = "@Model.ClassId";
+            var form = document.getElementById('removeUserForm');
+            var userId = document.getElementById('removeUserId');
+            userId.value = e.target.getAttribute('data-id');
+            form.action = '@Url.Content("~/Classes/DeleteMemberFromProject/")' + pId + '-' + cId;
+            form.submit();
         });
     </script>
 }

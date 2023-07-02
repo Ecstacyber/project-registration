@@ -19,16 +19,19 @@
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Giảng viên</h2>
+                    @if (User.IsInRole("Manager"))
+                    {
+                        <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
+                            <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="CreateLecturer">
+                                <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                                Thêm mới
+                            </a>
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                    }
 
-                    <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="CreateLecturer">
-                            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
-                            Thêm mới
-                        </a>
-                        <li>
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                    </ul>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -46,7 +49,10 @@
                                             <th>@Html.DisplayNameFor(model => model.Department)</th>
                                             <th>@Html.DisplayNameFor(model => model.Email)</th>
                                             <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
-                                            <th></th>
+                                            @if (User.IsInRole("Manager"))
+                                            {
+                                                <th></th>
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody style="font-size:larger; vertical-align: middle;">
@@ -73,13 +79,16 @@
                                                     <td>@Html.DisplayFor(modelItem => item.Department.Dname)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                                                    <td style="white-space: nowrap; width:1%">
-                                                        <a class="btn btn-primary btn-sm" asp-action="EditLecturer" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
-                                                        @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
-                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
-                                                            <i class="fa fa-trash-o"></i> Xoá
-                                                        </button>
-                                                    </td>
+                                                    @if (User.IsInRole("Manager"))
+                                                    {
+                                                        <td style="white-space: nowrap; width:1%">
+                                                            <a class="btn btn-primary btn-sm" asp-action="EditLecturer" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
+                                                            @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
+                                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
+                                                                <i class="fa fa-trash-o"></i> Xoá
+                                                            </button>
+                                                        </td>
+                                                    }
                                                 </tr>
                                             }
                                         }

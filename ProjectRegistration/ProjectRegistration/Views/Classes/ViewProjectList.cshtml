@@ -176,15 +176,18 @@
             </div>
         </div>
 
-        <button class="btn btn-success btn-round pull-right" style="margin-right:20px" data-toggle="modal" data-target="#addProjectFromExcelModal">
-            <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel
-        </button>
+        @if (User.IsInRole("Manage") || User.IsInRole("lecturer"))
+        {
+            <button class="btn btn-success btn-round pull-right" style="margin-right:20px" data-toggle="modal" data-target="#addProjectFromExcelModal">
+                <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel
+            </button>
 
-        <a class="btn btn-success btn-round pull-right" style="margin-right:20px" asp-action="CreateProject" asp-route-id="@ViewData["ClassId"]">
-            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
-            Thêm mới
-        </a>
+            <a class="btn btn-success btn-round pull-right" style="margin-right:20px" asp-action="CreateProject" asp-route-id="@ViewData["ClassId"]">
+                <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                Thêm mới
+            </a>
 
+        }
 
         <div class="pull-left ml-5">
             <h3>Danh sách đồ án</h3>
@@ -198,8 +201,7 @@
         <thead>
             <tr>
                 <th style="text-align: center; width: 1%">#</th>
-                <th style="width: 25%">@Html.DisplayNameFor(model => model.Pname)</th>
-                <th style="width: 20%">@Html.DisplayNameFor(model => model.Info)</th>
+                <th style="width: 30%">@Html.DisplayNameFor(model => model.Pname)</th>
                 <th style="width: 20%">Giảng viên</th>
                 <th style="width: 20%">Thành viên</th>
                 <th style="width: 15%">Trạng thái</th>
@@ -212,19 +214,16 @@
                 {
 
                     <tr data-id="@item.Id">
-                        <td style="text-align: center;">STT</td>
-                        <td>
+                        <td class="align-middle" style="text-align: center;">STT</td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.Pname)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Info)
-                        </td>
-                        <td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @{
-                                foreach (var member in item.ProjectMembers)
+                                foreach (var member in item.ProjectMembers.Where(x => x.Deleted == false))
                                 {
                                     //string imgSrc = "../../files/" + member.Student.ImagePath;
                                     //<div class="d-inline-block">
@@ -232,15 +231,15 @@
                                     //    <a>@Html.DisplayFor(modelItem => imgSrc)</a>
                                     //</div>
                                     <p>@member.Student.Fullname</p>
-                                    
+
                                 }
                             }
 
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <label class="text-info">@Html.DisplayFor(modelItem => item.State)</label>
                         </td>
-                        <td style="white-space: nowrap; width:1%">
+                        <td class="align-middle" style="white-space: nowrap; width:1%">
                             @if (User.IsInRole("Manager"))
                             {
                                 <a class="btn btn-primary btn-xs" asp-action="EditProject" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
@@ -276,6 +275,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-4">
+                        <a href="~/files/File mẫu đồ án.xlsx" class="pull-right mb-5" download><i class="fa fa-download"></i>Tải file mẫu</a>
+                    </div>
                     <input id="fileSelect" required="required" name="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none" />
                     <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file excel </label>
 
@@ -518,7 +520,7 @@
         }
     </script>
     <script>
-        function GoToAddMember (e) {
+        function GoToAddMember(e) {
             const addMemberForm = document.getElementById('addMemberForm');
             addMemberForm.action = '@Url.Content("~/Classes/AddMemberToProject/")' + e.getAttribute('data-id') + '-' + '@ViewData["ClassId"]';
             addMemberForm.submit();

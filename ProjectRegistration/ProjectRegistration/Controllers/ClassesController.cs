@@ -484,11 +484,16 @@ namespace ProjectRegistration.Controllers
                     }
                 }
 
-                project.CreatedDateTime = DateTime.Now; 
+                project.CreatedDateTime = DateTime.Now;
+                project.State = "Chưa duyệt";
                 ClaimsPrincipal currentUser = this.User;
                 var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var user = await _userManager.FindByIdAsync(currentUserName);
-                project.State = "Chưa chấp thuận";
+                if (_userManager.IsInRoleAsync(user, "Manager").Result)
+                {
+                    project.State = "Đã chấp thuận";
+
+                }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 TempData["message"] = "ProjectCreated";
@@ -713,12 +718,12 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> ProjectDetails(string? id)
         {
-            int pId = int.Parse(id.Split('-')[0]);
-            int cId = int.Parse(id.Split('-')[1]);
             if (id == null || _context.Projects == null)
             {
                 return NotFound();
             }
+            int pId = int.Parse(id.Split('-')[0]);
+            int cId = int.Parse(id.Split('-')[1]);
 
             var project = await _context.Projects
                 .Where(p => p.Deleted == false)
@@ -746,10 +751,11 @@ namespace ProjectRegistration.Controllers
         {
             int pId = int.Parse(id.Split('-')[0]);
             int cId = int.Parse(id.Split('-')[1]);
-            var project = _context.Projects.Include(x => x.ProjectMembers).ThenInclude(x => x.Student).FirstOrDefault(x => x.Id == pId);
+            var project = _context.Projects.Include(x => x.Class).Include(x => x.ProjectMembers).ThenInclude(x => x.Student).FirstOrDefault(x => x.Id == pId);
             ViewData["ClassId"] = cId;
             ViewData["Project"] = project;
             ViewData["ProjectId"] = project.Id;
+            ViewData["ProjectName"] = project.Pname;
             var classDetails = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.User.UserTypeId == 100 && x.Deleted == false && x.User.Deleted == false).ToList();
             //var members = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
             //if (members != null)
@@ -909,9 +915,6 @@ namespace ProjectRegistration.Controllers
 
         // POST: Classes/DeleteMemberFromProject/5
         [Authorize(Roles = "Manager, Lecturer, Student")]
-        [HttpPost, ActionName("DeleteMemberFromProject")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteMemberFromProject(string id, string userId)
         {
             int pId = int.Parse(id.Split('-')[0]);

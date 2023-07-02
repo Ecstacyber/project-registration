@@ -83,15 +83,17 @@
                     <h2>Sinh viên</h2>
 
                     <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="CreateStudent">
-                            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
-                            Thêm mới
-                        </a>
+                        @if (User.IsInRole("Manager"))
+                        {
+                            <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="CreateStudent">
+                                <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                                Thêm mới
+                            </a>
 
-                        <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addFromExcelModal">
-                            <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel
-                        </button>
-
+                            <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addFromExcelModal">
+                                <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel
+                            </button>
+                        }
                         <li>
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
@@ -113,7 +115,10 @@
                                             <th>@Html.DisplayNameFor(model => model.Department)</th>
                                             <th>@Html.DisplayNameFor(model => model.Email)</th>
                                             <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
-                                            <th></th>
+                                            @if (User.IsInRole("Manager"))
+                                            {
+                                                <th></th>
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody style="font-size:larger; vertical-align: middle;">
@@ -140,13 +145,16 @@
                                                     <td>@Html.DisplayFor(modelItem => item.Department.Dname)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                                                    <td style="white-space: nowrap; width:1%">
-                                                        <a class="btn btn-primary btn-sm" asp-action="EditStudent" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
-                                                        @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
-                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
-                                                            <i class="fa fa-trash-o"></i> Xoá
-                                                        </button>
-                                                    </td>
+                                                    @if (User.IsInRole("Manager"))
+                                                    {
+                                                        <td style="white-space: nowrap; width:1%">
+                                                            <a class="btn btn-primary btn-sm" asp-action="EditStudent" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
+                                                            @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
+                                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
+                                                                <i class="fa fa-trash-o"></i> Xoá
+                                                            </button>
+                                                        </td>
+                                                    }
                                                 </tr>
                                             }
                                         }
@@ -208,6 +216,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-4">
+                        <a href="~/files/File mẫu sinh viên 130.xlsx" class="pull-right mb-5" download><i class="fa fa-download"></i>Tải file mẫu</a>
+                    </div>
                     <input id="fileSelect" required="required" name="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none" />
                     <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file excel </label>
 
