@@ -257,10 +257,11 @@
                         </ul>
                         <br />
 
+                        <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadStudentProductModal">
+                            <i class="fa fa-file-archive-o"></i> Thêm bài nộp
+                        </button>
                         <div class="d-flex justify-content-center w-100" style="min-height: 100px">
-                            <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadStudentProductModal">
-                                <i class="fa fa-file-archive-o"></i> Thêm bài nộp
-                            </button>
+                            
                         </div>
                         <div>
 
@@ -360,12 +361,11 @@
 
 
                         </div>
-                        @*<form method="post" enctype="multipart/form-data" id="add-comment-form" asp-asp-controller="Users" asp-action="AddComment">*@
+                        <form method="post" id="add-comment-form" asp-asp-controller="Users" asp-action="AddComment" asp-route-id="@Model.Id">
                             <div class="d-flex justify-content-center w-100">
                                 <button class="btn btn-primary"> Đăng nhận xét</button>
-
                             </div>
-                        @*</form>*@
+                        </form>
 
                     </div>
 
@@ -518,10 +518,12 @@
     <script>
         var addcomment = document.getElementById("btn-add-comment");
         var addcommentform = document.getElementById("add-comment-form");
+        var ta = document.getElementById("descr");
         addcomment.onclick = () => {
-            //addcommentform.action = 'Classes/AddComment' + @Model.Id + $("textarea#descr").val();
-            console.log('Classes/AddComment' + @Model.Id + '-' + $("textarea#descr").val());
-            //addcommentform.submit();
+            localStorage.setItem("projectId", @Model.Id);
+            localStorage.setItem("comment", $("textarea#descr").val());
+            addcommentform.action = 'Classes/AddComment/' + @Model.Id;
+            addcommentform.submit();
         }
     </script>
 

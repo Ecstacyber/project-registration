@@ -20,6 +20,7 @@ using NuGet.Versioning;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Quartz;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Primitives;
 
 namespace ProjectRegistration.Controllers
 {
@@ -734,7 +735,8 @@ namespace ProjectRegistration.Controllers
                 return NotFound();
             }
             ViewData["cId"] = cId;
-            //ViewData["comment"] = "";
+            ViewData["comment"] = "";
+            ViewData["projectId"] = 0;
 
             return View(project);
         }
@@ -910,25 +912,20 @@ namespace ProjectRegistration.Controllers
         [HttpPost, ActionName("DeleteMemberFromProject")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> DeleteMemberFromProject(string id)
+        public async Task<IActionResult> DeleteMemberFromProject(string id, string userId)
         {
             int pId = int.Parse(id.Split('-')[0]);
             int cId = int.Parse(id.Split('-')[1]);
-            int uId = int.Parse(id.Split('-')[2]);
             if (_context.ProjectMembers == null)
             {
                 TempData["message"] = "NoMemberToDeleteFromProject";
                 return Problem("Entity set 'IDENTITYUSERContext.ProjectMembers'  is null.");
             }
-            var project = _context.Projects.FirstOrDefault(x => x.Id == pId);
-            var members = _context.ProjectMembers.Where(x => x.ProjectId == pId).ToList();
+            var members = _context.ProjectMembers.FirstOrDefault(x => x.ProjectId == pId && x.StudentId == userId && x.Deleted == false);
             if (members != null)
             {
-                foreach (var member in members)
-                {
-                    member.Deleted = true;
-                    member.DeletedDateTime = DateTime.Now;
-                }                
+                members.Deleted = true;
+                members.DeletedDateTime = DateTime.Now;
                 TempData["message"] = "MemberDeletedFromProject";
             }
 
@@ -1076,8 +1073,8 @@ namespace ProjectRegistration.Controllers
                 TempData["message"] = "NoFileSelected";
                 return RedirectToAction("ProjectDetails", new { id = Id + "-" + _context.Projects.FirstOrDefault(x => x.Id == Id).ClassId });
             }
-        
-            var filename = Path.GetFileNameWithoutExtension(fileSelect.FileName) + " " + DateTime.Now.ToString().Replace('/', '_') + Path.GetExtension(fileSelect.FileName);
+
+            var filename = Path.GetFileNameWithoutExtension(fileSelect.FileName) + " " + DateTime.Now.ToString().Replace('/', '_').Replace(':', '_') + Path.GetExtension(fileSelect.FileName);
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString())))
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString()));
@@ -1089,9 +1086,11 @@ namespace ProjectRegistration.Controllers
             }
             Project project = _context.Projects.FirstOrDefault(x => x.Id == Id);
             Product product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
-
             if (project != null)
             {
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
                 if (product == null)
                 {
                     product = new Product
@@ -1110,7 +1109,9 @@ namespace ProjectRegistration.Controllers
                     {
                         Product = product,
                         ProductId = product.Id,
-                        Type = "StudentFile",
+                        UserId = currentUserName,
+                        User = user,
+                        Type = "LecturerFile",
                         Info = filename,
                         CreatedDateTime = DateTime.Now,
                         Deleted = false
@@ -1118,7 +1119,7 @@ namespace ProjectRegistration.Controllers
                     product.ProductDetails.Add(productDetail);
                     _context.ProductDetails.Add(productDetail);
                     _context.SaveChanges();
-                    TempData["message"] = "StudentProductAdded";
+                    TempData["message"] = "DocumentAdded";
                     return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
                 }
                 if (product != null)
@@ -1127,21 +1128,23 @@ namespace ProjectRegistration.Controllers
                     {
                         Product = product,
                         ProductId = product.Id,
+                        UserId = currentUserName,
+                        User = user,
                         CreatedDateTime = DateTime.Now,
-                        Type = "StudentFile",
+                        Type = "LecturerFile",
                         Info = filename
                     };
                     product.ProductDetails.Add(productDetail);
                     _context.ProductDetails.Add(productDetail);
                     _context.SaveChanges();
-                    TempData["message"] = "StudentProductAdded";
+                    TempData["message"] = "DocumentAdded";
                     return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
                 }
             }
 
+            TempData["message"] = "DocumentNotAdded";
             await _context.SaveChangesAsync();
-            TempData["message"] = "StudentProductNotAdded";
-            return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+            return RedirectToAction("ProjectDetails", new { id = Id });
         }
 
         [HttpPost, ActionName("DeleteLecturerDocument")]
@@ -1214,9 +1217,30 @@ namespace ProjectRegistration.Controllers
         [HttpPost, ActionName("AddComment")]
         [Authorize(Roles = "Manager, Lecturer")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(string id)
+        public async Task<IActionResult> AddComment(int id)
         {
-            return View();
+            var project = _context.Projects.Include(x => x.Products).ThenInclude(x => x.ProductDetails).FirstOrDefault(x => x.Id == id);
+            var product = _context.Products.FirstOrDefault(x => x.ProjectId == id);
+            if (ViewData["comment"] != null)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
+                ProductDetail productDetail = new()
+                {
+                    Type = "comment",
+                    Info = ViewData["comment"].ToString(),
+                    CreatedDateTime = DateTime.Now,
+                    User = user,
+                    UserId = currentUserName
+                };
+                _context.ProductDetails.Add(productDetail);
+                product.ProductDetails.Add(productDetail);
+                TempData["message"] = "CommentAdded";
+            }
+
+            TempData["message"] = "CommentNotAdded";
+            return RedirectToAction("ProjectDetails", new { id = project.Id + '-' + project.ClassId });
         }
     }
 }
