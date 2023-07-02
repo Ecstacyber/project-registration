@@ -402,7 +402,7 @@ namespace ProjectRegistration.Controllers
                             user.CreatedDateTime = DateTime.Now;
                             user.Fullname = reader.GetValue(2).ToString();
                             user.UserTypeId = 100;
-
+                            user.ImagePath = "default-avatar.jpg";
                             await _userManager.AddToRoleAsync(user, "Student");
 
 

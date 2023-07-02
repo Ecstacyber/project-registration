@@ -482,11 +482,16 @@ namespace ProjectRegistration.Controllers
                     }
                 }
 
-                project.CreatedDateTime = DateTime.Now; 
+                project.CreatedDateTime = DateTime.Now;
+                project.State = "Chưa duyệt";
                 ClaimsPrincipal currentUser = this.User;
                 var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var user = await _userManager.FindByIdAsync(currentUserName);
-                project.State = "Chưa chấp thuận";
+                if (_userManager.IsInRoleAsync(user, "Manager").Result)
+                {
+                    project.State = "Đã chấp thuận";
+
+                }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 TempData["message"] = "ProjectCreated";
@@ -704,12 +709,12 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> ProjectDetails(string? id)
         {
-            int pId = int.Parse(id.Split('-')[0]);
-            int cId = int.Parse(id.Split('-')[1]);
             if (id == null || _context.Projects == null)
             {
                 return NotFound();
             }
+            int pId = int.Parse(id.Split('-')[0]);
+            int cId = int.Parse(id.Split('-')[1]);
 
             var project = await _context.Projects
                 .Where(p => p.Deleted == false)
@@ -734,10 +739,11 @@ namespace ProjectRegistration.Controllers
         {
             int pId = int.Parse(id.Split('-')[0]);
             int cId = int.Parse(id.Split('-')[1]);
-            var project = _context.Projects.FirstOrDefault(x => x.Id == pId);
+            var project = _context.Projects.Include(x => x.Class).FirstOrDefault(x => x.Id == pId);
             ViewData["ClassId"] = cId;
             ViewData["Project"] = project;
             ViewData["ProjectId"] = project.Id;
+            ViewData["ProjectName"] = project.Pname;
             //var members = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
             //if (members != null)
             //{
@@ -843,32 +849,18 @@ namespace ProjectRegistration.Controllers
 
         // POST: Classes/DeleteMemberFromProject/5
         [Authorize(Roles = "Manager, Lecturer, Student")]
-        [HttpPost, ActionName("DeleteMemberFromProject")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> DeleteMemberFromProject(int id)
+        public IActionResult DeleteMemberFromProject(string id)
         {
-            if (_context.ProjectMembers == null)
-            {
-                TempData["message"] = "NoMemberToDeleteFromProject";
-                return Problem("Entity set 'IDENTITYUSERContext.ProjectMembers'  is null.");
-            }
-            var member = await _context.ProjectMembers.FindAsync(id);
-            if (member != null)
-            {
-                member.Deleted = true;
-                member.DeletedDateTime = DateTime.Now;
-                TempData["message"] = "MemberDeletedFromProject";               
-            }
-
-            await _context.SaveChangesAsync();
-            var currentProject = _context.Projects.FirstOrDefault(x => x.Id == member.ProjectId);
-            if (currentProject != null && currentProject.ProjectMembers.Where(x => x.Deleted == false).Count() == 0)
-            {
-                currentProject.State = "Chưa đăng ký";
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("ProjectDetails", new { id = id });
+            ///
+            Console.WriteLine(id);
+            Console.WriteLine(id);
+            Console.WriteLine(id);
+            Console.WriteLine(id);
+            Console.WriteLine(id);
+            Console.WriteLine(id);
+            Console.WriteLine(id);
+            
+            return RedirectToAction("ProjectDetails", new { id = id.Split('-')[0] + '-' + id.Split('-')[1] });
         }
 
         // POST

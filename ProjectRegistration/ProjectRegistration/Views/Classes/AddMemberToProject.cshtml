@@ -77,7 +77,7 @@
 <div class="">
     <div class="page-title">
         <div class="title_left">
-            <h3>Tạo khoa mới</h3>
+            <h3>@ViewData["ProjectName"]</h3>
         </div>
 
     </div>
@@ -88,7 +88,7 @@
         <div class="col-md-12 col-sm-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>Khoa</h2>
+                    <h2>Đăng ký đồ án</h2>
 
                     <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
                         <li>
@@ -115,6 +115,7 @@
                             <div class="form-group row mt-2">
                                 <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 2</label>
                                 <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
+                                    <option selected value="Không có">Không có</option>
                                 </select>
                             </div>
                         </div>

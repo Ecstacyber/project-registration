@@ -198,8 +198,7 @@
         <thead>
             <tr>
                 <th style="text-align: center; width: 1%">#</th>
-                <th style="width: 25%">@Html.DisplayNameFor(model => model.Pname)</th>
-                <th style="width: 20%">@Html.DisplayNameFor(model => model.Info)</th>
+                <th style="width: 30%">@Html.DisplayNameFor(model => model.Pname)</th>
                 <th style="width: 20%">Giảng viên</th>
                 <th style="width: 20%">Thành viên</th>
                 <th style="width: 15%">Trạng thái</th>
@@ -215,9 +214,6 @@
                         <td style="text-align: center;">STT</td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Pname)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Info)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
@@ -274,6 +270,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-4">
+                        <a href="~/files/File mẫu đồ án.xlsx" class="pull-right mb-5" download><i class="fa fa-download"></i>Tải file mẫu</a>
+                    </div>
                     <input id="fileSelect" required="required" name="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none" />
                     <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file excel </label>
 

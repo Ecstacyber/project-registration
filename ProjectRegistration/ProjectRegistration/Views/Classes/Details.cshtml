@@ -378,6 +378,7 @@
                             }
                             else
                             {
+                                <p class="font-weight-bolder text-success"> Thời gian kết thúc đăng ký đồ án:</p>
                                 <div id="countdown">
                                     <div class="cd-box">
                                         <p class="numbers days">00</p><br>
@@ -407,12 +408,12 @@
                         <h2>Đồ án chưa duyệt</h2>
                         <table id="datatable-project-not-verified" class="table table-hover table-bordered" style="width:100%">
                             <thead>
-                                <tr hidden>
-                                    <th></th>
-                                    <th></th>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên đồ án</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="cursor:pointer">
                                 @{
                                     foreach (var item in Model.ProjectClasses)
                                     {
@@ -449,6 +450,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-4">
+                        <a href="~/files/File mẫu sinh viên 25.xlsx" class="pull-right mb-5" download><i class="fa fa-download"></i>Tải file mẫu</a>
+                    </div>
                     <input id="fileSelect" required="required" name="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none" />
                     <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file excel </label>
 
@@ -508,7 +512,7 @@
                             <h2>Kết quả tìm kiếm</h2>
 
                             <br />
-                            <table id="datatable-findclassmate" class="table table-hover table-bordered" style="width:100%">
+                            <table id="datatable-findclassmate" class="table table-hover table-bordered bulk_action" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center; width:5%">#</th>
@@ -787,7 +791,6 @@
 
             if (finduser.length == 1) {
                 localStorage.setItem('UserFound', finduser[0][1])
-                console.log(localStorage.getItem('UserFound'));
             }
             else {
                 localStorage.setItem('UserFound', 'NotFound');
@@ -930,7 +933,6 @@
                         else {
                             errorMessage = "Invalid date. Example: 27 March 2015 17:00:00";
                             alert(errorMessage);
-                            console.log(errorMessage);
                             clearInterval(interval)
                         }
                     }
