@@ -226,11 +226,13 @@
                             @{
                                 foreach (var member in item.ProjectMembers)
                                 {
-                                    string imgSrc = "../../files/" + member.Student.ImagePath;
-                                    <div class="d-inline-block">
-                                        <img src="" class="avatar" alt="Avatar">
-                                        <a>@Html.DisplayFor(modelItem => imgSrc)</a>
-                                    </div>
+                                    //string imgSrc = "../../files/" + member.Student.ImagePath;
+                                    //<div class="d-inline-block">
+                                    //    <img src="" class="avatar" alt="Avatar">
+                                    //    <a>@Html.DisplayFor(modelItem => imgSrc)</a>
+                                    //</div>
+                                    <p>@member.Student.Fullname</p>
+                                    
                                 }
                             }
 
@@ -239,14 +241,14 @@
                             <label class="text-info">@Html.DisplayFor(modelItem => item.State)</label>
                         </td>
                         <td style="white-space: nowrap; width:1%">
-                            @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                            @if (User.IsInRole("Manager"))
                             {
                                 <a class="btn btn-primary btn-xs" asp-action="EditProject" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
                                 <button type="button" class="btn btn-danger btn-xs openDeleteModalBtn" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
                                     <i class="fa fa-trash-o"></i> Xoá
                                 </button>
                             }
-                            else if (User.IsInRole("Student"))
+                            else if (User.IsInRole("Student") || User.IsInRole("Lecturer"))
                             {
                                 <button type="button" class="btn btn-success btn-xs openDeleteModalBtn" onclick="GoToAddMember(this)" data-id="@item.Id">
                                     <i class="fa fa-pencil-square"></i> Đăng ký
@@ -388,6 +390,63 @@
             if (msg == 'NoProjectToDelete') {
                 new PNotify({
                     text: 'Xóa đồ án thất bại%0D%0AKhông tìm thấy đồ án.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            var msg = '@TempData["message"]';
+            if (msg == 'RegNotOpened') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Chưa đến thời gian đăng ký.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'RegClosed') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Đã hết thời gian đăng ký.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberAddedToProject') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberNotAddedToProject') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberLimitReached') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Đồ án đã có người đăng ký.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'Student1HadProject') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Sinh viên 1 đã có đồ án khác trong lớp.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'NoMemberToDeleteFromProject') {
+                new PNotify({
+                    text: 'Xóa thành viên khỏi đồ án thất bại. Không tìm thấy thành viên trong đồ án.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberDeletedFromProject') {
+                new PNotify({
+                    text: 'Xóa thành viên khỏi đồ án thành công.',
                     type: 'error',
                     styling: 'bootstrap3',
                 });

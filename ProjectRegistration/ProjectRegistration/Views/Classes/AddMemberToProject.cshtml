@@ -98,13 +98,13 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form asp-action="AddProjectToMember" method="post">
+                    <form asp-action="AddMemberToProject" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input asp-for="ProjectId" name="ProjectIdHere" id="ProjectIdHere" hidden value="@ViewData["ProjectId"]" />
+                        <input asp-for="ProjectId" hidden value="@ViewData["ProjectId"]" />
                         <div class="col-md-4 center-margin">
                             <div class="form-group row mt-2">
                                 <label asp-for="GroupName"></label>
-                                <input required asp-for="GroupName" type="text" class="form-control">
+                                <input asp-for="GroupName" type="text" class="form-control">
                                 <span asp-validation-for="GroupName" class="text-danger"></span>
                             </div>
                             <div class="form-group row mt-2">
@@ -114,7 +114,9 @@
                             </div>
                             <div class="form-group row mt-2">
                                 <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 2</label>
-                                <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
+                                <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">                                      
+                                    <option value="Không có">Không có</option>
+                                    
                                 </select>
                             </div>
                         </div>
