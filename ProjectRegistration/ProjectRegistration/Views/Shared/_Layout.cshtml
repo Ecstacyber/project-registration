@@ -8,6 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjectRegistration</title>
+    <link rel="icon" href="~/web-icon.ico">
     <link href="~/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProjectRegistration.styles.css" asp-append-version="true" />
@@ -21,8 +22,11 @@
 </head>
 <body class="nav-md mb-0">
     @{
-        var user = await UserManager.GetUserAsync(User);
-        ViewData["Avatar"] = "../../files/" + user.ImagePath;
+        if (SignInManager.IsSignedIn(User))
+        {
+            var user = await UserManager.GetUserAsync(User);
+            ViewData["Avatar"] = "../../files/" + user.ImagePath;
+        }
 
     }
     <div class="container body">
@@ -54,11 +58,7 @@
                         <div class="menu_section">
                             <ul class="nav side-menu">
                                 <li>
-                                    <a><i class="fa fa-home"></i> Trang chủ <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                                        <li><a asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-                                    </ul>
+                                    <a asp-controller="Home" asp-action="Index"><i class="fa fa-home"></i> Trang chủ</a>
                                 </li>
                                 <li>
                                     <a asp-area="" asp-controller="Departments" asp-action="Index"><i class="fa fa-group"></i> Khoa</a>

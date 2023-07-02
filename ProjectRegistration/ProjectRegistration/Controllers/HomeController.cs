@@ -13,15 +13,113 @@ namespace ProjectRegistration.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IDENTITYUSERContext _context;
 
-        public HomeController(ILogger<HomeController> logger,
-            IDENTITYUSERContext context)
+        public HomeController(ILogger<HomeController> logger, IDENTITYUSERContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        [Authorize(Roles = "Manager, Lecturer, Student")]
-        public IActionResult Index()
+        public IActionResult GetProjectCompleteData()
+        {
+            float totalDoingPj = _context.Projects
+                .Include(p => p.Class)
+                .Where(x => x.State == "Đang thực hiện" 
+                    || x.State == "Đã hoàn thành" 
+                    && x.Class.Semester == GetCurrentSemester() 
+                    && x.Class.Cyear == GetCurrentYear()
+                ).Count();
+            if (totalDoingPj == 0) { return Json(0); }
+            float uncompletedPj = _context.Projects.Include(p => p.Class).Where(x => x.State == "Đang thực hiện").Count();
+            var response = uncompletedPj / totalDoingPj;
+            return Json(response);
+        }
+
+        public static int GetCurrentSemester()
+        {
+            int currentMonth = DateTime.Now.Month;
+            int currentDay = DateTime.Now.Day;
+            if (currentMonth >= 9 && currentMonth == 1)
+            {
+                if (currentMonth == 9 && currentDay >= 11)
+                {
+                    return 1;
+                }
+                if (currentMonth == 1 && currentDay < 29)
+                {
+                    return 1;
+                }
+                else return 0;
+            }
+            if (currentMonth >= 2 && currentMonth <= 7)
+            {
+                if (currentMonth == 2 && currentDay >= 19)
+                {
+                    return 2;
+                }
+                if (currentMonth == 7 && currentDay < 8)
+                {
+                    return 2;
+                }
+                else return 0;
+            }
+            return 0;
+        }
+
+        public int GetProjectRegisterdNumber()
+        {
+            int totalDoingPj = _context.Projects
+                .Include(p => p.Class)
+                .Where(x => x.State == "Đang thực hiện"
+                    || x.State == "Đã hoàn thành"
+                    && x.Class.Semester == GetCurrentSemester()
+                    && x.Class.Cyear == GetCurrentYear()
+                ).Count();
+            return totalDoingPj;
+        }
+        public int GetProjectOnGoingNumber()
+        {
+            int totalDoingPj = _context.Projects
+                .Include(p => p.Class)
+                .Where(x => x.State == "Đang thực hiện"
+                    && x.Class.Semester == GetCurrentSemester()
+                    && x.Class.Cyear == GetCurrentYear()
+                ).Count();
+            return totalDoingPj;
+        }
+        public int GetProjectFinishedNumber()
+        {
+            int totalDoingPj = _context.Projects
+                .Include(p => p.Class)
+                .Where(x => x.State == "Đã hoàn thành"
+                    && x.Class.Semester == GetCurrentSemester()
+                    && x.Class.Cyear == GetCurrentYear()
+                ).Count();
+            return totalDoingPj;
+        }
+
+        public static string GetCurrentYear()
+        {
+            int semester = GetCurrentSemester();
+            int currentYear = DateTime.Now.Year;
+            if (semester == 2)
+            {
+                return (currentYear - 1).ToString() + '-' + currentYear.ToString();
+            }
+            if (semester == 1)
+            {
+                if (DateTime.Now.Month == 1 && DateTime.Now.Day < 29)
+                {
+                    return (currentYear - 1).ToString() + '-' + currentYear.ToString();
+                }
+                else
+                {
+                    return currentYear.ToString() + '-' + (currentYear + 1).ToString();
+                }
+            }
+            return currentYear.ToString();
+        }
+
+        public void CheckData()
         {
             if (_context.Departments.Count() == 0)
             {
@@ -77,6 +175,18 @@ namespace ProjectRegistration.Controllers
                 _context.SaveChanges();
 
             }
+        }
+
+
+        [Authorize(Roles = "Manager, Lecturer, Student")]
+        public IActionResult Index()
+        {
+            CheckData();
+            ViewData["CurrentYear"] = GetCurrentYear();
+            ViewData["CurrentSemester"] = GetCurrentSemester();
+            ViewData["ProjectRegisteredNumber"] = GetProjectRegisterdNumber();
+            ViewData["ProjectOnGoingNumber"] = GetProjectOnGoingNumber();
+            ViewData["ProjectFinishedNumber"] = GetProjectFinishedNumber();
             return View();
 
         }

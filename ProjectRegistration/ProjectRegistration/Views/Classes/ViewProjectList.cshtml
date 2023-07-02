@@ -236,7 +236,7 @@
 
                         </td>
                         <td>
-                            <label class="text-info">Đang tiến hành</label>
+                            <label class="text-info">@Html.DisplayFor(modelItem => item.State)</label>
                         </td>
                         <td style="white-space: nowrap; width:1%">
                             @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
@@ -248,7 +248,7 @@
                             }
                             else if (User.IsInRole("Student"))
                             {
-                                <button type="button" class="btn btn-success btn-xs openDeleteModalBtn" id="GoToAddMemberBtn" data-id="@item.Id">
+                                <button type="button" class="btn btn-success btn-xs openDeleteModalBtn" onclick="GoToAddMember(this)" data-id="@item.Id">
                                     <i class="fa fa-pencil-square"></i> Đăng ký
                                 </button>
                             }
@@ -459,11 +459,11 @@
         }
     </script>
     <script>
-        $('#GoToAddMemberBtn').on('click', function (e) {
+        function GoToAddMember (e) {
             const addMemberForm = document.getElementById('addMemberForm');
-            addMemberForm.action = '@Url.Content("~/Classes/AddMemberToProject/")' + e.target.getAttribute('data-id') + '-' + '@ViewData["ClassId"]';
+            addMemberForm.action = '@Url.Content("~/Classes/AddMemberToProject/")' + e.getAttribute('data-id') + '-' + '@ViewData["ClassId"]';
             addMemberForm.submit();
-        });
+        };
     </script>
 }
 <style>
