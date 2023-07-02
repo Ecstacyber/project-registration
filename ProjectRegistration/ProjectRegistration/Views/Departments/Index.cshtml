@@ -23,10 +23,13 @@
                     <h2>Danh sách các khoa của trường</h2>
 
                     <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create">
-                            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
-                            Thêm mới
-                        </a>
+                        @if (User.IsInRole("Manager"))
+                        {
+                            <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create">
+                                <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                                Thêm mới
+                            </a>
+                        }
                         <li>
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
@@ -41,7 +44,10 @@
                                 <th style="text-align: center;">#</th>
                                 <th>@Html.DisplayNameFor(model => model.Dname)</th>
                                 <th>@Html.DisplayNameFor(model => model.Info)</th>
-                                <th class="last"></th>
+                                @if (User.IsInRole("Manager"))
+                                {
+                                    <th class="last"></th>
+                                }
                             </tr>
                         </thead>
                         <tbody style="font-size:medium">
@@ -56,13 +62,16 @@
                                         <td style="text-align: center; vertical-align: middle; width:5%" scope="row">@Html.DisplayFor(modelItem => count) </td>
                                         <td style="vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Dname)</td>
                                         <td style="vertical-align: middle;" scope="row">@Html.DisplayFor(modelItem => item.Info)</td>
-                                        <td style="vertical-align: middle;  white-space: nowrap; width:1%" scope="rowgroup">
-                                            <a class="btn btn-primary btn-xs" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
-                                            @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
-                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
-                                                <i class="fa fa-trash-o"></i> Xoá
-                                            </button>
-                                        </td>
+                                        @if (User.IsInRole("Manager"))
+                                        {
+                                            <td style="vertical-align: middle;  white-space: nowrap; width:1%" scope="rowgroup">
+                                                <a class="btn btn-primary btn-xs" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
+                                                @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
+                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
+                                                    <i class="fa fa-trash-o"></i> Xoá
+                                                </button>
+                                            </td>
+                                        }
                                     </tr>
                                 }
                             }
@@ -152,7 +161,7 @@
             }
         });
     </script>
-    
+
     <script>
         let id;
         var modal = document.getElementById("deleteModal");
@@ -167,5 +176,5 @@
             deleteForm.action = 'Departments/Delete/' + id;
             deleteForm.submit();
         }
-    </script> 
+    </script>
 }

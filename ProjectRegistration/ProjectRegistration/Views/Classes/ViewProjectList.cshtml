@@ -176,15 +176,18 @@
             </div>
         </div>
 
-        <button class="btn btn-success btn-round pull-right" style="margin-right:20px" data-toggle="modal" data-target="#addProjectFromExcelModal">
-            <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel
-        </button>
+        @if (User.IsInRole("Manage") || User.IsInRole("lecturer"))
+        {
+            <button class="btn btn-success btn-round pull-right" style="margin-right:20px" data-toggle="modal" data-target="#addProjectFromExcelModal">
+                <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel
+            </button>
 
-        <a class="btn btn-success btn-round pull-right" style="margin-right:20px" asp-action="CreateProject" asp-route-id="@ViewData["ClassId"]">
-            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
-            Thêm mới
-        </a>
+            <a class="btn btn-success btn-round pull-right" style="margin-right:20px" asp-action="CreateProject" asp-route-id="@ViewData["ClassId"]">
+                <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                Thêm mới
+            </a>
 
+        }
 
         <div class="pull-left ml-5">
             <h3>Danh sách đồ án</h3>
@@ -211,38 +214,40 @@
                 {
 
                     <tr data-id="@item.Id">
-                        <td style="text-align: center;">STT</td>
-                        <td>
+                        <td class="align-middle" style="text-align: center;">STT</td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.Pname)
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.GuidingLecturer.Fullname)
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @{
-                                foreach (var member in item.ProjectMembers)
+                                foreach (var member in item.ProjectMembers.Where(x => x.Deleted == false))
                                 {
-                                    string imgSrc = "../../files/" + member.Student.ImagePath;
-                                    <div class="d-inline-block">
-                                        <img src="" class="avatar" alt="Avatar">
-                                        <a>@Html.DisplayFor(modelItem => imgSrc)</a>
-                                    </div>
+                                    //string imgSrc = "../../files/" + member.Student.ImagePath;
+                                    //<div class="d-inline-block">
+                                    //    <img src="" class="avatar" alt="Avatar">
+                                    //    <a>@Html.DisplayFor(modelItem => imgSrc)</a>
+                                    //</div>
+                                    <p>@member.Student.Fullname</p>
+
                                 }
                             }
 
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <label class="text-info">@Html.DisplayFor(modelItem => item.State)</label>
                         </td>
-                        <td style="white-space: nowrap; width:1%">
-                            @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                        <td class="align-middle" style="white-space: nowrap; width:1%">
+                            @if (User.IsInRole("Manager"))
                             {
                                 <a class="btn btn-primary btn-xs" asp-action="EditProject" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
                                 <button type="button" class="btn btn-danger btn-xs openDeleteModalBtn" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
                                     <i class="fa fa-trash-o"></i> Xoá
                                 </button>
                             }
-                            else if (User.IsInRole("Student"))
+                            else if (User.IsInRole("Student") || User.IsInRole("Lecturer"))
                             {
                                 <button type="button" class="btn btn-success btn-xs openDeleteModalBtn" onclick="GoToAddMember(this)" data-id="@item.Id">
                                     <i class="fa fa-pencil-square"></i> Đăng ký
@@ -391,6 +396,63 @@
                     styling: 'bootstrap3',
                 });
             }
+            var msg = '@TempData["message"]';
+            if (msg == 'RegNotOpened') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Chưa đến thời gian đăng ký.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'RegClosed') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Đã hết thời gian đăng ký.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberAddedToProject') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberNotAddedToProject') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberLimitReached') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Đồ án đã có người đăng ký.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'Student1HadProject') {
+                new PNotify({
+                    text: 'Thêm thành viên vào đồ án thất bại. Sinh viên 1 đã có đồ án khác trong lớp.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'NoMemberToDeleteFromProject') {
+                new PNotify({
+                    text: 'Xóa thành viên khỏi đồ án thất bại. Không tìm thấy thành viên trong đồ án.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'MemberDeletedFromProject') {
+                new PNotify({
+                    text: 'Xóa thành viên khỏi đồ án thành công.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
         });
     </script>
     <script type="text/javascript">
@@ -458,7 +520,7 @@
         }
     </script>
     <script>
-        function GoToAddMember (e) {
+        function GoToAddMember(e) {
             const addMemberForm = document.getElementById('addMemberForm');
             addMemberForm.action = '@Url.Content("~/Classes/AddMemberToProject/")' + e.getAttribute('data-id') + '-' + '@ViewData["ClassId"]';
             addMemberForm.submit();

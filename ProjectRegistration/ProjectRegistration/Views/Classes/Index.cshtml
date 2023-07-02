@@ -21,13 +21,16 @@
                     <h2>Lớp</h2>
 
                     <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                        <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create" asp-route-id="@ViewData["CourseId"]">
-                            <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
-                            Thêm mới
-                        </a>
-                        <li>
-                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
+                        @if (User.IsInRole("Manager"))
+                        {
+                            <a class="btn btn-success btn-round" style="margin-right:20px" asp-action="Create" asp-route-id="@ViewData["CourseId"]">
+                                <span class="glyphicon glyphicon-plus" style="color:white" aria-hidden="true"></span>
+                                Thêm mới
+                            </a>
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        }
                     </ul>
                     <div class="clearfix"></div>
                 </div>
@@ -37,13 +40,20 @@
                             <div class="card-box table-responsive">
                                 <table id="datatable-class" class="table jambo_table table-hover " style="width:100%">
                                     <thead>
-                                        <tr >
+                                        <tr>
                                             <th style="text-align: center;">#</th>
                                             <th>@Html.DisplayNameFor(model => model.Course.CourseName)</th>
                                             <th>@Html.DisplayNameFor(model => model.ClassId)</th>
                                             <th>@Html.DisplayNameFor(model => model.Semester)</th>
                                             <th>@Html.DisplayNameFor(model => model.Cyear)</th>
-                                            <th></th>
+                                            @if (User.IsInRole("Manager"))
+                                            {
+                                                <th></th>
+                                            }
+                                            else
+                                            {
+                                                <th hidden></th>
+                                            }
                                             <th style="display:none"></th>
                                         </tr>
                                     </thead>
@@ -57,13 +67,20 @@
                                                     <td class="border-aero" style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.ClassId)</td>
                                                     <td class="border-aero" style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Semester)</td>
                                                     <td class="border-aero" style="font-size:larger; vertical-align: middle;">@Html.DisplayFor(modelItem => item.Cyear)</td>
-                                                    <td class="border-aero" style="white-space: nowrap; width:1%">
-                                                        <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
-                                                        @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
-                                                        <button type="button" class="btn btn-danger btn-sm openDeleteModalBtn" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
-                                                            <i class="fa fa-trash-o"></i> Xoá
-                                                        </button>
-                                                    </td>
+                                                    @if (User.IsInRole("Manager"))
+                                                    {
+                                                        <td class="border-aero" style="white-space: nowrap; width:1%">
+                                                            <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil"></i> Sửa</a>
+                                                            @*<a class="btn btn-primary btn-xs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-folder"></i> Chi tiết</a>*@
+                                                            <button type="button" class="btn btn-danger btn-sm openDeleteModalBtn" data-toggle="modal" data-target=".deleteModal" data-id="@item.Id">
+                                                                <i class="fa fa-trash-o"></i> Xoá
+                                                            </button>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td hidden></td>
+                                                    }
                                                     <td style="display:none">@item.Id</td>
                                                 </tr>
                                             }

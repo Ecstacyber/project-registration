@@ -20,6 +20,7 @@ using NuGet.Versioning;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Quartz;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Primitives;
 
 namespace ProjectRegistration.Controllers
 {
@@ -418,6 +419,7 @@ namespace ProjectRegistration.Controllers
             projectList = @class.ProjectClasses.Where(x => x.Deleted == false && x.State != "Chưa chấp thuận").ToList();
             ViewData["ClassId"] = id;
             return View(projectList);
+            return View(projectList);
         }
 
         // GET: Projects/Create
@@ -462,7 +464,7 @@ namespace ProjectRegistration.Controllers
                             var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
                             if (guLecProjects.Count() > 20)
                             {
-                                TempData["message"] = "Project1GuidingLimitReached";
+                                TempData["message"] = "ProjectGuidingLimitReached";
                                 TempData["limit"] = 20;
                                 return View(project);
                             }
@@ -642,16 +644,22 @@ namespace ProjectRegistration.Controllers
                 var currentClass = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
                 if (currentClass != null && currentClass.Course != null)
                 {
-                    if (currentClass.Course.CourseName == "Đồ án 1")
+                    if (currentClass.Course.CourseName == "Đồ án 1" || currentClass.Course.CourseName == "Đồ án 2")
                     {
                         if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
                         {
-                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear).ToList();
+                            var pj1 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE121");
+                            var pj2 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE122");
+                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester
+                                                                                && x.Class.Cyear == currentClass.Cyear
+                                                                                && x.Class.CourseId == pj1.Id
+                                                                                && x.Class.CourseId == pj2.Id).ToList();
                             var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
                             var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
                             if (guLecProjects.Count() > 20)
                             {
-                                TempData["message"] = "Project1GuidingLimitReached";
+                                TempData["message"] = "ProjectGuidingLimitReached";
+                                TempData["limit"] = 20;
                                 return View(project);
                             }
                         }
@@ -664,6 +672,7 @@ namespace ProjectRegistration.Controllers
                         if (guLecProjects.Count() > 5)
                         {
                             TempData["message"] = "GraduationThesisGuidingLimitReached";
+                            TempData["limit"] = 5;
                             return View(project);
                         }
                     }
@@ -724,26 +733,30 @@ namespace ProjectRegistration.Controllers
                 .Include(p => p.GradingLecturer)
                 .Include(p => p.GuidingLecturer)
                 .Include(p => p.Products)
+                .ThenInclude(p => p.ProductDetails)
                 .FirstOrDefaultAsync(m => m.Id == pId);
             if (project == null)
             {
                 return NotFound();
             }
             ViewData["cId"] = cId;
+            ViewData["comment"] = "";
+            ViewData["projectId"] = 0;
 
             return View(project);
         }
 
         [Authorize(Roles = "Manager, Lecturer, Student")]
-        public IActionResult AddMemberToProject(string id)
+        public async Task<IActionResult> AddMemberToProject(string id)
         {
             int pId = int.Parse(id.Split('-')[0]);
             int cId = int.Parse(id.Split('-')[1]);
-            var project = _context.Projects.Include(x => x.Class).FirstOrDefault(x => x.Id == pId);
+            var project = _context.Projects.Include(x => x.Class).Include(x => x.ProjectMembers).ThenInclude(x => x.Student).FirstOrDefault(x => x.Id == pId);
             ViewData["ClassId"] = cId;
             ViewData["Project"] = project;
             ViewData["ProjectId"] = project.Id;
             ViewData["ProjectName"] = project.Pname;
+            var classDetails = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.User.UserTypeId == 100 && x.Deleted == false && x.User.Deleted == false).ToList();
             //var members = _context.ClassDetails.Where(x => x.ClassId == project.ClassId).Include(x => x.User).ToList();
             //if (members != null)
             //{
@@ -751,9 +764,62 @@ namespace ProjectRegistration.Controllers
             //    ViewData["StudentId1"] = new SelectList(classDetail1, "UserId", "User.Fullname");
             //    ViewData["StudentId2"] = new SelectList(members, "UserId", "User.Fullname");
             //}
-            var classDetails = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.User.UserTypeId == 100).ToList();
-            ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname" + ' ' + "User.UserId");
-            ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname" + ' ' + "User.UserId");
+            ClaimsPrincipal currentUser = this.User;
+            var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _userManager.FindByIdAsync(currentUserName);
+
+            ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname");
+            if (user.UserTypeId == 100)
+            {
+                if (project.Class.RegOpen == "Đóng")
+                {
+                    TempData["message"] = "RegNotOpened";
+                    return RedirectToAction("ViewProjectList", new { id = project.ClassId });
+                }
+                //if (projectMember != null && regEnd != null && regEnd >= DateTime.Now)
+                //{
+                //    TempData["message"] = "RegClosed";
+                //    return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                //}
+                bool check = false;
+                foreach(var item in project.ProjectMembers)
+                {
+                    if (item.StudentId == currentUserName)
+                    {
+                        check = true;
+                        break;
+                    }
+                }
+                if (project.State == "Đang thực hiện" && check == false)
+                {
+                    TempData["message"] = "MemberLimitReached";
+                    return RedirectToAction("ViewProjectList", new { id = project.ClassId });
+                }
+                List<SelectListItem> currentUserList = new List<SelectListItem>();
+                currentUserList.Add(new SelectListItem() { Text = user.Fullname, Value = user.Id });
+                ViewData["StudentId1"] = new SelectList(currentUserList, "Value", "Text");
+                
+            }
+            else
+            {
+                ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname");
+
+                if (project.ProjectMembers.Where(x => x.Deleted == false).Count() == 1)
+                {
+                    ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname",
+                        project.ProjectMembers.FirstOrDefault(x => x.Deleted == false).StudentId);
+                    
+                }
+                
+            }
+            ViewData["1Member"] = "yes";
+            if (project.ProjectMembers.Where(x => x.Deleted == false).Count() == 2)
+            {
+                ViewData["1Member"] = "no";
+                ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname", project.ProjectMembers.First(x => x.Deleted == false).StudentId);
+                ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname", project.ProjectMembers.Last(x => x.Deleted == false).StudentId);
+            }
+            
             return View();
         }
 
@@ -768,35 +834,35 @@ namespace ProjectRegistration.Controllers
             Project saidProject = new();
             if (ModelState.IsValid)
             {
-                saidProject = _context.Projects.FirstOrDefault(x => x.Id == projectMember.ProjectId);
-                
-                var regStart = saidProject.Class.RegStart;
-                var regEnd = saidProject.Class.RegEnd;
+                saidProject = _context.Projects.Include(x => x.Class).FirstOrDefault(x => x.Id == projectMember.ProjectId);
+
+                //var regStart = saidProject.Class.RegStart;
+                //var regEnd = saidProject.Class.RegEnd;
                 if (saidProject != null)
                 {
                     var currentClass = _context.Classes.FirstOrDefault(x => x.Id == saidProject.ClassId);
-                    var projectsInCurrentClass = _context.Projects.Where(x => x.ClassId == currentClass.Id).ToList();
-                    if (projectMember != null && regStart != null && regStart <= DateTime.Now)
+                    var projectsInCurrentClass = _context.Projects.Include(x => x.ProjectMembers).Where(x => x.ClassId == currentClass.Id).ToList();
+                    if (projectMember != null && saidProject.Class.RegOpen == "Đóng")
                     {
                         TempData["message"] = "RegNotOpened";
-                        return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                        return RedirectToAction("ViewProjectList", new { id = saidProject.ClassId });
                     }
-                    if (projectMember != null && regEnd != null && regEnd >= DateTime.Now)
-                    {
-                        TempData["message"] = "RegClosed";
-                        return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
-                    }
+                    //if (projectMember != null && regEnd != null && regEnd >= DateTime.Now)
+                    //{
+                    //    TempData["message"] = "RegClosed";
+                    //    return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                    //}
                     if (saidProject.ProjectMembers.Count == 2)
                     {
                         TempData["message"] = "MemberLimitReached";
-                        return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                        return RedirectToAction("ViewProjectList", new { id = saidProject.ClassId });
                     }
                     foreach (Project pj in projectsInCurrentClass)
                     {
                         if (pj.ProjectMembers.Any(x => x.StudentId == StudentId1 && x.Deleted == false))
                         {
                             TempData["message"] = "Student1HadProject";
-                            return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                            return RedirectToAction("ViewProjectList", new { id = saidProject.ClassId });
                         }
                     }
                     foreach (Project pj in projectsInCurrentClass)
@@ -804,7 +870,7 @@ namespace ProjectRegistration.Controllers
                         if (pj.ProjectMembers.Any(x => x.StudentId == StudentId2 && x.Deleted == false))
                         {
                             TempData["message"] = "Student2HadProject";
-                            return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
+                            return RedirectToAction("ViewProjectList", new { id = saidProject.ClassId });
                         }
                     }
                     var projectMember1 = new ProjectMember
@@ -817,7 +883,7 @@ namespace ProjectRegistration.Controllers
                     projectMember1.StudentId = StudentId1;
                     projectMember1.GroupName = projectMember.GroupName;
                     _context.Add(projectMember1);
-                    if (StudentId2 != null)
+                    if (StudentId2 != null && StudentId2 != "Không có")
                     {
                         var projectMember2 = new ProjectMember
                         {
@@ -833,7 +899,7 @@ namespace ProjectRegistration.Controllers
                     saidProject.State = "Đang thực hiện";
                     await _context.SaveChangesAsync();
                     TempData["message"] = "MemberAddedToProject";
-                    return RedirectToAction("ProjectDetails", new { id = projectMember1.ProjectId });
+                    return RedirectToAction("ViewProjectList", new { id = saidProject.ClassId });
                 }
             }
 
@@ -849,20 +915,33 @@ namespace ProjectRegistration.Controllers
 
         // POST: Classes/DeleteMemberFromProject/5
         [Authorize(Roles = "Manager, Lecturer, Student")]
-        public IActionResult DeleteMemberFromProject(string id)
+        public async Task<IActionResult> DeleteMemberFromProject(string id, string userId)
         {
-            ///
-            Console.WriteLine(id);
-            Console.WriteLine(id);
-            Console.WriteLine(id);
-            Console.WriteLine(id);
-            Console.WriteLine(id);
-            Console.WriteLine(id);
-            Console.WriteLine(id);
-            
-            return RedirectToAction("ProjectDetails", new { id = id.Split('-')[0] + '-' + id.Split('-')[1] });
-        }
+            int pId = int.Parse(id.Split('-')[0]);
+            int cId = int.Parse(id.Split('-')[1]);
+            if (_context.ProjectMembers == null)
+            {
+                TempData["message"] = "NoMemberToDeleteFromProject";
+                return Problem("Entity set 'IDENTITYUSERContext.ProjectMembers'  is null.");
+            }
+            var members = _context.ProjectMembers.FirstOrDefault(x => x.ProjectId == pId && x.StudentId == userId && x.Deleted == false);
+            if (members != null)
+            {
+                members.Deleted = true;
+                members.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "MemberDeletedFromProject";
+            }
 
+            await _context.SaveChangesAsync();
+            var currentProject = _context.Projects.FirstOrDefault(x => x.Id == pId);
+            if (currentProject != null && currentProject.ProjectMembers.Any(x => x.Deleted == false))
+            {
+                currentProject.State = "Chưa đăng ký";
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("ViewProjectList", new { id = cId });
+        }
+       
         // POST
         [HttpPost, ActionName("VerifyProject")]
         [ValidateAntiForgeryToken]
@@ -901,6 +980,270 @@ namespace ProjectRegistration.Controllers
             response.GuidingLecturerId = pj.GuidingLecturerId;
             response.GuidingLecturerName = pj.GuidingLecturer.Fullname;
             return Json(response);
+        }
+
+        [HttpPost, ActionName("UploadDocument")]
+        [Authorize(Roles = "Manager, Lecturer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadDocument(int Id, IFormFile fileSelect)
+        {
+            if (fileSelect == null)
+            {
+                TempData["message"] = "NoFileSelected";
+                return RedirectToAction("ProjectDetails", new { id = Id + "-" + _context.Projects.FirstOrDefault(x => x.Id == Id).ClassId });
+            }
+
+            var filename = Path.GetFileNameWithoutExtension(fileSelect.FileName) + " " + DateTime.Now.ToString().Replace('/', '_').Replace(':', '_') + Path.GetExtension(fileSelect.FileName);
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString())))
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString()));
+            }
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString(), filename);
+            using (FileStream fs = System.IO.File.Create(filepath))
+            {
+                fileSelect.CopyTo(fs);
+            }
+            Project project = _context.Projects.FirstOrDefault(x => x.Id == Id);
+            Product product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+            if (project != null)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
+                if (product == null)
+                {
+                    product = new Product
+                    {
+                        Project = project,
+                        ProjectId = Id,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    _context.Products.Add(product);
+                    project.Products.Add(product);
+                    _context.SaveChanges();
+                    product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        UserId = currentUserName,
+                        User = user,
+                        Type = "LecturerFile",
+                        Info = filename,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                    return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+                }
+                if (product != null)
+                {
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        UserId = currentUserName,
+                        User = user,
+                        CreatedDateTime = DateTime.Now,
+                        Type = "LecturerFile",
+                        Info = filename
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                    return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+                }
+            }
+
+            TempData["message"] = "DocumentNotAdded";
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ProjectDetails", new { id = Id });
+        }
+
+        [HttpPost, ActionName("UploadStudentProduct")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadStudentProduct(int Id, IFormFile fileSelect)
+        {
+            if (fileSelect == null)
+            {
+                TempData["message"] = "NoFileSelected";
+                return RedirectToAction("ProjectDetails", new { id = Id + "-" + _context.Projects.FirstOrDefault(x => x.Id == Id).ClassId });
+            }
+
+            var filename = Path.GetFileNameWithoutExtension(fileSelect.FileName) + " " + DateTime.Now.ToString().Replace('/', '_').Replace(':', '_') + Path.GetExtension(fileSelect.FileName);
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString())))
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString()));
+            }
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString(), filename);
+            using (FileStream fs = System.IO.File.Create(filepath))
+            {
+                fileSelect.CopyTo(fs);
+            }
+            Project project = _context.Projects.FirstOrDefault(x => x.Id == Id);
+            Product product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+            if (project != null)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
+                if (product == null)
+                {
+                    product = new Product
+                    {
+                        Project = project,
+                        ProjectId = Id,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    _context.Products.Add(product);
+                    project.Products.Add(product);
+                    _context.SaveChanges();
+                    product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
+
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        UserId = currentUserName,
+                        User = user,
+                        Type = "LecturerFile",
+                        Info = filename,
+                        CreatedDateTime = DateTime.Now,
+                        Deleted = false
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                    return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+                }
+                if (product != null)
+                {
+                    ProductDetail productDetail = new ProductDetail
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        UserId = currentUserName,
+                        User = user,
+                        CreatedDateTime = DateTime.Now,
+                        Type = "LecturerFile",
+                        Info = filename
+                    };
+                    product.ProductDetails.Add(productDetail);
+                    _context.ProductDetails.Add(productDetail);
+                    _context.SaveChanges();
+                    TempData["message"] = "DocumentAdded";
+                    return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+                }
+            }
+
+            TempData["message"] = "DocumentNotAdded";
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ProjectDetails", new { id = Id });
+        }
+
+        [HttpPost, ActionName("DeleteLecturerDocument")]
+        [Authorize(Roles = "Manager, Lecturer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteLecturerDocument(int id)
+        {
+            if (_context.Products == null)
+            {
+                TempData["message"] = "NoProductToDelete";
+                return Problem("Entity set 'ProjectRegistrationManagementContext.Projects'  is null.");
+            }
+            var doc = await _context.ProductDetails.FindAsync(id);
+            Product product = new();
+            Project project = new();
+            Class @class = new();
+            if (doc != null)
+            {
+                doc.Deleted = true;
+                doc.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "LecturerDocumentDeleted";
+                product = _context.Products.FirstOrDefault(x => x.Id == doc.ProductId);
+                project = _context.Projects.FirstOrDefault(x => x.Id == product.ProjectId);
+                @class = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + @class.Id });
+        }
+
+        [HttpPost, ActionName("DeleteStudentDocument")]
+        [Authorize(Roles = "Manager, Lecturer, Student")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStudentDocument(int id)
+        {
+            if (_context.Products == null)
+            {
+                TempData["message"] = "NoProductToDelete";
+                return Problem("Entity set 'ProjectRegistrationManagementContext.Projects'  is null.");
+            }
+            var doc = await _context.ProductDetails.FindAsync(id);
+            Product product = new();
+            Project project = new();
+            Class @class = new();
+            if (doc != null)
+            {
+                doc.Deleted = true;
+                doc.DeletedDateTime = DateTime.Now;
+                TempData["message"] = "StudentDocumentDeleted";
+                product = _context.Products.FirstOrDefault(x => x.Id == doc.ProductId);
+                project = _context.Projects.FirstOrDefault(x => x.Id == product.ProjectId);
+                @class = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + @class.Id });
+        }
+
+        //[HttpPost, ActionName("AddComment")]
+        //[Authorize(Roles = "Manager, Lecturer")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DownloadFile(int id)
+        //{
+        //    var project = _context.Projects.Include(x => x.Products).FirstOrDefault(p => p.Id == id);
+        //    var doc = _context.Products.Include(x => x.ProductDetails).FirstOrDefault(x => x.ProjectId == id);
+
+        //}
+
+
+        [HttpPost, ActionName("AddComment")]
+        [Authorize(Roles = "Manager, Lecturer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(int id)
+        {
+            var project = _context.Projects.Include(x => x.Products).ThenInclude(x => x.ProductDetails).FirstOrDefault(x => x.Id == id);
+            var product = _context.Products.FirstOrDefault(x => x.ProjectId == id);
+            if (ViewData["comment"] != null)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await _userManager.FindByIdAsync(currentUserName);
+                ProductDetail productDetail = new()
+                {
+                    Type = "comment",
+                    Info = ViewData["comment"].ToString(),
+                    CreatedDateTime = DateTime.Now,
+                    User = user,
+                    UserId = currentUserName
+                };
+                _context.ProductDetails.Add(productDetail);
+                product.ProductDetails.Add(productDetail);
+                TempData["message"] = "CommentAdded";
+            }
+
+            TempData["message"] = "CommentNotAdded";
+            return RedirectToAction("ProjectDetails", new { id = project.Id + '-' + project.ClassId });
         }
     }
 }

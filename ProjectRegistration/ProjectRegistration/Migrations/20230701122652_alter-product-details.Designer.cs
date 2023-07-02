@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectRegistration.Models;
 
@@ -11,9 +12,10 @@ using ProjectRegistration.Models;
 namespace ProjectRegistration.Migrations
 {
     [DbContext(typeof(IDENTITYUSERContext))]
-    partial class IDENTITYUSERContextModelSnapshot : ModelSnapshot
+    [Migration("20230701122652_alter-product-details")]
+    partial class alterproductdetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -436,15 +438,10 @@ namespace ProjectRegistration.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id")
                         .HasName("PK__ProductD__3214EC07802A3FFF");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("ProductDetails");
                 });
@@ -831,13 +828,7 @@ namespace ProjectRegistration.Migrations
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_ProductDetails_ProductId");
 
-                    b.HasOne("ProjectRegistration.Models.User", "User")
-                        .WithMany("ProductDetails")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ProjectRegistration.Models.Project", b =>
@@ -957,8 +948,6 @@ namespace ProjectRegistration.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("LecturerStats");
-
-                    b.Navigation("ProductDetails");
 
                     b.Navigation("Products");
 

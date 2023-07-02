@@ -244,7 +244,7 @@
                         <ul class="stats-overview">
                             @{
                                 int i = 1;
-                                foreach (var item in Model.ProjectMembers)
+                                foreach (var item in Model.ProjectMembers.Where(x => x.Deleted == false))
                                 {
                                     <li>
                                         <span class="name"> Thành viên @i </span>
@@ -260,7 +260,12 @@
                         </ul>
                         <br />
 
-
+                        <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadStudentProductModal">
+                            <i class="fa fa-file-archive-o"></i> Thêm bài nộp
+                        </button>
+                        <div class="d-flex justify-content-center w-100" style="min-height: 100px">
+                            
+                        </div>
                         <div>
 
                             <h4>Nhận xét</h4>
@@ -359,10 +364,11 @@
 
 
                         </div>
-                        <div class="d-flex justify-content-center w-100">
-                            <button class="btn btn-primary"> Đăng nhận xét</button>
-
-                        </div>
+                        <form method="post" id="add-comment-form" asp-asp-controller="Users" asp-action="AddComment" asp-route-id="@Model.Id">
+                            <div class="d-flex justify-content-center w-100">
+                                <button class="btn btn-primary"> Đăng nhận xét</button>
+                            </div>
+                        </form>
 
                     </div>
 
@@ -393,7 +399,21 @@
                                 <br />
                                 <h5>Project files</h5>
                                 <ul class="list-unstyled project_files">
-                                    <li>
+                                    @{
+                                        foreach (var product in Model.Products.Where(x => x.Deleted == false))
+                                        {
+                                            foreach (var item in product.ProductDetails.Where(x => x.Deleted == false))
+                                            {
+                                                if (item.Type == "LecturerFile")
+                                                {
+                                                    <li>
+                                                        <a href="/documents/@Model.Id/@item.Info" download><i class="fa fa-file-archive-o"></i>@item.Info</a>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    }
+                                    @*<li>
                                         <a href=""><i class="fa fa-file-word-o"></i> Functional-requirements.docx</a>
                                     </li>
                                     <li>
@@ -407,14 +427,18 @@
                                     </li>
                                     <li>
                                         <a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
-                                    </li>
+                                    </li>*@
                                 </ul>
                                 <br />
-
-                                <div class="text-center mtop20">
+                               
+                                @*<div class="text-center mtop20">
                                     <input type="file" id="project-file" style="display:none;" />
-                                    <a onclick="$('#project-file').trigger('click');" class="btn btn-sm btn-primary font-weight-bold" style="color:white">Add files</a>
-                                </div>
+                                    <a onclick="$('#project-file').trigger('click');" class="btn btn-sm btn-primary font-weight-bold" style="color:white">Thêm tài liệu</a>
+                                </div>*@
+                                <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadDocumentModal">
+                                    <i id="btn-add-comment" class="fa fa-file-archive-o"></i> Thêm tài liệu
+                                </button>
+                                
                             </div>
 
                         </section>
@@ -428,8 +452,60 @@
     </div>
 </div>
 
+<!-- Add document modal -->
+<form method="post" enctype="multipart/form-data" id="add-lec-file-form" asp-asp-controller="Users" asp-action="UploadDocument">
+    <input type="hidden" asp-for="Id" value="@Model.Id"/>
+    <div class="modal fade" id="uploadDocumentModal" tabindex="-1" style="z-index:1060">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Thêm tài liệu</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="fileSelect" required="required" name="fileSelect" type="file" style="display:none" />
+                    <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-archive-o"></i> &nbsp; Chọn file </label>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-success" id="add-file-btn">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Add student product modal -->
+<form method="post" enctype="multipart/form-data" id="add-stu-file-form" asp-asp-controller="Users" asp-action="UploadStudentProduct">
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    <div class="modal fade" id="uploadStudentProductModal" tabindex="-1" style="z-index:1060">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Thêm bài nộp</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="fileSelect" required="required" name="fileSelect" type="file" style="display:none" />
+                    <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-archive-o"></i> &nbsp; Chọn file </label>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-success" id="add-file-btn">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <form id="removeUserForm">
-    <input id="removeUserId" name="userId"/>
+    <input id="removeUserId" name="userId" hidden/>
 </form>
 <div class="modal fade" id="removeUserModal" tabindex="-1" style="z-index:1060">
     <div class="modal-dialog modal-lg">
@@ -465,23 +541,13 @@
                                                 <td>@item.Student.UserId</td>
                                                 <td>@item.Student.Fullname</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-danger btn-sm" id="deleteMemember" data-id="@item.StudentId">
+                                                    <button type="button" class="btn btn-danger btn-sm" id="deleteMember" data-id="@item.StudentId">
                                                         <i class="fa fa-trash-o"></i>
                                                     </button>
                                                 </td>
                                             </tr>
                                         }
                                     }
-                                    <tr>
-                                        <td style="text-align: center;"></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger btn-sm" id="deleteMember" data-id="234">
-                                                <i class="fa fa-trash-o"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -510,60 +576,51 @@
     <script src="~/vendors/google-code-prettify/src/prettify.js"></script>
 
     <script>
+        var addcomment = document.getElementById("btn-add-comment");
+        var addcommentform = document.getElementById("add-comment-form");
+        var ta = document.getElementById("descr");
+        addcomment.onclick = () => {
+            localStorage.setItem("projectId", @Model.Id);
+            localStorage.setItem("comment", $("textarea#descr").val());
+            addcommentform.action = 'Classes/AddComment/' + @Model.Id;
+            addcommentform.submit();
+        }
+    </script>
+
+    <script>
         $(function () {
-            var msg = '@TempData["message"]';
-            if (msg == 'RegNotOpened') {
+            var msg = '@ViewBag.message';
+            if (msg == 'DocumentAdded') {
                 new PNotify({
-                    text: 'Thêm thành viên vào đồ án thất bại%0D%0AChưa đến thời gian đăng ký.',
-                    type: 'error',
-                    styling: 'bootstrap3',
-                });
-            }
-            if (msg == 'RegClosed') {
-                new PNotify({
-                    text: 'Thêm thành viên vào đồ án thất bại%0D%0AĐã hết thời gian đăng ký.',
-                    type: 'error',
-                    styling: 'bootstrap3',
-                });
-            }
-            if (msg == 'MemberAddedToProject') {
-                new PNotify({
-                    text: 'Thêm thành viên vào đồ án thành công.',
+                    text: 'Thêm tài liệu thành công.',
                     type: 'success',
                     styling: 'bootstrap3',
                 });
             }
-            if (msg == 'MemberNotAddedToProject') {
+            if (msg == 'DocumentNotAdded') {
                 new PNotify({
-                    text: 'Thêm thành viên vào đồ án thất bại.',
+                    text: 'Thêm tài liệu thất bại.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'NoFileSelected') {
+                new PNotify({
+                    text: 'Thêm tài liệu thất bại. Không có file nào được chọn.',
                     type: 'error',
                     styling: 'bootstrap3',
                 });
             }
-            if (msg == 'MemberLimitReached') {
+            if (msg == 'StudentProductAdded') {
                 new PNotify({
-                    text: 'Thêm thành viên vào đồ án thất bại.%0D%0ASố lượng sinh viên trong nhóm đã đủ.',
-                    type: 'error',
+                    text: 'Nộp bài thành công.',
+                    type: 'success',
                     styling: 'bootstrap3',
                 });
             }
-            if (msg == 'Student1HadProject') {
+            if (msg == 'StudentProductNotAdded') {
                 new PNotify({
-                    text: 'Thêm thành viên vào đồ án thất bại.%0D%0ASinh viên 1 đã có đồ án khác trong lớp.',
-                    type: 'error',
-                    styling: 'bootstrap3',
-                });
-            }
-            if (msg == 'NoMemberToDeleteFromProject') {
-                new PNotify({
-                    text: 'Xóa thành viên khỏi đồ án thất bại%0D%0AKhông tìm thấy thành viên trong đồ án.',
-                    type: 'error',
-                    styling: 'bootstrap3',
-                });
-            }
-            if (msg == 'MemberDeletedFromProject') {
-                new PNotify({
-                    text: 'Xóa thành viên khỏi đồ án thành công.',
+                    text: 'Nộp bài thất bại.',
                     type: 'error',
                     styling: 'bootstrap3',
                 });
@@ -596,11 +653,9 @@
             var cId = "@Model.ClassId";
             var form = document.getElementById('removeUserForm');
             var userId = document.getElementById('removeUserId');
-            userId.value = "asd";
-            console.log(userId);
-
-            //form.action = '@Url.Content("~/Classes/DeleteMemberFromProject/")' + pId + '-' + cId + '-' + "234";
-            //form.submit();
+            userId.value = e.target.getAttribute('data-id');
+            form.action = '@Url.Content("~/Classes/DeleteMemberFromProject/")' + pId + '-' + cId;
+            form.submit();
         });
     </script>
 }
