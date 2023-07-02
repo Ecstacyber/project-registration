@@ -1066,15 +1066,15 @@ namespace ProjectRegistration.Controllers
         [HttpPost, ActionName("UploadStudentProduct")]
         [Authorize(Roles = "Manager, Lecturer, Student")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadStudentProduct(int Id, IFormFile fileSelect)
+        public async Task<IActionResult> UploadStudentProduct(int Id, IFormFile fileSelect2)
         {
-            if (fileSelect == null)
+            if (fileSelect2 == null)
             {
                 TempData["message"] = "NoFileSelected";
                 return RedirectToAction("ProjectDetails", new { id = Id + "-" + _context.Projects.FirstOrDefault(x => x.Id == Id).ClassId });
             }
 
-            var filename = Path.GetFileNameWithoutExtension(fileSelect.FileName) + " " + DateTime.Now.ToString().Replace('/', '_').Replace(':', '_') + Path.GetExtension(fileSelect.FileName);
+            var filename = Path.GetFileNameWithoutExtension(fileSelect2.FileName) + " " + DateTime.Now.ToString().Replace('/', '_').Replace(':', '_') + Path.GetExtension(fileSelect2.FileName);
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString())))
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString()));
@@ -1082,7 +1082,7 @@ namespace ProjectRegistration.Controllers
             var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", Id.ToString(), filename);
             using (FileStream fs = System.IO.File.Create(filepath))
             {
-                fileSelect.CopyTo(fs);
+                fileSelect2.CopyTo(fs);
             }
             Project project = _context.Projects.FirstOrDefault(x => x.Id == Id);
             Product product = _context.Products.FirstOrDefault(x => x.ProjectId == Id);
@@ -1111,7 +1111,7 @@ namespace ProjectRegistration.Controllers
                         ProductId = product.Id,
                         UserId = currentUserName,
                         User = user,
-                        Type = "LecturerFile",
+                        Type = "StudentFile",
                         Info = filename,
                         CreatedDateTime = DateTime.Now,
                         Deleted = false
@@ -1131,7 +1131,7 @@ namespace ProjectRegistration.Controllers
                         UserId = currentUserName,
                         User = user,
                         CreatedDateTime = DateTime.Now,
-                        Type = "LecturerFile",
+                        Type = "StudentFile",
                         Info = filename
                     };
                     product.ProductDetails.Add(productDetail);
@@ -1217,11 +1217,11 @@ namespace ProjectRegistration.Controllers
         [HttpPost, ActionName("AddComment")]
         [Authorize(Roles = "Manager, Lecturer")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(int id)
+        public async Task<IActionResult> AddComment(int id, string descr)
         {
             var project = _context.Projects.Include(x => x.Products).ThenInclude(x => x.ProductDetails).FirstOrDefault(x => x.Id == id);
             var product = _context.Products.FirstOrDefault(x => x.ProjectId == id);
-            if (ViewData["comment"] != null)
+            if (descr != null)
             {
                 ClaimsPrincipal currentUser = this.User;
                 var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -1229,7 +1229,7 @@ namespace ProjectRegistration.Controllers
                 ProductDetail productDetail = new()
                 {
                     Type = "comment",
-                    Info = ViewData["comment"].ToString(),
+                    Info = descr,
                     CreatedDateTime = DateTime.Now,
                     User = user,
                     UserId = currentUserName
@@ -1240,7 +1240,7 @@ namespace ProjectRegistration.Controllers
             }
 
             TempData["message"] = "CommentNotAdded";
-            return RedirectToAction("ProjectDetails", new { id = project.Id + '-' + project.ClassId });
+            return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
         }
     }
 }

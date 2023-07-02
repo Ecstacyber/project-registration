@@ -257,115 +257,140 @@
                         </ul>
                         <br />
 
-                        <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadStudentProductModal">
-                            <i class="fa fa-file-archive-o"></i> Thêm bài nộp
-                        </button>
+                        <h5>Bài nộp</h5>
+                        <div style="width: 75%; min-height: 100px">
+                            <ul class="list-unstyled project_files">
+                                @{
+                                    foreach (var product in Model.Products)
+                                    {
+                                        foreach (var item in product.ProductDetails)
+                                        {
+                                            if (item.Type == "StudentFile" && item.Deleted == false)
+                                            {
+                                                <li style="font-size: large; cursor: pointer">
+                                                    <a href="/documents/@Model.Id/@item.Info" download><i class="fa fa-file-archive-o"></i>@item.Info</a>
+                                                    <button type="button" class="btn btn-danger btn-xs pull-right" data-toggle="modal" data-target="#deleteStuDocModel" data-id="@item.Id">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </button>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <div class="d-flex justify-content-center w-100">
+                            <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadStudentProductModal">
+                                <i class="fa fa-file-archive-o"></i> Thêm bài nộp
+                            </button>
+                        </div>
+
                         <div class="d-flex justify-content-center w-100" style="min-height: 100px">
-                            
                         </div>
                         <div>
+                            <form method="post" id="add-comment-form" asp-asp-controller="Users" asp-action="AddComment" asp-route-id="@Model.Id">
 
-                            <h4>Nhận xét</h4>
+                                <h4>Nhận xét</h4>
 
-                            <!-- end of user messages -->
-                            <ul class="messages">
-                                <li>
-                                    <img src="" class="avatar" alt="Avatar">=
-                                    <div class="message_wrapper">
-                                        <h4 class="heading">Desmond Davison</h4>
-                                        <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
-                                        <br />
-                                        <p class="url">
-                                            <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                                            <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
-                                        </p>
-                                    </div>
-                                </li>
-                            </ul>
-
-                            <div class="x_content">
-                                <div id="alerts"></div>
-                                <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
-                                    <div class="btn-group">
-                                        <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
-                                        <ul class="dropdown-menu">
-                                        </ul>
-                                    </div>
-
-                                    <div class="btn-group">
-                                        <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a data-edit="fontSize 5">
-                                                    <p style="font-size:17px">Huge</p>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-edit="fontSize 3">
-                                                    <p style="font-size:14px">Normal</p>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-edit="fontSize 1">
-                                                    <p style="font-size:11px">Small</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="btn-group">
-                                        <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>
-                                        <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="fa fa-italic"></i></a>
-                                        <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="fa fa-strikethrough"></i></a>
-                                        <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="fa fa-underline"></i></a>
-                                    </div>
-
-                                    <div class="btn-group">
-                                        <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="fa fa-list-ul"></i></a>
-                                        <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="fa fa-list-ol"></i></a>
-                                        <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="fa fa-dedent"></i></a>
-                                        <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="fa fa-indent"></i></a>
-                                    </div>
-
-                                    <div class="btn-group">
-                                        <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>
-                                        <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>
-                                        <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="fa fa-align-right"></i></a>
-                                        <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="fa fa-align-justify"></i></a>
-                                    </div>
-
-                                    <div class="btn-group">
-                                        <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="fa fa-link"></i></a>
-                                        <div class="dropdown-menu input-append">
-                                            <input class="span2" placeholder="URL" type="text" data-edit="createLink" />
-                                            <button class="btn" type="button">Add</button>
+                                <!-- end of user messages -->
+                                <ul class="messages">
+                                    <li>
+                                        <img src="" class="avatar" alt="Avatar">=
+                                        <div class="message_wrapper">
+                                            <h4 class="heading">Desmond Davison</h4>
+                                            <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                            <br />
+                                            <p class="url">
+                                                <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                                <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                            </p>
                                         </div>
-                                        <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="fa fa-cut"></i></a>
-                                    </div>
+                                    </li>
+                                </ul>
 
-                                    <div class="btn-group">
-                                        <a class="btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="fa fa-picture-o"></i></a>
-                                        <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
-                                    </div>
+                                <div class="x_content">
+                                    <div id="alerts"></div>
+                                    <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+                                        <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+                                            <div class="btn-group">
+                                                <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
+                                                <ul class="dropdown-menu">
+                                                </ul>
+                                            </div>
 
-                                    <div class="btn-group">
-                                        <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="fa fa-undo"></i></a>
-                                        <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
+                                            <div class="btn-group">
+                                                <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a data-edit="fontSize 5">
+                                                            <p style="font-size:17px">Huge</p>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-edit="fontSize 3">
+                                                            <p style="font-size:14px">Normal</p>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-edit="fontSize 1">
+                                                            <p style="font-size:11px">Small</p>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="btn-group">
+                                                <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>
+                                                <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="fa fa-italic"></i></a>
+                                                <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="fa fa-strikethrough"></i></a>
+                                                <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="fa fa-underline"></i></a>
+                                            </div>
+
+                                            <div class="btn-group">
+                                                <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="fa fa-list-ul"></i></a>
+                                                <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="fa fa-list-ol"></i></a>
+                                                <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="fa fa-dedent"></i></a>
+                                                <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="fa fa-indent"></i></a>
+                                            </div>
+
+                                            <div class="btn-group">
+                                                <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>
+                                                <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>
+                                                <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="fa fa-align-right"></i></a>
+                                                <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="fa fa-align-justify"></i></a>
+                                            </div>
+
+                                            <div class="btn-group">
+                                                <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="fa fa-link"></i></a>
+                                                <div class="dropdown-menu input-append">
+                                                    <input class="span2" placeholder="URL" type="text" data-edit="createLink" />
+                                                    <button class="btn" type="button">Add</button>
+                                                </div>
+                                                <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="fa fa-cut"></i></a>
+                                            </div>
+
+                                            <div class="btn-group">
+                                                <a class="btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="fa fa-picture-o"></i></a>
+                                                <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
+                                            </div>
+
+                                            <div class="btn-group">
+                                                <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="fa fa-undo"></i></a>
+                                                <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div id="editor-one" class="editor-wrapper" style="min-height:100px"></div>
+
+                                    <textarea name="descr" id="descr" style="display:none;"></textarea>
+                                </div>                            <!-- end of user messages -->
+                                <div class="d-flex justify-content-center w-100">
+                                    <button class="btn btn-primary"> Đăng nhận xét</button>
                                 </div>
-
-                                <div id="editor-one" class="editor-wrapper" style="min-height:100px"></div>
-
-                                <textarea name="descr" id="descr" style="display:none;"></textarea>
-                            </div>                            <!-- end of user messages -->
-
-
+                            </form>
                         </div>
-                        <form method="post" id="add-comment-form" asp-asp-controller="Users" asp-action="AddComment" asp-route-id="@Model.Id">
-                            <div class="d-flex justify-content-center w-100">
-                                <button class="btn btn-primary"> Đăng nhận xét</button>
-                            </div>
-                        </form>
+
+
 
                     </div>
 
@@ -394,14 +419,14 @@
                                 </div>
 
                                 <br />
-                                <h5>Project files</h5>
+                                <h5>Tài liệu tham khảo</h5>
                                 <ul class="list-unstyled project_files">
                                     @{
                                         foreach (var product in Model.Products)
                                         {
                                             foreach (var item in product.ProductDetails)
                                             {
-                                                if (item.Type == "LecturerFile")
+                                                if (item.Type == "LecturerFile" && item.Deleted == false)
                                                 {
                                                     <li>
                                                         <a href="/documents/@Model.Id/@item.Info" download><i class="fa fa-file-archive-o"></i>@item.Info</a>
@@ -410,32 +435,16 @@
                                             }
                                         }
                                     }
-                                    @*<li>
-                                        <a href=""><i class="fa fa-file-word-o"></i> Functional-requirements.docx</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="fa fa-file-pdf-o"></i> UAT.pdf</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="fa fa-mail-forward"></i> Email-from-flatbal.mln</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="fa fa-picture-o"></i> Logo.png</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
-                                    </li>*@
                                 </ul>
                                 <br />
-                               
-                                @*<div class="text-center mtop20">
-                                    <input type="file" id="project-file" style="display:none;" />
-                                    <a onclick="$('#project-file').trigger('click');" class="btn btn-sm btn-primary font-weight-bold" style="color:white">Thêm tài liệu</a>
-                                </div>*@
-                                <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadDocumentModal">
-                                    <i id="btn-add-comment" class="fa fa-file-archive-o"></i> Thêm tài liệu
-                                </button>
-                                
+                                @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                                {
+                                    <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadDocumentModal">
+                                        <i id="btn-add-comment" class="fa fa-file-archive-o"></i> Thêm tài liệu
+                                    </button>
+                                }
+
+
                             </div>
 
                         </section>
@@ -450,8 +459,8 @@
 </div>
 
 <!-- Add document modal -->
-<form method="post" enctype="multipart/form-data" id="add-lec-file-form" asp-asp-controller="Users" asp-action="UploadDocument">
-    <input type="hidden" asp-for="Id" value="@Model.Id"/>
+<form method="post" enctype="multipart/form-data" id="add-lec-file-form" asp-action="UploadDocument">
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
     <div class="modal fade" id="uploadDocumentModal" tabindex="-1" style="z-index:1060">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -476,7 +485,7 @@
 </form>
 
 <!-- Add student product modal -->
-<form method="post" enctype="multipart/form-data" id="add-stu-file-form" asp-asp-controller="Users" asp-action="UploadStudentProduct">
+<form method="post" enctype="multipart/form-data" id="add-stu-file-form" asp-action="UploadStudentProduct">
     <input type="hidden" asp-for="Id" value="@Model.Id" />
     <div class="modal fade" id="uploadStudentProductModal" tabindex="-1" style="z-index:1060">
         <div class="modal-dialog">
@@ -488,13 +497,36 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input id="fileSelect" required="required" name="fileSelect" type="file" style="display:none" />
-                    <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-archive-o"></i> &nbsp; Chọn file </label>
+                    <input id="fileSelect2" required="required" name="fileSelect2" type="file" style="display:none" />
+                    <label for="fileSelect2" id="fileSelect_label" class="form-control"><i class="fa fa-file-archive-o"></i> &nbsp; Chọn file </label>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                     <button type="submit" class="btn btn-success" id="add-file-btn">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Delete Student Doc Confirmation Modal -->
+<form method="post" action="DeleteStudentDocument" id="delete-stu-doc-form">
+    <div class="modal fade deleteModal" id="deleteStuDocModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Xác nhận xóa</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Bạn có chắc chắn muốn xóa bài nộp?</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-danger" id="delete-stu-doc-btn">Xóa</button>
                 </div>
             </div>
         </div>
@@ -516,19 +548,24 @@
     <script src="~/vendors/google-code-prettify/src/prettify.js"></script>
 
     <script>
-        var addcomment = document.getElementById("btn-add-comment");
-        var addcommentform = document.getElementById("add-comment-form");
-        var ta = document.getElementById("descr");
-        addcomment.onclick = () => {
-            localStorage.setItem("projectId", @Model.Id);
-            localStorage.setItem("comment", $("textarea#descr").val());
-            addcommentform.action = 'Classes/AddComment/' + @Model.Id;
-            addcommentform.submit();
+        let id;
+        var modal = document.getElementById("deleteStuDocModal");
+        const deleteBtn = document.getElementById('delete-stu-doc-btn');
+        const deleteForm = document.getElementById('delete-stu-doc-form');
+        $(document).on('show.bs.modal', modal, function (event) {
+            const button = event.relatedTarget;
+            id = button.getAttribute('data-id');
+        })
+
+        deleteBtn.onclick = () => {
+            deleteForm.action = 'Classes/DeleteStudentDocument/' + id;
+            deleteForm.submit();
         }
     </script>
 
     <script>
-        $(function () {           
+        $(function () {
+            var msg = '@TempData["message"]';
             if (msg == 'DocumentAdded') {
                 new PNotify({
                     text: 'Thêm tài liệu thành công.',
@@ -560,6 +597,20 @@
             if (msg == 'StudentProductNotAdded') {
                 new PNotify({
                     text: 'Nộp bài thất bại.',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'StudentDocumentDeleted') {
+                new PNotify({
+                    text: 'Xóa bài nộp thành công.',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
+            }
+            if (msg == 'NoProductToDelete') {
+                new PNotify({
+                    text: 'Xóa bài nộp thất bại. Không có bài nộp để xóa',
                     type: 'error',
                     styling: 'bootstrap3',
                 });
