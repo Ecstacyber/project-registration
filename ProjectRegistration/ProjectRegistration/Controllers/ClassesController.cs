@@ -1204,17 +1204,6 @@ namespace ProjectRegistration.Controllers
             return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + @class.Id });
         }
 
-        //[HttpPost, ActionName("AddComment")]
-        //[Authorize(Roles = "Manager, Lecturer")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DownloadFile(int id)
-        //{
-        //    var project = _context.Projects.Include(x => x.Products).FirstOrDefault(p => p.Id == id);
-        //    var doc = _context.Products.Include(x => x.ProductDetails).FirstOrDefault(x => x.ProjectId == id);
-
-        //}
-
-
         [Authorize(Roles = "Manager, Lecturer")]
         public async Task<IActionResult> AddComment(int id, string descr)
         {

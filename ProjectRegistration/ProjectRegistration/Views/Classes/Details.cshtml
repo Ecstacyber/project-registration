@@ -355,7 +355,7 @@
                                             @if (User.IsInRole("Manager") || User.IsInRole("Manager"))
                                             {
                                                 <td style="white-space: nowrap; width:1%">
-                                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="@item.User.Id">
+                                                    <button type="button" id="delete-user-btn" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="@item.UserId">
                                                         <i class="fa fa-trash-o"></i>
                                                     </button>
                                                 </td>

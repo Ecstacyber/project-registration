@@ -176,7 +176,7 @@
             </div>
         </div>
 
-        @if (User.IsInRole("Manage") || User.IsInRole("lecturer"))
+        @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
         {
             <button class="btn btn-success btn-round pull-right" style="margin-right:20px" data-toggle="modal" data-target="#addProjectFromExcelModal">
                 <i class="fa fa-file-excel-o"></i> Thêm mới bằng file excel

@@ -189,7 +189,7 @@ namespace ProjectRegistration.Controllers
                 }
             }
             ViewData["Department"] = new SelectList(_context.Departments.Where(x => x.Deleted == false), "Id", "Info", user.DepartmentId);
-            return View(nameof(CreateLecturer), user);
+            return View(user);
         }
 
         // GET: Users/Edit/5
@@ -224,7 +224,14 @@ namespace ProjectRegistration.Controllers
                 return NotFound();
             }
             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Dname");
-            return View(user);
+            if (user.UserTypeId == 100)
+            {
+                return RedirectToAction("StudentList", user);
+            }
+            else
+            {
+                return RedirectToAction("LecturerList", user);
+            }
         }
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> EditStudent(string? id)
@@ -252,10 +259,6 @@ namespace ProjectRegistration.Controllers
         public async Task<IActionResult> Edit([Bind("Id,UserId,Gender,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
             ModelState.Remove("ImagePath");
-            if (_context.Users.Where(x => x.Deleted == false && x.UserId == user.UserId).FirstOrDefault() != null)
-            {
-                ModelState.AddModelError("UserId", "Mã số sinh viên/giảng viên đã tồn tại");
-            }
             if (ModelState.IsValid)
             {
                 try
@@ -322,7 +325,14 @@ namespace ProjectRegistration.Controllers
                 }
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", user.DepartmentId);
-            return View(user);
+            if (user.UserTypeId == 100)
+            {
+                return RedirectToAction("StudentList");
+            }
+            else
+            {
+                return RedirectToAction("LecturerList");
+            }
         }
 
         // POST: Users/Delete/5
