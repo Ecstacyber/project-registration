@@ -355,7 +355,7 @@
                                             @if (User.IsInRole("Manager") || User.IsInRole("Manager"))
                                             {
                                                 <td style="white-space: nowrap; width:1%">
-                                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="@item.User.Id">
+                                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="@item.UserId">
                                                         <i class="fa fa-trash-o"></i>
                                                     </button>
                                                 </td>
@@ -488,6 +488,7 @@
 
 <!-- Delete Modal -->
 <form method="post" id="delete-form"></form>
+<input id="classId" name="classId" value="@Model.Id"/>
 <div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog .modal-dialog-centered">
         <div class="modal-content">
@@ -659,13 +660,12 @@
         var modal = document.getElementById("deleteModal");
         const deleteBtn = document.getElementById('delete-btn');
         const deleteForm = document.getElementById('delete-form');
-        modal.addEventListener('show.bs.modal', function (event) {
+        $('#deleteModal').on('show.bs.modal', function (event) {
             const button = event.relatedTarget;
-            console.log(event.relatedTarget);
             id = button.getAttribute('data-id');
         });
         deleteBtn.onclick = () => {
-            deleteForm.action = '@Url.Content("~/Classes/DeleteUser/")' + id + '-' + classId.value;
+            deleteForm.action = '@Url.Content("~/Classes/DeleteUser/")' + id;
             deleteForm.submit();
         }
     </script>
