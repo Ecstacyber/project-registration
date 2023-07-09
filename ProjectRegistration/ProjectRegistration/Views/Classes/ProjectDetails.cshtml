@@ -228,6 +228,7 @@
                                 <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
 
                             </button>
+                            
                         </li>
                         <li>
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -260,33 +261,39 @@
                         </ul>
                         <br />
 
-                        <h5>Bài nộp</h5>
-                        <div style="width: 75%; min-height: 100px">
-                            <ul class="list-unstyled project_files">
-                                @{
-                                    foreach (var product in Model.Products)
-                                    {
-                                        foreach (var item in product.ProductDetails)
-                                        {
-                                            if (item.Type == "StudentFile" && item.Deleted == false)
+                        <div class="w-75">
+                            <h5>Bài nộp</h5>
+                            <div class="">
+                                <div style="min-height: 100px" class="border">
+                                    <ul class="list-unstyled project_files">
+                                        @{
+                                            foreach (var product in Model.Products)
                                             {
-                                                <li style="font-size: large; cursor: pointer">
-                                                    <a href="/documents/@Model.Id/@item.Info" download><i class="fa fa-file-archive-o"></i>@item.Info</a>
-                                                    <button type="button" class="btn btn-danger btn-xs pull-right" data-toggle="modal" data-target="#deleteStuDocModal" data-id="@item.Id">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </li>
+                                                foreach (var item in product.ProductDetails)
+                                                {
+                                                    if (item.Type == "StudentFile" && item.Deleted == false)
+                                                    {
+                                                        <li style="font-size: large; cursor: pointer; width:100%">
+                                                            <a href="/documents/@Model.Id/@item.Info" download><i class="fa fa-file-archive-o"></i>@item.Info</a>
+                                                            <a type="button" class="text-danger " data-toggle="modal" data-target="#deleteStuDocModal" data-id="@item.Id">
+                                                                <i class="fa fa-trash-o"></i>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
-                                }
-                            </ul>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="d-flex mt-2 justify-content-center w-100">
+                                <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadStudentProductModal">
+                                    <i class="fa fa-file-archive-o"></i> Thêm bài nộp
+                                </button>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-center w-100">
-                            <button class="btn btn-sm btn-primary font-weight-bold" style="color:white" data-toggle="modal" data-target="#uploadStudentProductModal">
-                                <i class="fa fa-file-archive-o"></i> Thêm bài nộp
-                            </button>
-                        </div>
+
 
                         <div class="d-flex justify-content-center w-100" style="min-height: 100px">
                         </div>
@@ -298,14 +305,14 @@
                                 <!-- end of user messages -->
                                 <ul class="messages">
                                     <li>
-                                        <img src="" class="avatar" alt="Avatar">=
+                                        <img src="../../files/default-avatar.jpg" class="avatar" alt="Avatar">
                                         <div class="message_wrapper">
-                                            <h4 class="heading">Desmond Davison</h4>
-                                            <blockquote class="message">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth.</blockquote>
+                                            <h4 class="heading">Cấn Đức Quang</h4>
+                                            <blockquote class="message">Các em nên tìm hiểu các ứng dụng bán sách online và khảo sát tính năng liên quan</blockquote>
                                             <br />
                                             <p class="url">
                                                 <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                                                <a href="#"><i class="fa fa-paperclip"></i> User Acceptance Test.doc </a>
+                                                <a href="#"><i class="fa fa-paperclip"></i> UngDungBanSach.doc </a>
                                             </p>
                                         </div>
                                     </li>

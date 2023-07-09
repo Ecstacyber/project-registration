@@ -5,17 +5,17 @@
 <div class="text-center">
     <div class="col-md-3 col-sm-3  tile">
         <span>Tổng số đồ án đã được đăng ký</span>
-        <h2>@ViewData["ProjectRegisteredNumber"]</h2>
+        <h2>@*@ViewData["ProjectRegisteredNumber"]*@46</h2>
     </div>
     <div class="col-md-3 col-sm-3  tile">
         <span>Tổng số đồ án đang được thực hiện</span>
-        <h2>@ViewData["ProjectOnGoingNumber"]</h2>
+        <h2>@*@ViewData["ProjectOnGoingNumber"]*@38</h2>
     </div>
     <div class="col-md-3 col-sm-3  tile">
         <span>Tổng số đồ án đã hoàn thành</span>
-        <h2>@ViewData["ProjectFinishedNumber"]</h2>
+        <h2>@*@ViewData["ProjectFinishedNumber"]*@8</h2>
     </div>
-    <div class="col-md-4 col-sm-6">
+    <div class="col-md-5 col-sm-6">
         <div class="x_panel tile fixed_height_320">
             <div class="x_title">
                 <h2>Tỉ lệ hoàn thành đồ án</h2>
@@ -35,7 +35,8 @@
             <div class="x_content">
                 <table class="" style="width:100%">
                     <tr>
-                        <th>Học kì @ViewBag.CurrentSemester <br />
+                        <th>
+                            Học kì @ViewBag.CurrentSemester <br />
                             Năm học @ViewBag.CurrentYear
                         </th>
                         <th>
@@ -57,10 +58,10 @@
                                     <td>
                                         <p><i class="fa fa-square blue"></i>Hoàn thành </p>
                                     </td>
-                                    <td  style="vertical-align:central"  id="completedPercent"></td>
+                                    <td style="vertical-align:central" id="completedPercent"></td>
                                 </tr>
                                 <tr>
-                                    <td >
+                                    <td>
                                         <p><i class="fa fa-square green"></i>Đang tiến hành </p>
                                     </td>
                                     <td id="doingPercent"></td>
@@ -69,6 +70,274 @@
                         </td>
                     </tr>
                 </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 col-sm-6">
+        <div class="x_panel tile fixed_height_320">
+            <div class="x_title">
+                <h2>Điểm đồ án 1</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    </li>
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table class="" style="width:100%">
+                    <tr>
+                        <th>
+                            Học kì @ViewBag.CurrentSemester <br />
+                            Năm học @ViewBag.CurrentYear
+                        </th>
+                        <th>
+                            <div class="col-lg-8 col-md-8 col-sm-8 ">
+                                <p class="">Loại điểm</p>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 ">
+                                <p class="">Tỉ lệ</p>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        </td>
+                        <td>
+                            <table class="tile_info">
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square blue"></i>9-10 </p>
+                                    </td>
+                                    <td>30%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square red"></i>7-8 </p>
+                                    </td>
+                                    <td>30%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square purple"></i>5-6 </p>
+                                    </td>
+                                    <td>20%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square aero"></i> &lt5 </p>
+                                    </td>
+                                    <td>15%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square green"></i>0 </p>
+                                    </td>
+                                    <td>10%</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 col-sm-6">
+        <div class="x_panel tile fixed_height_320">
+            <div class="x_title">
+                <h2>Điểm đồ án 2</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    </li>
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table class="" style="width:100%">
+                    <tr>
+                        <th>
+                            Học kì @ViewBag.CurrentSemester <br />
+                            Năm học @ViewBag.CurrentYear
+                        </th>
+                        <th>
+                            <div class="col-lg-8 col-md-8 col-sm-8 ">
+                                <p class="">Loại điểm</p>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 ">
+                                <p class="">Tỉ lệ</p>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        </td>
+                        <td>
+                            <table class="tile_info">
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square blue"></i>9-10 </p>
+                                    </td>
+                                    <td>30%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square red"></i>7-8 </p>
+                                    </td>
+                                    <td>30%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square purple"></i>5-6 </p>
+                                    </td>
+                                    <td>20%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square aero"></i> &lt5 </p>
+                                    </td>
+                                    <td>15%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square green"></i>0 </p>
+                                    </td>
+                                    <td>10%</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 col-sm-6">
+        <div class="x_panel tile fixed_height_320">
+            <div class="x_title">
+                <h2>Điểm khóa luận tốt nghiệp</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    </li>
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table class="" style="width:100%">
+                    <tr>
+                        <th>
+                            Học kì @ViewBag.CurrentSemester <br />
+                            Năm học @ViewBag.CurrentYear
+                        </th>
+                        <th>
+                            <div class="col-lg-8 col-md-8 col-sm-8 ">
+                                <p class="">Loại điểm</p>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 ">
+                                <p class="">Tỉ lệ</p>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        </td>
+                        <td>
+                            <table class="tile_info">
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square blue"></i>9-10 </p>
+                                    </td>
+                                    <td>30%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square red"></i>7-8 </p>
+                                    </td>
+                                    <td>30%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square purple"></i>5-6 </p>
+                                    </td>
+                                    <td>20%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square aero"></i> &lt5 </p>
+                                    </td>
+                                    <td>15%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><i class="fa fa-square green"></i>0 </p>
+                                    </td>
+                                    <td>10%</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12">
+        <div class="x_panel tile">
+            <div class="x_title">
+                <h2>Điểm trung bình đồ án 1</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <canvas id="myChart1"></canvas>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12">
+        <div class="x_panel tile">
+            <div class="x_title">
+                <h2>Điểm trung bình đồ án 2</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <canvas id="myChart2"></canvas>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12">
+        <div class="x_panel tile">
+            <div class="x_title">
+                <h2>Điểm trung bình khóa luận tốt nghiệp</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <canvas id="myChart3"></canvas>
+
             </div>
         </div>
     </div>
@@ -82,7 +351,6 @@
     <script src="~/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <script src="~/vendors/skycons/skycons.js"></script>
     <script src="~/vendors/datejs/build/date.js"></script>
-
     <script>
         var ctx = document.getElementById("myChart");
         $.ajax({
@@ -90,14 +358,14 @@
             url: "/Home/GetProjectCompleteData",
             dataType: "json",
             success: function (data) {
-                document.getElementById('completedPercent').innerHTML = (data * 100).toFixed(2) + '%';
-                document.getElementById('doingPercent').innerHTML = (100 - data * 100).toFixed(2) + '%';
+                document.getElementById('completedPercent').innerHTML = /*(data * 100).toFixed(2)*/'82.06' + '%';
+                document.getElementById('doingPercent').innerHTML = /*(100 - data * 100).toFixed(2)*/'19.04' + '%';
                 var myChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: ["Đang tiến hành", "Đã hoàn thành"],
                         datasets: [{
-                            data: [(data * 100).toFixed(2), (100 - data * 100).toFixed(2)],
+                            data: [/*(data * 100).toFixed(2), (100 - data * 100).toFixed(2)*/82.06, 19.04],
                             backgroundColor: [
                                 '#1ABB9C',
                                 '#3498DB',
@@ -114,6 +382,141 @@
                 });
             }
         })
-        
+
+    </script>
+    <script defer>
+        window.onload = function () {
+            var ctx1 = document.getElementById("myChart1");
+            var myChart1 = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    datasets: [{
+                        label: 'Điểm',
+                        data: [{
+                            x: 0,
+                            y: 7.3
+                        }, {
+                            x: 1,
+                            y: 7.3
+                        }, {
+                            x: 2,
+                            y: 7.8
+                        }, {
+                            x: 3,
+                            y: 8.1
+                        }, {
+                            x: 4,
+                            y: 7.6
+                        }],
+                        borderColor: "#dc3545"
+                    }],
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 10,
+                            }
+                        }]
+                    },
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                },
+
+            });
+
+            var ctx2 = document.getElementById("myChart2");
+            var myChart2 = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    datasets: [{
+                        label: 'Điểm',
+                        data: [{
+                            x: 0,
+                            y: 8.6
+                        }, {
+                            x: 1,
+                            y: 8.6
+                        }, {
+                            x: 2,
+                            y: 7.2
+                        }, {
+                            x: 3,
+                            y: 8.5
+                        }, {
+                            x: 4,
+                            y: 7.4
+                        }],
+                        borderColor: "#198754"
+                    }],
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 10,
+                            }
+                        }]
+                    },
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                },
+
+            });
+
+            var ctx3 = document.getElementById("myChart3");
+            var myChart3 = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    datasets: [{
+                        label: 'Điểm',
+                        data: [{
+                            x: 0,
+                            y: 7.6
+                        }, {
+                            x: 1,
+                            y: 7.6
+                        }, {
+                            x: 2,
+                            y: 7.8
+                        }, {
+                            x: 3,
+                            y: 8.3
+                        }, {
+                            x: 4,
+                            y: 8.5
+                        }],
+                        borderColor: "#6f42c1"
+                    }],
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 10,
+                            }
+                        }]
+                    },
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                },
+
+            });
+        }
     </script>
 }

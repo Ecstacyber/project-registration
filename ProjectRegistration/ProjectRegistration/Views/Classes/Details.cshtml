@@ -302,7 +302,7 @@
                             @if(User.IsInRole("Manager") || User.IsInRole("Lecturer"))
                             {
                                 <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addUserModal">
-                                    <i class="glyphicon glyphicon-plus"></i> Thêm sinh viên
+                                    <i class="glyphicon glyphicon-plus"></i> Thêm sinh viên/giảng viên
                                 </button>
 
                                 <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addFromExcelModal">
@@ -488,7 +488,6 @@
 
 <!-- Delete Modal -->
 <form method="post" id="delete-form"></form>
-<input id="classId" name="classId" value="@Model.Id"/>
 <div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog .modal-dialog-centered">
         <div class="modal-content">
