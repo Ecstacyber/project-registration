@@ -797,8 +797,7 @@ namespace ProjectRegistration.Controllers
                 }
                 List<SelectListItem> currentUserList = new List<SelectListItem>();
                 currentUserList.Add(new SelectListItem() { Text = user.Fullname, Value = user.Id });
-                ViewData["StudentId1"] = new SelectList(currentUserList, "Value", "Text");
-                
+                ViewData["StudentId1"] = new SelectList(currentUserList, "Value", "Text");                
             }
             else
             {
@@ -807,8 +806,7 @@ namespace ProjectRegistration.Controllers
                 if (project.ProjectMembers.Where(x => x.Deleted == false).Count() == 1)
                 {
                     ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname",
-                        project.ProjectMembers.FirstOrDefault(x => x.Deleted == false).StudentId);
-                    
+                        project.ProjectMembers.FirstOrDefault(x => x.Deleted == false).StudentId);                   
                 }
                 
             }

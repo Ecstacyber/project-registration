@@ -180,7 +180,7 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
                 var user = await _signInManager.UserManager.FindByNameAsync(Input.UserName);
                 if (user == null)
                 {
-                    ModelState.AddModelError(String.Empty, "Tên đăng nhập hoặc mật khẩu không chính xác.");
+                    ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không chính xác.");
                     return Page();
                 }
                 // This doesn't count login failures towards account lockout

@@ -115,10 +115,6 @@ namespace ProjectRegistration.Controllers
                 TempData["message"] = "NoDepartmentToEdit";
                 return NotFound();
             }
-            if (_context.Departments.Where(x => x.Deleted == false && x.Dname == department.Dname).FirstOrDefault() != null)
-            {
-                ModelState.AddModelError("Dname", "Mã khoa đã tồn tại");
-            }
 
             if (ModelState.IsValid)
             {
