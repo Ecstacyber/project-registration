@@ -356,16 +356,14 @@ namespace ProjectRegistration.Controllers
         }
 
         [HttpPost, ActionName("DeleteUser")]
-        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(string id, int classId)
         {
             if (_context.Classes == null)
             {
                 return Problem("Entity set 'ProjectRegistrationManagementContext.Classes'  is null.");
             }
-            string[] ids = id.Split('-');
-            var @classDetails = _context.ClassDetails.Where(x => x.UserId == ids[0] && x.ClassId == int.Parse(ids[1])).FirstOrDefault();
+            var @classDetails = _context.ClassDetails.Where(x => x.UserId == id && x.ClassId == classId).FirstOrDefault();
             if (@classDetails != null)
             {
                 @classDetails.Deleted = true;
@@ -374,7 +372,7 @@ namespace ProjectRegistration.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Details", new { id = int.Parse(ids[1]) });
+            return RedirectToAction("Details", new { id = classId });
         }
 
         [HttpPost, ActionName("AddUser")]

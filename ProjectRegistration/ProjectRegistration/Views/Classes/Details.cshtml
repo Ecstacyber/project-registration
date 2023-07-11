@@ -299,7 +299,7 @@
                         <h2>Danh sách lớp</h2>
 
                         <ul class="nav navbar-right panel_toolbox" style="min-width:fit-content">
-                            @if(User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                            @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
                             {
                                 <button class="btn btn-success btn-round" style="margin-right:20px" data-toggle="modal" data-target="#addUserModal">
                                     <i class="glyphicon glyphicon-plus"></i> Thêm sinh viên/giảng viên
@@ -502,7 +502,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-danger" id="delete-btn">Xóa</button>
+                <button type="button" class="btn btn-danger" id="delete-btn" data-dismiss="modal">Xóa</button>
             </div>
 
         </div>
@@ -654,19 +654,6 @@
     </script>*@
 
     <script>
-        let id;
-        let classId = document.getElementById("ClassIdHere");
-        var modal = document.getElementById("deleteModal");
-        const deleteBtn = document.getElementById('delete-btn');
-        const deleteForm = document.getElementById('delete-form');
-        $('#deleteModal').on('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            id = button.getAttribute('data-id');
-        });
-        deleteBtn.onclick = () => {
-            deleteForm.action = '@Url.Content("~/Classes/DeleteUser/")' + id;
-            deleteForm.submit();
-        }
     </script>
 
     <script>
@@ -736,6 +723,42 @@
             }).draw();
 
             localStorage.setItem('UserFound', 'NotFound');
+
+            var deleteUserId;
+            var classId = document.getElementById("ClassIdHere");
+            var modal = document.getElementById("deleteModal");
+            const deleteBtn = document.getElementById('delete-btn');
+            const deleteForm = document.getElementById('delete-form');
+            var row;
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                deleteUserId = button.getAttribute('data-id');
+                row = event.relatedTarget.parentElement.parentElement;
+            });
+            deleteBtn.onclick = (e) => {
+                $.ajax({
+                    type: 'post',
+                    url: "/Classes/DeleteUser",
+                    data: { id: deleteUserId, classId: classId.value },
+                    async: true,
+                    success: function () {
+                        new PNotify({
+                            text: 'Xóa sinh viên khỏi lớp thành công.',
+                            type: 'success',
+                            styling: 'bootstrap3',
+                        });
+                        row.remove();
+                    },
+                    failure: function () {
+                        new PNotify({
+                            text: 'Xóa sinh viên khỏi lớp thất bại.',
+                            type: 'error',
+                            styling: 'bootstrap3',
+                        });
+                    }
+
+                });
+            }
         });
     </script>
     <script type="text/javascript">
