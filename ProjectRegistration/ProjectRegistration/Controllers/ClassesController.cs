@@ -417,7 +417,6 @@ namespace ProjectRegistration.Controllers
             projectList = @class.ProjectClasses.Where(x => x.Deleted == false && x.State != "Chưa chấp thuận").ToList();
             ViewData["ClassId"] = id;
             return View(projectList);
-            return View(projectList);
         }
 
         // GET: Projects/Create
@@ -430,8 +429,13 @@ namespace ProjectRegistration.Controllers
 
             ViewData["id"] = id;
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id");
-            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id");
+            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id");            
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id");
+
+            var studentList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == id && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 100).ToList();
+            ViewData["StudentId1"] = new SelectList(studentList, "UserId", "User.Fullname");
+            ViewData["StudentId2"] = new SelectList(studentList, "UserId", "User.Fullname");
+
             return View();
         }
 
@@ -441,16 +445,16 @@ namespace ProjectRegistration.Controllers
         [HttpPost, ActionName("CreateProject")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager, Lecturer")]
-        public async Task<IActionResult> CreateProject([Bind("Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project)
+        public async Task<IActionResult> CreateProject([Bind("Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project, string StudentId1, string StudentId2)
         {
             if (ModelState.IsValid)
             {
-                var currentClass = _context.Classes.FirstOrDefault(x => x.Id == project.ClassId);
-                if (currentClass != null && currentClass.Course != null)
+                var currentClass = _context.Classes.Include(x => x.Course).FirstOrDefault(x => x.Id == project.ClassId);
+                if (currentClass != null)
                 {
                     if (currentClass.Course.CourseName == "Đồ án 1" || currentClass.Course.CourseName == "Đồ án 2")
                     {
-                        if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
+                        if (currentClass.Semester != null && currentClass.Cyear != null)
                         {
                             var pj1 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE121");
                             var pj2 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE122");
@@ -458,14 +462,43 @@ namespace ProjectRegistration.Controllers
                                                                                 && x.Class.Cyear == currentClass.Cyear
                                                                                 && x.Class.CourseId == pj1.Id
                                                                                 && x.Class.CourseId == pj2.Id).ToList();
-                            var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
-                            var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
-                            if (guLecProjects.Count() > 20)
+                            if (StudentId1 != "Không có")
                             {
-                                TempData["message"] = "ProjectGuidingLimitReached";
-                                TempData["limit"] = 20;
-                                return View(project);
+                                ProjectMember projectMember = new()
+                                {
+                                    ProjectId = project.Id,
+                                    Project = project,
+                                    CreatedDateTime = DateTime.Now,
+                                    StudentId = StudentId1,
+                                    Student = _context.Users.FirstOrDefault(x => x.UserId == StudentId1)
+                                };
+                                project.ProjectMembers.Add(projectMember);
+                                _context.ProjectMembers.Add(projectMember);
                             }
+                            if (StudentId2 != "Không có")
+                            {
+                                ProjectMember projectMember = new()
+                                {
+                                    ProjectId = project.Id,
+                                    Project = project,
+                                    CreatedDateTime = DateTime.Now,
+                                    StudentId = StudentId2,
+                                    Student = _context.Users.FirstOrDefault(x => x.UserId == StudentId2)
+                                };
+                                project.ProjectMembers.Add(projectMember);
+                                _context.ProjectMembers.Add(projectMember);
+                            }
+                            if (project.GuidingLecturerId != null)
+                            {
+                                var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
+                                var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
+                                if (guLecProjects.Count() > 20)
+                                {
+                                    TempData["message"] = "ProjectGuidingLimitReached";
+                                    TempData["limit"] = 20;
+                                    return View(project);
+                                }
+                            }                           
                         }
                     }
                     if (currentClass.Course.CourseName == "Khóa luận")
@@ -489,8 +522,14 @@ namespace ProjectRegistration.Controllers
                 var user = await _userManager.FindByIdAsync(currentUserName);
                 if (_userManager.IsInRoleAsync(user, "Manager").Result)
                 {
-                    project.State = "Đã chấp thuận";
-
+                    if (StudentId1 == "Không có" && StudentId2 == "Không có")
+                    {
+                        project.State = "Chưa đăng ký";
+                    }
+                    else
+                    {
+                        project.State = "Đang thực hiện";
+                    }
                 }
                 _context.Add(project);
                 await _context.SaveChangesAsync();
@@ -613,13 +652,14 @@ namespace ProjectRegistration.Controllers
             {
                 return NotFound();
             }
+
             ViewData["id"] = project.ClassId;
-            ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId);
-            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id", project.ClassId2);
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", project.DepartmentId);
-            var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == id && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
+            var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
             ViewData["GradingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
             ViewData["GuidingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
+            var studentList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 100).ToList();
+            ViewData["StudentId1"] = new SelectList(studentList, "UserId", "User.Fullname");
+            ViewData["StudentId2"] = new SelectList(studentList, "UserId", "User.Fullname");
             return View(project);
         }
 
@@ -629,7 +669,7 @@ namespace ProjectRegistration.Controllers
         [HttpPost, ActionName("EditProject")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager, Lecturer, Student")]
-        public async Task<IActionResult> EditProject(int id, [Bind("Id,Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project)
+        public async Task<IActionResult> EditProject(int id, [Bind("Id,Pname,Info,DepartmentId,ClassId,ClassId2,GuidingLecturerId,GradingLecturerId,Pyear,Semester,CreatedDateTime,Deleted,DeletedDateTime")] Project project, string StudentId1, string StudentId2)
         {
             if (id != project.Id)
             {
@@ -644,21 +684,52 @@ namespace ProjectRegistration.Controllers
                 {
                     if (currentClass.Course.CourseName == "Đồ án 1" || currentClass.Course.CourseName == "Đồ án 2")
                     {
-                        if (currentClass.Semester != null && currentClass.Cyear != null && project.GradingLecturerId != null && project.GuidingLecturerId != null)
+                        if (currentClass.Semester != null && currentClass.Cyear != null)
                         {
                             var pj1 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE121");
                             var pj2 = _context.Courses.FirstOrDefault(x => x.CourseId == "SE122");
-                            var projectsInCurrentSem = _context.Projects.Where(x => x.Class.Semester == currentClass.Semester
-                                                                                && x.Class.Cyear == currentClass.Cyear
-                                                                                && x.Class.CourseId == pj1.Id
-                                                                                && x.Class.CourseId == pj2.Id).ToList();
-                            var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
-                            var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
-                            if (guLecProjects.Count() > 20)
+                            var projectsInCurrentSem = _context.Projects.Include(x => x.Class).ThenInclude(x => x.Semester).Include(x => x.Class).ThenInclude(x => x.Cyear)
+                                                       .Where(x => x.Class.Semester == currentClass.Semester && x.Class.Cyear == currentClass.Cyear
+                                                                                                             && x.Class.CourseId == pj1.Id
+                                                                                                             && x.Class.CourseId == pj2.Id).ToList();
+                            if (StudentId1 != "Không có")
                             {
-                                TempData["message"] = "ProjectGuidingLimitReached";
-                                TempData["limit"] = 20;
-                                return View(project);
+                                ProjectMember projectMember = new()
+                                {
+                                    ProjectId = project.Id,
+                                    Project = project,
+                                    CreatedDateTime = DateTime.Now,
+                                    StudentId = StudentId1,
+                                    Student = _context.Users.FirstOrDefault(x => x.UserId == StudentId1)
+                                };
+                                project.ProjectMembers.Add(projectMember);
+                                _context.ProjectMembers.Add(projectMember);
+                                _context.SaveChanges();
+                            }
+                            if (StudentId2 != "Không có")
+                            {
+                                ProjectMember projectMember = new()
+                                {
+                                    ProjectId = project.Id,
+                                    Project = project,
+                                    CreatedDateTime = DateTime.Now,
+                                    StudentId = StudentId2,
+                                    Student = _context.Users.FirstOrDefault(x => x.UserId == StudentId2)
+                                };
+                                project.ProjectMembers.Add(projectMember);
+                                _context.ProjectMembers.Add(projectMember);
+                                _context.SaveChanges();
+                            }
+                            if (project.GuidingLecturerId != null)
+                            {
+                                var guidingLecturer = _context.Users.FirstOrDefault(x => x.Id == project.GuidingLecturerId);
+                                var guLecProjects = projectsInCurrentSem.Where(x => x.GuidingLecturerId == guidingLecturer.Id);
+                                if (guLecProjects.Count() > 20)
+                                {
+                                    TempData["message"] = "ProjectGuidingLimitReached";
+                                    TempData["limit"] = 20;
+                                    return View(project);
+                                }
                             }
                         }
                     }

@@ -181,14 +181,18 @@
                         <div class="item form-group mb-4">
                             <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 1</label>
                             <div class="col-md-4 col-sm-4 ">
-                                <input value="Không có" required="required" class="form-control">
+                                <select name="StudentId1" class="form-control" asp-items="ViewBag.StudentId1">
+                                    <option value="Không có">Không có</option>
+                                </select>
                             </div>
                         </div>
-                        
+
                         <div class="item form-group mb-4">
                             <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 2</label>
                             <div class="col-md-4 col-sm-4 ">
-                                <input value="Không có" required="required" class="form-control">
+                                <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
+                                    <option value="Không có">Không có</option>
+                                </select>
                             </div>
                         </div>
 

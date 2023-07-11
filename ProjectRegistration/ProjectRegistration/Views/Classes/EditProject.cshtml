@@ -72,18 +72,17 @@
                             </div>
                         </div>
                         
-                        <div class="item form-group mb-4">
+                        <div class="form-group row mt-2">
                             <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 1</label>
-                            <div class="col-md-4 col-sm-4 ">
-                                <input value="Châu Vĩnh Sinh" required="required" class="form-control">
-                            </div>
+                            <select name="StudentId1" class="form-control" asp-items="ViewBag.StudentId1">
+                                <option value="Không có">Không có</option>
+                            </select>
                         </div>
-                        
-                        <div class="item form-group mb-4">
+                        <div class="form-group row mt-2">
                             <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 2</label>
-                            <div class="col-md-4 col-sm-4 ">
-                                <input value="Nguyễn Duy Hào" required="required" class="form-control">
-                            </div>
+                            <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
+                                <option value="Không có">Không có</option>
+                            </select>
                         </div>
 
                         <input type="hidden" asp-for="ClassId" value="@ViewData["id"]" />
@@ -109,17 +108,4 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script>
-        $(function () {
-            var msg = '@TempData["message"]';
-            var lim = '@TempData["limit"]';
-            if (msg == 'Project1GuidingLimitReached') {
-                alert("Sửa đồ án thất bại. Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng đồ án 1 và 2: " + lim);
-            }
-            if (msg == 'GraduationThesisGuidingLimitReached') {
-                alert("Sửa đồ án thất bại. Giảng viên hướng dẫn đã đạt giới hạn hướng dẫn số lượng khóa luận tốt nghiệp: " + lim);
-            }
-        });
-    </script>
 }
