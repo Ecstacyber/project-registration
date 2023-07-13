@@ -48,7 +48,6 @@
                                             <th>@Html.DisplayNameFor(model => model.DateOfBirth)</th>
                                             <th>@Html.DisplayNameFor(model => model.Department)</th>
                                             <th>@Html.DisplayNameFor(model => model.Email)</th>
-                                            <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
                                             @if (User.IsInRole("Manager"))
                                             {
                                                 <th></th>
@@ -78,7 +77,6 @@
                                                     <td>@Html.DisplayFor(modelItem => item.DateOfBirth)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.Department.Dname)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                                                    <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                                                     @if (User.IsInRole("Manager"))
                                                     {
                                                         <td style="white-space: nowrap; width:1%">

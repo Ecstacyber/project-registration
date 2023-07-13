@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +31,9 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public string Username { get; set; }
+
+        [Display(Name = "MSSV/GV")]
+        public string UserId { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -56,22 +59,51 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [MinLength(5)]
+            [Display(Name = "Tên đăng nhập")]
+            public string Username { get; set; }
+
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Số điện thoại")]
             public string PhoneNumber { get; set; }
+
+
+            [Display(Name = "Họ và tên")]
+            public string Fullname { get; set; }
+
+            [Display(Name = "Ảnh đại diện")]
+            public string ImagePath { get; set; }
+
+            [Display(Name = "Ngày sinh")]
+            public DateTime DateOfBirth { get; set; }
+
+
         }
 
         private async Task LoadAsync(User user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
-
-            Input = new InputModel
+            bool checkManager = await _userManager.IsInRoleAsync(user, "Manager");
+            if (!checkManager)
             {
-                PhoneNumber = phoneNumber
-            };
+                UserId = user.UserId;
+                Input = new InputModel
+                {
+                    Username = user.UserName,
+                    PhoneNumber = user.PhoneNumber,
+                    Fullname = user.Fullname,
+                    ImagePath = user.ImagePath,
+                    DateOfBirth = (DateTime)user.DateOfBirth,
+                };
+            }
+            else
+            {
+                Input = new InputModel
+                {
+                    Username = user.UserName,
+                    Fullname = user.Fullname,
+                    ImagePath = user.ImagePath,
+                };
+            }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -106,13 +138,33 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Không thể đổi số điện thoại.";
                     return RedirectToPage();
                 }
             }
 
+            var userName = await _userManager.GetUserNameAsync(user);
+            if (userName != Input.Username)
+            {
+                var existed = await _userManager.SetUserNameAsync(user, Input.Username);
+                if (!existed.Succeeded)
+                {
+                    StatusMessage = "Tên tài khoản đã có người sử dụng.";
+                    return RedirectToPage();
+                }
+            }
+
+            if (Input.Fullname != user.Fullname)
+            {
+                if (!String.IsNullOrEmpty(Input.Fullname))
+                {
+                    user.Fullname = Input.Fullname;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Thông tin tài khoản đã được cập nhật";
             return RedirectToPage();
         }
     }

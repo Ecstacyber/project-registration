@@ -4,27 +4,79 @@
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
+<link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
+<link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/vendors/normalize-css/normalize.css" rel="stylesheet" />
+<link href="~/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
 <h3>Thông tin cá nhân</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-10">
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <input asp-for="Username" class="form-control" disabled />
-                <label asp-for="Username" class="form-label"></label>
+
+            <div class="form-group row mt-3">
+                <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <label asp-for="Input.ImagePath"></label>
+                    <input asp-for="Input.ImagePath" type="file" id="img" accept=".jpg,.gif,.png" style="display:none" value="empty">
+                    <label for="img" id="img_label" class="form-control"><i class="fa fa-image"> &nbsp; Chọn ảnh đại diện</i> </label>
+                </div>
+                <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <label asp-for="UserId"></label>
+                    <input disabled asp-for="UserId" type="text" class="form-control">
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <label asp-for="Input.Username"></label>
+                    <input asp-for="Input.Username" type="text" class="form-control">
+                    <span asp-validation-for="Input.Username" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <label asp-for="Input.PhoneNumber"></label>
+                    <input asp-for="Input.PhoneNumber" type="text" class="form-control">
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 col-sm-6  form-group has-feedback">
+                    <label asp-for="Input.Fullname"></label>
+                    <input asp-for="Input.Fullname" type="text" class="form-control">
+                    <span asp-validation-for="Input.Fullname" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 col-sm-6  form-group has-feedback">
+                <label asp-for="Input.DateOfBirth"></label>
+                <div class='input-group date' id='myDatepicker'>
+                    <input asp-for="Input.DateOfBirth" type='text' class="form-control" />
+                        <span class="add-on input-group-addon" style="align-items:center"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                </div>
+                <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-floating">
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            <div class="item form-group">
+                <div class="offset-md-4 center-margin">
+                    <button id="update-profile-button" type="submit" class="btn btn-success">&nbsp; Lưu &nbsp;</button>
+                </div>
             </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
 </div>
 
 @section Scripts {
+    <script src="~/vendors/fastclick/lib/fastclick.js"></script>
+    <script src="~/vendors/moment/min/moment.min.js"></script>
+    <script src="~/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
+
+
+    <script>
+        $("#img").change(function () {
+            $("#img_label").html($(this).val().split("\\").splice(-1, 1)[0] || "Chọn ảnh đại diện");
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        $('#myDatepicker').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
+    </script>
 }

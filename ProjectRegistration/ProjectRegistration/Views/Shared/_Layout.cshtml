@@ -25,7 +25,11 @@
         if (SignInManager.IsSignedIn(User))
         {
             var user = await UserManager.GetUserAsync(User);
-            ViewData["Avatar"] = "/files/" + user.ImagePath;
+            if (user != null)
+            {
+                ViewData["UserName"] = user.Fullname;
+                ViewData["Avatar"] = "/files/" + user.ImagePath;
+            }
         }
 
     }
@@ -46,7 +50,7 @@
                         </div>
                         <div class="profile_info">
                             <span>Xin chào,</span>
-                            <h2>@User.Identity?.Name</h2>
+                            <h2>@ViewData["UserName"]</h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -87,7 +91,6 @@
 
                     </div>
                     <!-- /sidebar menu -->
-
                     <!-- /menu footer buttons -->
                     <div class="sidebar-footer hidden-small">
                         <a data-toggle="tooltip" data-placement="top" asp-area="Identity" asp-page="/Account/Manage/Index" title="Cài đặt">
@@ -117,10 +120,10 @@
                         <ul class=" navbar-right">
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
                                 <a href="javascript:;" class="user-profile dropdown-toggle pb-2" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="@ViewData["Avatar"]" alt="">@User.Identity?.Name
+                                    <img src="@ViewData["Avatar"]" alt="">@ViewData["UserName"]
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="javascript:;"> Hồ sơ</a>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"> Hồ sơ</a>
                                     <a class="dropdown-item" style="color:#0077cc" onclick="LogOut()"><i class="fa fa-sign-out pull-right"></i> Đăng xuất</a>
                                 </div>
                             </li>
@@ -150,8 +153,8 @@
     <form id="logoutForm" method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
     </form>
 
-    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
-    @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/vendors/nprogress/nprogress.js"></script>
     <script src="~/vendors/jquery/jquery.min.js"></script>

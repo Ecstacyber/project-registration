@@ -25,7 +25,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
 
-    options.User.RequireUniqueEmail = false;
+    options.User.RequireUniqueEmail = true;
 
 })
     .AddRoles<IdentityRole>()
