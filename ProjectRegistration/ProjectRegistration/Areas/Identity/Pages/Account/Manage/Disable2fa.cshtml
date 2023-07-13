@@ -6,20 +6,20 @@
 }
 
 <partial name="_StatusMessage" for="StatusMessage" />
-<h3>@ViewData["Title"]</h3>
+<h3>Tắt xác thực 2 lớp</h3>
 
 <div class="alert alert-warning" role="alert">
     <p>
-        <strong>This action only disables 2FA.</strong>
+        <strong>Đồng ý tắt xác thực 2 lớp.</strong>
     </p>
     <p>
-        Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
-        used in an authenticator app you should <a asp-page="./ResetAuthenticator">reset your authenticator keys.</a>
+        Việc tắt 2FA không thay đổi key được sử dụng trong ứng dụng xác thực. Nếu bạn muốn thay đổi key
+        được sử dụng trong ứng dụng, bạn nên <a asp-page="./ResetAuthenticator">đặt lại key xác thực của bạn.</a>
     </p>
 </div>
 
 <div>
     <form method="post">
-        <button class="btn btn-danger" type="submit">Disable 2FA</button>
+        <button class="btn btn-danger" type="submit">Tắt 2FA</button>
     </form>
 </div>

@@ -25,7 +25,7 @@
         if (SignInManager.IsSignedIn(User))
         {
             var user = await UserManager.GetUserAsync(User);
-            ViewData["Avatar"] = "../../files/" + user.ImagePath;
+            ViewData["Avatar"] = "/files/" + user.ImagePath;
         }
 
     }
@@ -90,7 +90,7 @@
 
                     <!-- /menu footer buttons -->
                     <div class="sidebar-footer hidden-small">
-                        <a data-toggle="tooltip" data-placement="top" title="Cài đặt">
+                        <a data-toggle="tooltip" data-placement="top" asp-area="Identity" asp-page="/Account/Manage/Index" title="Cài đặt">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </a>
                         <a data-toggle="tooltip" data-placement="top" onclick="changeScreen(document.body)" title="Toàn màn hình">
