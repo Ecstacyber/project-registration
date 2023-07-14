@@ -3,68 +3,6 @@
 @{
     ViewData["Title"] = "Danh sách tài khoản";
 }
-@*
-<h1>Danh sách tài khoản</h1>
-
-<h3>
-    <a class="btn btn-primary" asp-action="Create">+ Tạo mới</a>
-</h3>
-<h2>
-    Sinh viên
-</h2>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addFromExcelModal">
-    Thêm bằng file excel
-</button>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                MSSV
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fullname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Department)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fullname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateOfBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Department.Dname)
-                </td>
-                <td>
-                    <a class="btn btn-link border-0" asp-action="Edit" asp-route-id="@item.Id">Sửa</a> |
-                    <button class="btn btn-link border-0" type="button" data-toggle="modal" data-target="#confirmDeleteModal" data-id="@item.Id">
-                        Xoá
-                    </button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>*@
 
 <div class="">
     <div class="page-title">
@@ -114,7 +52,6 @@
                                             <th>@Html.DisplayNameFor(model => model.DateOfBirth)</th>
                                             <th>@Html.DisplayNameFor(model => model.Department)</th>
                                             <th>@Html.DisplayNameFor(model => model.Email)</th>
-                                            <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
                                             @if (User.IsInRole("Manager"))
                                             {
                                                 <th></th>
@@ -144,7 +81,6 @@
                                                     <td>@Html.DisplayFor(modelItem => item.DateOfBirth)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.Department.Dname)</td>
                                                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                                                    <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                                                     @if (User.IsInRole("Manager"))
                                                     {
                                                         <td style="white-space: nowrap; width:1%">

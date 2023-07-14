@@ -392,7 +392,11 @@ namespace ProjectRegistration.Controllers
                     {
 
                         var existedUser = _context.Users.Where(x => (x.UserId == reader.GetValue(1).ToString() && x.Deleted == false)).FirstOrDefault();
-                        if (existedUser != null) continue;
+                        if (existedUser != null)
+                        {
+                            existedUser.Fullname = reader.GetValue(2).ToString();
+                            continue;
+                        }
 
                         var user = CreateUser();
                         user.UserId = reader.GetValue(1).ToString();
