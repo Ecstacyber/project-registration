@@ -428,7 +428,7 @@ namespace ProjectRegistration.Controllers
             System.IO.File.Delete(filepath);
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(StudentList));
         }
 
         private User CreateUser()
