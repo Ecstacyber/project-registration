@@ -228,7 +228,7 @@
                                 <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
 
                             </button>
-                            
+
                         </li>
                         <li>
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -262,11 +262,11 @@
                                         <span class="name"> Giảng viên hướng dẫn </span>
                                         <span class="value text-success"> @Model.GuidingLecturer.Fullname </span>
                                     </li>
-                                }                               
+                                }
                             }
                             catch (Exception)
                             {
-                                
+
                             }
                         </ul>
                         <br />
@@ -413,7 +413,7 @@
                         @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
                         {
                             <div>
-                                <button class="btn btn-primary" id="add-grade-btn" data-toggle="modal" data-target="#addGradeModal">Thêm điểm</button>                                                              
+                                <button class="btn btn-primary" id="add-grade-btn" data-toggle="modal" data-target="#addGradeModal">Thêm điểm</button>
                             </div>
                             @if (@Model.PGrade != null)
                             {
@@ -560,9 +560,7 @@
     </div>
 </form>
 
-<form id="removeUserForm">
-    <input id="removeUserId" name="userId" hidden />
-</form>
+
 <div class="modal fade" id="removeUserModal" tabindex="-1" style="z-index:1060">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -590,19 +588,44 @@
                                 </thead>
                                 <tbody style="font-size:larger; vertical-align: middle;">
                                     @{
-                                        foreach (var item in Model.ProjectMembers.Where(x => x.Deleted == false))
+                                        var members = Model.ProjectMembers.Where(x => x.Deleted == false).ToList();
+                                        if (members != null)
                                         {
-                                            <tr>
-                                                <td style="text-align: center;"></td>
-                                                <td>@item.Student.UserId</td>
-                                                <td>@item.Student.Fullname</td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger btn-sm" id="deleteMember" data-id="@item.StudentId">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                            for (int j = 0; j < members.Count(); j++)
+                                            {
+                                            <form method="post" enctype="multipart/form-data" id="deleteMemberFromProjectForm @j" asp-action="DeleteMemberFromProject">
+                                                <input name="projectId" type="hidden" asp-for="Id" value="@Model.Id" />
+                                                <input name="classId" type="hidden" type="hidden" asp-for="ClassId" value="@Model.ClassId" />
+                                                <tr>
+                                                    <td style="text-align: center;"></td>
+                                                    <td>@members[j].Student.UserId</td>
+                                                    <td>@members[j].Student.Fullname</td>
+                                                    <td>
+                                                        <input name="deleteMemberId @j" type="hidden" value="@members[j].Student.Id" />
+                                                        <input name=@j type="hidden" value="@j"/>
+                                                        <button type="submit" class="btn btn-danger btn-sm" asp-action="DeleteMemberFromProject" asp-route-id-="@Model.Id">
+                                                            <i class="fa fa-trash-o"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                            }
                                         }
+                                            
+                                        //foreach (var item in Model.ProjectMembers.Where(x => x.Deleted == false))
+                                        //{
+                                        //    <tr>
+                                        //        <td style="text-align: center;"></td>
+                                        //        <td>@item.Student.UserId</td>
+                                        //        <td>@item.Student.Fullname</td>
+                                        //        <td>
+                                        //            <input name="deleteMemberId" type="hidden" value="@item.Student.Id" />
+                                        //            <button type="submit" class="btn btn-danger btn-sm" asp-action="DeleteMemberFromProject" asp-route-id-="@Model.Id">
+                                        //                <i class="fa fa-trash-o"></i>
+                                        //            </button>
+                                        //        </td>
+                                        //    </tr>
+                                        //}
                                     }
                                 </tbody>
                             </table>
@@ -744,7 +767,7 @@
         //    deleteForm.submit();
         //}
     </script>
-    <script>
+    @*<script>
         $('#deleteMember').click(function (e) {
             var pId = "@Model.Id";
             var cId = "@Model.ClassId";
@@ -754,5 +777,5 @@
             form.action = '@Url.Content("~/Classes/DeleteMemberFromProject/")' + pId + '-' + cId;
             form.submit();
         });
-    </script>
+    </script>*@
 }
