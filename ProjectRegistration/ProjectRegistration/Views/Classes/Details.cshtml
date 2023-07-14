@@ -7,6 +7,7 @@
 
 <link href="~/vendors/icheck/skins/flat/green.css" rel="stylesheet" />
 <link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet" />
 <link href="~/vendors/normalize-css/normalize.css" rel="stylesheet" />
 <link href="~/vendors/pnotify/pnotify.buttons.css" rel="stylesheet" />
 <link href="~/vendors/pnotify/pnotify.nonblock.css" rel="stylesheet" />
@@ -118,8 +119,8 @@
                         </ul>
                         <div class="clearfix"></div>
                     </div>
-                    <div class="x_content">
-                        <table id="datatable-classmate" class="table table-striped jambo_table table-hover table-bordered" style="width:100%">
+                    <div class="x_content table-responsive">
+                        <table id="datatable-classmate" class="table table-striped jambo_table table-hover table-bordered dt-responsive" cellspacing="0" style="width:100%">
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">#</th>
@@ -265,7 +266,7 @@
 
 <!-- Modal thêm bằng excel -->
 <form method="post" enctype="multipart/form-data" name="add-file-form" id="add-file-form" asp-asp-controller="Users" asp-action="AddUserFromFileExcel">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Id" hidden/>
     <div class="modal fade" id="addFromExcelModal" tabindex="-1" style="z-index:1060">
         <div class="modal-dialog">
             <div class="modal-content">

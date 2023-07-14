@@ -228,25 +228,6 @@ namespace ProjectRegistration.Controllers
             return View(@class);
         }
 
-        // GET: Classes/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.Classes == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var @class = await _context.Classes
-        //        .Include(x => x.Course)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (@class == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(@class);
-        //}
-
         // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

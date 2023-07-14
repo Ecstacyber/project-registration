@@ -143,25 +143,6 @@ namespace ProjectRegistration.Controllers
             return View(department);
         }
 
-        // GET: Departments/Delete/5
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Departments == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
-        }
-
         // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
