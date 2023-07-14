@@ -300,13 +300,15 @@ namespace ProjectRegistration.Controllers
                         if (user == null) continue;
                         if (_context.ClassDetails.Where(x => x.ClassId == Id && x.UserId == user.Id).FirstOrDefault() != null) continue;
 
-                        ClassDetail classDetail = new ClassDetail();
-                        classDetail.ClassId = Id;
-                        classDetail.UserId = user.Id;
-                        classDetail.Class = @class;
-                        classDetail.User = user;
-                        classDetail.CreatedDateTime = DateTime.Now;
-                        List<ClassDetail> userCd = new List<ClassDetail>();
+                        ClassDetail classDetail = new()
+                        {
+                            ClassId = Id,
+                            UserId = user.Id,
+                            Class = @class,
+                            User = user,
+                            CreatedDateTime = DateTime.Now
+                        };
+                        List<ClassDetail> userCd = new();
                         userCd = user.ClassDetails.ToList();
                         userCd.Add(classDetail);
                         user.ClassDetails = userCd;
@@ -345,10 +347,12 @@ namespace ProjectRegistration.Controllers
             {
                 if (classDetails.Where(x => x.User.Id == item.Id).FirstOrDefault() == null)
                 {
-                    var temp = new UserTemp();
-                    temp.Id = item.UserId;
-                    temp.UserId = item.UserId;
-                    temp.Name = item.Fullname;
+                    var temp = new UserTemp
+                    {
+                        Id = item.UserId,
+                        UserId = item.UserId,
+                        Name = item.Fullname
+                    };
                     userList.Add(temp);
                 }
             }
@@ -793,7 +797,7 @@ namespace ProjectRegistration.Controllers
             }
             int pId = int.Parse(id.Split('-')[0]);
             int cId = int.Parse(id.Split('-')[1]);
-
+            
             var project = await _context.Projects
                 .Where(p => p.Deleted == false)
                 .Include(p => p.Class)
@@ -1295,6 +1299,43 @@ namespace ProjectRegistration.Controllers
             }
 
             TempData["message"] = "CommentNotAdded";
+            return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+        }
+
+        [Authorize(Roles = "Manager, Lecturer")]
+        public async Task<IActionResult> AddProjectGrade(IFormCollection form, int id)
+        {
+            bool isNumber = double.TryParse(form["addGrade"], out double grade);
+            var project = _context.Projects.FirstOrDefault(x => x.Id == id);
+            if (isNumber)
+            {                
+                if (project == null)
+                {
+                    TempData["message"] = "NotProjectId";
+                    return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
+                }
+                if (project != null)
+                {
+                    if (grade >= 0 && grade <= 10)
+                    {
+                        project.PGrade = grade;
+                        await _context.SaveChangesAsync();
+                        TempData["message"] = "GradeAdded";
+                    }
+                    else
+                    {
+                        TempData["message"] = "InvalidGrade";
+                    }
+                }
+                else
+                {
+                    TempData["message"] = "GradeNotAdded";
+                }
+            }
+            else
+            {
+                TempData["message"] = "GradeNotANumber";
+            }
             return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
         }
     }

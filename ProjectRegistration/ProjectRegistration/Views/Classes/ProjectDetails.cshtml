@@ -254,10 +254,20 @@
                                     i++;
                                 }
                             }
-                            <li class="hidden-phone">
-                                <span class="name"> Giảng viên hướng dẫn </span>
-                                <span class="value text-success"> @Model.GuidingLecturer.Fullname </span>
-                            </li>
+                            @try
+                            {
+                                @if (@Model.GuidingLecturer != null)
+                                {
+                                    <li class="hidden-phone">
+                                        <span class="name"> Giảng viên hướng dẫn </span>
+                                        <span class="value text-success"> @Model.GuidingLecturer.Fullname </span>
+                                    </li>
+                                }                               
+                            }
+                            catch (Exception)
+                            {
+                                
+                            }
                         </ul>
                         <br />
 
@@ -400,8 +410,16 @@
                             </form>
                         </div>
 
-
-
+                        @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                        {
+                            <div>
+                                <button class="btn btn-primary" id="add-grade-btn" data-toggle="modal" data-target="#addGradeModal">Thêm điểm</button>                                                              
+                            </div>
+                            @if (@Model.PGrade != null)
+                            {
+                                <label class="col-form-label col-md-3 col-sm-3" style="font-size: 14px">Điểm: @Model.PGrade</label>
+                            }
+                        }
                     </div>
 
                     <!-- start project-detail sidebar -->
@@ -453,8 +471,6 @@
                                         <i id="btn-add-comment" class="fa fa-file-archive-o"></i> Thêm tài liệu
                                     </button>
                                 }
-
-
                             </div>
 
                         </section>
@@ -467,6 +483,30 @@
         </div>
     </div>
 </div>
+
+<!-- Add grade modal -->
+<form method="post" enctype="multipart/form-data" id="add-grade-form" asp-action="AddProjectGrade">
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    <div class="modal fade" id="addGradeModal" tabindex="-1" style="z-index:1060">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Thêm điểm</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" id="addGrade" required="required" name="addGrade" type="number" min="0" max="10" step="any" asp-for="PGrade" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success" id="add-grade-btn" asp-action="AddProjectGrade" value="#addGrade" asp-route-id="@Model.Id">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <!-- Add document modal -->
 <form method="post" enctype="multipart/form-data" id="add-lec-file-form" asp-action="UploadDocument">

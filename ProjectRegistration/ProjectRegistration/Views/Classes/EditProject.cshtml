@@ -39,8 +39,7 @@
                     <form asp-action="CreateProject" enctype="multipart/form-data" data-parsley-validate class="form-horizontal form-label-left">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="item form-group mb-4">
-                            <label asp-for="Pname" class="col-form-label col-md-3 col-sm-3 label-align">
-                            </label>
+                            <label asp-for="Pname" class="col-form-label col-md-3 col-sm-3 label-align"></label>
                             <div class="col-md-4 col-sm-4 ">
                                 <input asp-for="Pname" required="required" class="form-control">
                             </div>
@@ -48,8 +47,7 @@
                         </div>
 
                         <div class="item form-group mb-4">
-                            <label asp-for="Info" class="col-form-label col-md-3 col-sm-3 label-align">
-                            </label>
+                            <label asp-for="Info" class="col-form-label col-md-3 col-sm-3 label-align"></label>
                             <div class="col-md-4 col-sm-4 ">
                                 <input asp-for="Info" class="form-control">
                             </div>
@@ -72,17 +70,21 @@
                             </div>
                         </div>
                         
-                        <div class="form-group row mt-2">
+                        <div class="item form-group row mb-4">
                             <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 1</label>
-                            <select name="StudentId1" class="form-control" asp-items="ViewBag.StudentId1">
-                                <option value="Không có">Không có</option>
-                            </select>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select name="StudentId1" class="form-control" asp-items="ViewBag.StudentId1">
+                                    <option value="Không có">Không có</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group row mt-2">
+                        <div class="item form-group row mb-4">
                             <label class="col-form-label col-md-3 col-sm-3 label-align">Sinh viên 2</label>
-                            <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
-                                <option value="Không có">Không có</option>
-                            </select>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select name="StudentId2" class="form-control" asp-items="ViewBag.StudentId2">
+                                    <option value="Không có">Không có</option>
+                                </select>
+                            </div>
                         </div>
 
                         <input type="hidden" asp-for="ClassId" value="@ViewData["id"]" />
