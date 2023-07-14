@@ -29,16 +29,24 @@
                     <h2>Chi tiết của đồ án</h2>
                     <ul class="nav navbar-right panel_toolbox">
                         <li>
-                            <button class="btn btn-danger btn-round" style="margin-right:20px" id="RemoveMemberBtn" data-toggle="modal" data-target="#removeUserModal">
-                                <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
-
-                            </button>
-
+                            @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                            {
+                                <div>
+                                    <button class="btn btn-round btn-success" id="add-grade-btn" data-toggle="modal" data-target="#addGradeModal">Thêm điểm</button>
+                                </div>
+                                @if (@Model.PGrade != null)
+                                {
+                                    <label class="col-form-label col-md-3 col-sm-3" style="font-size: 14px">Điểm: @Model.PGrade</label>
+                                }
+                                <button class="btn btn-danger btn-round" style="margin-right:20px" id="RemoveMemberBtn" data-toggle="modal" data-target="#removeUserModal">
+                                    Xóa sinh viên khỏi đồ án
+                                    <span class="glyphicon glyphicon-pencil" style="color:white" aria-hidden="true"></span>
+                                </button>
+                            }
                         </li>
                         <li>
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
-
                     </ul>
                     <div class="clearfix"></div>
                 </div>
@@ -109,15 +117,14 @@
                             </div>
                         </div>
 
-
                         <div class="d-flex justify-content-center w-100" style="min-height: 100px">
                         </div>
                         <div>
-                            <form method="post" id="add-comment-form" asp-asp-controller="Users" asp-action="AddComment" asp-route-id="@Model.Id">
+                            <form method="post" id="add-comment-form" enctype="multipart/form-data" asp-action="AddComment" asp-route-id="@Model.Id">
 
                                 <h4>Nhận xét</h4>
 
-                                <!-- end of user messages -->
+                                <!-- start of user messages -->
                                 <ul class="messages">
                                     <li>
                                         <img src="../../files/default-avatar.jpg" class="avatar" alt="Avatar">
@@ -208,23 +215,15 @@
                                     <div id="editor-one" class="editor-wrapper" style="min-height:100px"></div>
 
                                     <textarea name="descr" id="descr" style="display:none;"></textarea>
-                                </div>                            <!-- end of user messages -->
+                                <!-- end of user messages -->
+                                </div>                            
                                 <div class="d-flex justify-content-center w-100">
-                                    <button class="btn btn-primary"> Đăng nhận xét</button>
+                                    <button type="submit" class="btn btn-primary"> Đăng nhận xét</button>
                                 </div>
                             </form>
                         </div>
 
-                        @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
-                        {
-                            <div>
-                                <button class="btn btn-primary" id="add-grade-btn" data-toggle="modal" data-target="#addGradeModal">Thêm điểm</button>
-                            </div>
-                            @if (@Model.PGrade != null)
-                            {
-                                <label class="col-form-label col-md-3 col-sm-3" style="font-size: 14px">Điểm: @Model.PGrade</label>
-                            }
-                        }
+                        
                     </div>
 
                     <!-- start project-detail sidebar -->
@@ -416,21 +415,6 @@
                                             </form>
                                             }
                                         }
-                                            
-                                        //foreach (var item in Model.ProjectMembers.Where(x => x.Deleted == false))
-                                        //{
-                                        //    <tr>
-                                        //        <td style="text-align: center;"></td>
-                                        //        <td>@item.Student.UserId</td>
-                                        //        <td>@item.Student.Fullname</td>
-                                        //        <td>
-                                        //            <input name="deleteMemberId" type="hidden" value="@item.Student.Id" />
-                                        //            <button type="submit" class="btn btn-danger btn-sm" asp-action="DeleteMemberFromProject" asp-route-id-="@Model.Id">
-                                        //                <i class="fa fa-trash-o"></i>
-                                        //            </button>
-                                        //        </td>
-                                        //    </tr>
-                                        //}
                                     }
                                 </tbody>
                             </table>
