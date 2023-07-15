@@ -168,7 +168,7 @@
                             </div>
                             </li>
                             </ul>*@
-                            @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                            @if (User.IsInRole("Lecturer"))
                             {
                                 <div class="x_content">
                                     <form method="post" id="add-comment-form" asp-action="AddComment" asp-route-id="@Model.Id">
