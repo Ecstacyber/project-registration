@@ -1,19 +1,20 @@
-﻿@{
+﻿@using static ProjectRegistration.Controllers.HomeController;
+@{
     ViewData["Title"] = "Trang chủ";
 }
 
 <div class="text-center">
     <div class="col-md-3 col-sm-3  tile">
         <span>Tổng số đồ án đã được đăng ký</span>
-        <h2>@*@ViewData["ProjectRegisteredNumber"]*@46</h2>
+        <h2>@ViewData["ProjectRegisteredNumber"]</h2>
     </div>
     <div class="col-md-3 col-sm-3  tile">
         <span>Tổng số đồ án đang được thực hiện</span>
-        <h2>@*@ViewData["ProjectOnGoingNumber"]*@38</h2>
+        <h2>@ViewData["ProjectOnGoingNumber"]</h2>
     </div>
     <div class="col-md-3 col-sm-3  tile">
         <span>Tổng số đồ án đã hoàn thành</span>
-        <h2>@*@ViewData["ProjectFinishedNumber"]*@8</h2>
+        <h2>@ViewData["ProjectFinishedNumber"]</h2>
     </div>
     <div class="col-md-5 col-sm-6">
         <div class="x_panel tile fixed_height_320">
@@ -108,8 +109,8 @@
                         </th>
                     </tr>
                     <tr>
-                        <td>
-                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        <td style="width:fit-content">
+                            <canvas id="myPie1" style="max-height:150px; max-width:150px" width="100" height="100"></canvas>
                         </td>
                         <td>
                             <table class="tile_info">
@@ -353,36 +354,60 @@
     <script src="~/vendors/datejs/build/date.js"></script>
     <script>
         var ctx = document.getElementById("myChart");
-        $.ajax({
-            type: "GET",
-            url: "/Home/GetProjectCompleteData",
-            dataType: "json",
-            success: function (data) {
-                document.getElementById('completedPercent').innerHTML = /*(data * 100).toFixed(2)*/'82.06' + '%';
-                document.getElementById('doingPercent').innerHTML = /*(100 - data * 100).toFixed(2)*/'19.04' + '%';
-                var myChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ["Đang tiến hành", "Đã hoàn thành"],
-                        datasets: [{
-                            data: [/*(data * 100).toFixed(2), (100 - data * 100).toFixed(2)*/82.06, 19.04],
-                            backgroundColor: [
-                                '#1ABB9C',
-                                '#3498DB',
-                            ],
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        legend: {
-                            display: false
-                        },
-                    },
-
-                });
+        var finishedPercent = '@ViewData["ProjectFinishedNumber"]' / '@ViewData["ProjectRegisteredNumber"]' * 100;
+        var ongoingPercent = '@ViewData["ProjectOnGoingNumber"]' / '@ViewData["ProjectRegisteredNumber"]' * 100;
+        document.getElementById('completedPercent').innerHTML = finishedPercent.toFixed(2) + "%";
+        document.getElementById('doingPercent').innerHTML = ongoingPercent.toFixed(2) + "%";
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["Đang tiến hành", "Đã hoàn thành"],
+                datasets: [{
+                    data: [(finishedPercent).toFixed(2), (ongoingPercent).toFixed(2)],
+                    backgroundColor: [
+                        '#1ABB9C',
+                        '#3498DB',
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    display: false
+                },
             }
-        })
-
+        });
+    </script>
+    <script>
+        var pie1 = document.getElementById("myPie1");
+        @{
+            var data = @ViewData["SE121Grade"] as GradeDetail;
+            Console.WriteLine(data.A);
+            Console.WriteLine(data.B);
+            Console.WriteLine(data.C);
+            Console.WriteLine(data.D);
+            Console.WriteLine(data.E);
+            Console.WriteLine(data.Total);
+        };
+        var myPie1 = new Chart(pie1, {
+            type: 'doughnut',
+            data: {
+                labels: ["9-10", "7-8", "5-6", "<5", "0"],
+                datasets: [{
+                    data: [(data.A / data.Total).toFixed(2), (data.B / data.Total).toFixed(2), (data.C / data.Total).toFixed(2), (data.D / data.Total).toFixed(2), (data.E / data.Total).toFixed(2)],
+                    backgroundColor: [
+                        '#1ABB9C',
+                        '#3498DB',
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    display: false
+                },
+            }
+        });
     </script>
     <script defer>
         window.onload = function () {

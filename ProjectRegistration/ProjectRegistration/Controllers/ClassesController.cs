@@ -173,7 +173,7 @@ namespace ProjectRegistration.Controllers
             ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName", @class.CourseId);
             ViewData["Year"] = new SelectList(yearList);
 
-            ViewData["RegTime"] = @class.RegStart.Value + " - " + @class.RegEnd.Value;
+            ViewData["RegTime"] = @class.RegStart.ToString() + " - " + @class.RegEnd.ToString();
             return View(@class);
         }
 
@@ -1385,6 +1385,7 @@ namespace ProjectRegistration.Controllers
                     if (grade >= 0 && grade <= 10)
                     {
                         project.PGrade = grade;
+                        project.State = "Đã hoàn thành";
                         await _context.SaveChangesAsync();
                         TempData["message"] = "GradeAdded";
                     }

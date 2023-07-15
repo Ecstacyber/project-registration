@@ -90,7 +90,7 @@
                             </label>
                             <div class="col-md-4 col-sm-4 ">
                                 <div class="input-prepend input-group">
-                                    <input type="text" name="RegTime" id="reservation-time" class="form-control" value="@ViewBag.RegTime" />
+                                    <input type="text" name="RegTime" id="reservation-time" class="form-control" value="@ViewBag.RegTime"  />
                                     <span class="add-on input-group-addon" style="align-items:center"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
                                 </div>
                             </div>
@@ -119,13 +119,6 @@
     <script src="~/vendors/moment/min/moment.min.js"></script>
     <script src="~/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 
-    <script type="text/javascript">
-        $('input[name="RegTime"]').daterangepicker({
-            locale: {
-                format: 'DD/M hh:mm A'
-            }
-        });
-    </script>
     <script>
         function hasClass(elem, className) {
             return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');

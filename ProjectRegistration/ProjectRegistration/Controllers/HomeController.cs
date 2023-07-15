@@ -19,61 +19,48 @@ namespace ProjectRegistration.Controllers
             _context = context;
         }
 
-        public IActionResult GetProjectCompleteData()
+        [Authorize(Roles = "Manager, Lecturer, Student")]
+        public IActionResult Index()
         {
-            float totalDoingPj = _context.Projects
-                .Include(p => p.Class)
-                .Where(x => x.State == "Đang thực hiện" 
-                    || x.State == "Đã hoàn thành" 
-                    && x.Class.Semester == GetCurrentSemester() 
-                    && x.Class.Cyear == GetCurrentYear()
-                ).Count();
-            if (totalDoingPj == 0) { return Json(0); }
-            float uncompletedPj = _context.Projects.Include(p => p.Class).Where(x => x.State == "Đang thực hiện").Count();
-            var response = uncompletedPj / totalDoingPj;
-            return Json(response);
+            CheckData();
+            ViewData["CurrentYear"] = GetCurrentYear();
+            ViewData["CurrentSemester"] = GetCurrentSemester();
+            ViewData["ProjectRegisteredNumber"] = GetProjectRegisterdNumber();
+            ViewData["ProjectOnGoingNumber"] = GetProjectOnGoingNumber();
+            ViewData["ProjectFinishedNumber"] = GetProjectFinishedNumber();
+            ViewData["SE121Grade"] = GetSE121Grade();
+            return View();
+
         }
 
         public static int GetCurrentSemester()
         {
             int currentMonth = DateTime.Now.Month;
             int currentDay = DateTime.Now.Day;
-            if (currentMonth >= 9 && currentMonth == 1)
+            if (currentMonth >= 9 && currentMonth <= 2)
             {
                 if (currentMonth == 9 && currentDay >= 11)
                 {
                     return 1;
                 }
-                if (currentMonth == 1 && currentDay < 29)
+                if (currentMonth == 2 && currentDay < 19)
                 {
                     return 1;
                 }
-                else return 0;
+                else return 2;
             }
-            if (currentMonth >= 2 && currentMonth <= 7)
-            {
-                if (currentMonth == 2 && currentDay >= 19)
-                {
-                    return 2;
-                }
-                if (currentMonth == 7 && currentDay < 8)
-                {
-                    return 2;
-                }
-                else return 0;
-            }
-            return 0;
+            else return 2;
         }
 
         public int GetProjectRegisterdNumber()
         {
             int totalDoingPj = _context.Projects
                 .Include(p => p.Class)
-                .Where(x => x.State == "Đang thực hiện"
-                    || x.State == "Đã hoàn thành"
+                .Where(x => (x.State == "Đang thực hiện"
+                    || x.State == "Đã hoàn thành")
                     && x.Class.Semester == GetCurrentSemester()
                     && x.Class.Cyear == GetCurrentYear()
-                ).Count();
+                ).ToList().Count();
             return totalDoingPj;
         }
         public int GetProjectOnGoingNumber()
@@ -103,17 +90,17 @@ namespace ProjectRegistration.Controllers
             int currentYear = DateTime.Now.Year;
             if (semester == 2)
             {
-                return (currentYear - 1).ToString() + '-' + currentYear.ToString();
+                return (currentYear - 1).ToString() + " - " + currentYear.ToString();
             }
             if (semester == 1)
             {
-                if (DateTime.Now.Month == 1 && DateTime.Now.Day < 29)
+                if (DateTime.Now.Month <= 2 && DateTime.Now.Day < 19)
                 {
-                    return (currentYear - 1).ToString() + '-' + currentYear.ToString();
+                    return (currentYear - 1).ToString() + " - " + currentYear.ToString();
                 }
                 else
                 {
-                    return currentYear.ToString() + '-' + (currentYear + 1).ToString();
+                    return currentYear.ToString() + " - " + (currentYear + 1).ToString();
                 }
             }
             return currentYear.ToString();
@@ -177,24 +164,49 @@ namespace ProjectRegistration.Controllers
             }
         }
 
-
-        [Authorize(Roles = "Manager, Lecturer, Student")]
-        public IActionResult Index()
+        public class GradeDetail
         {
-            CheckData();
-            ViewData["CurrentYear"] = GetCurrentYear();
-            ViewData["CurrentSemester"] = GetCurrentSemester();
-            ViewData["ProjectRegisteredNumber"] = GetProjectRegisterdNumber();
-            ViewData["ProjectOnGoingNumber"] = GetProjectOnGoingNumber();
-            ViewData["ProjectFinishedNumber"] = GetProjectFinishedNumber();
-            return View();
-
+            public int A { get; set; } = 0;
+            public int B { get; set; } = 0;
+            public int C { get; set; } = 0;
+            public int D { get; set; } = 0;
+            public int E { get; set; } = 0;
+            public int Total { get; set; } = 0;
+        }
+        public GradeDetail GetSE121Grade()
+        {
+            var data = new GradeDetail();
+            var finishedPj = _context.Projects.Include(x => x.Class)
+                .Where(x => x.Deleted == false
+                && x.State == "Đã hoàn thành"
+                && x.Class.ClassId == "SE121"
+                && x.Class.Semester == GetCurrentSemester()
+                && x.Class.Cyear == GetCurrentYear());
+            
+            foreach (var x in finishedPj)
+            {
+                data.Total++;
+                switch (x.PGrade) {
+                    case var expression when x.PGrade >= 9:
+                        data.A++;
+                        break;
+                    case var expression when (x.PGrade >= 7 && x.PGrade < 9):
+                        data.B++;
+                        break;
+                    case var expression when (x.PGrade >= 5 && x.PGrade < 7):
+                        data.C++;
+                        break;
+                    case var expression when (x.PGrade >= 0 && x.PGrade < 5):
+                        data.D++;
+                        break;
+                    default:
+                        data.E++;
+                        break;
+                }
+            }
+            return data;
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
         public IActionResult ERROR_500()
         {
             return View();
