@@ -1069,12 +1069,13 @@ namespace ProjectRegistration.Controllers
                 _context.Update(member);
             }
             
-            var currentProject = _context.Projects.FirstOrDefault(x => x.Id == projectId);
+            var currentProject = _context.Projects.Include(x => x.ProjectMembers).FirstOrDefault(x => x.Id == projectId);
             if (currentProject != null && currentProject.ProjectMembers.Any(x => x.Deleted == false))
             {
                 currentProject.State = "Chưa đăng ký";
                 _context.Update(currentProject);
             }
+            _context.SaveChanges();
             return RedirectToAction("ViewProjectList", new { id = cId });
         }
         
@@ -1344,16 +1345,27 @@ namespace ProjectRegistration.Controllers
         public async Task<IActionResult> AddComment(string descr, int id)
         {
             var project = _context.Projects.Include(x => x.Products).ThenInclude(x => x.ProductDetails).FirstOrDefault(x => x.Id == id);
-            var product = _context.Products.FirstOrDefault(x => x.ProjectId == id);
+            var product = _context.Products.FirstOrDefault(x => x.ProjectId == id);            
             string comment = descr;
             if (!string.IsNullOrEmpty(comment))
             {
+                if (product == null)
+                {
+                    product = new Product
+                    {
+                        ProjectId = id,
+                        Project = project,
+                        Deleted = false,
+                        CreatedDateTime = DateTime.Now
+                    };
+                    project.Products.Add(product);
+                }
                 ClaimsPrincipal currentUser = this.User;
                 var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var user = await _userManager.FindByIdAsync(currentUserName);
                 ProductDetail productDetail = new()
                 {
-                    Type = "comment",
+                    Type = "Comment",
                     Info = comment,
                     CreatedDateTime = DateTime.Now,
                     User = user,
@@ -1362,8 +1374,10 @@ namespace ProjectRegistration.Controllers
                 _context.ProductDetails.Add(productDetail);
                 product.ProductDetails.Add(productDetail);
                 TempData["message"] = "CommentAdded";
+                _context.SaveChanges();
+                return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
             }
-
+           
             TempData["message"] = "CommentNotAdded";
             return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
         }
@@ -1404,5 +1418,11 @@ namespace ProjectRegistration.Controllers
             }
             return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
         }
+
+        //[Authorize(Roles = "Manager, Lecture, Student")]
+        //public async Task<IActionResult> DeleteAllMemberFromProject(string StudentId1, string StudentId2)
+        //{
+
+        //}
     }
 }
