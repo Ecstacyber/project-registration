@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectRegistration.Models;
 using System.Diagnostics;
+using System.Xml.Schema;
 
 namespace ProjectRegistration.Controllers
 {
@@ -28,7 +29,31 @@ namespace ProjectRegistration.Controllers
             ViewData["ProjectRegisteredNumber"] = GetProjectRegisterdNumber();
             ViewData["ProjectOnGoingNumber"] = GetProjectOnGoingNumber();
             ViewData["ProjectFinishedNumber"] = GetProjectFinishedNumber();
-            ViewData["SE121Grade"] = GetSE121Grade();
+
+            var se121 = GetSE121Grade();
+            ViewData["SE121_A"] = se121.A;
+            ViewData["SE121_B"] = se121.B;
+            ViewData["SE121_C"] = se121.C;
+            ViewData["SE121_D"] = se121.D;
+            ViewData["SE121_E"] = se121.E;
+            ViewData["SE121_Total"] = se121.Total;
+
+            var se122 = GetSE122Grade();
+            ViewData["SE122_A"] = se122.A;
+            ViewData["SE122_B"] = se122.B;
+            ViewData["SE122_C"] = se122.C;
+            ViewData["SE122_D"] = se122.D;
+            ViewData["SE122_E"] = se122.E;
+            ViewData["SE122_Total"] = se122.Total;
+
+            var kltn = GetKLTNGrade();
+            ViewData["KLTN_A"] = kltn.A;
+            ViewData["KLTN_B"] = kltn.B;
+            ViewData["KLTN_C"] = kltn.C;
+            ViewData["KLTN_D"] = kltn.D;
+            ViewData["KLTN_E"] = kltn.E;
+            ViewData["KLTN_Total"] = kltn.Total;
+
             return View();
 
         }
@@ -166,20 +191,28 @@ namespace ProjectRegistration.Controllers
 
         public class GradeDetail
         {
-            public int A { get; set; } = 0;
-            public int B { get; set; } = 0;
-            public int C { get; set; } = 0;
-            public int D { get; set; } = 0;
-            public int E { get; set; } = 0;
+            public GradeDetail()
+            {
+
+            }
+            public GradeDetail(float zero)
+            {
+                Total = -1;
+            }
+            public float A { get; set; } = 0;
+            public float B { get; set; } = 0;
+            public float C { get; set; } = 0;
+            public float D { get; set; } = 0;
+            public float E { get; set; } = 0;
             public int Total { get; set; } = 0;
         }
         public GradeDetail GetSE121Grade()
         {
             var data = new GradeDetail();
-            var finishedPj = _context.Projects.Include(x => x.Class)
+            var finishedPj = _context.Projects.Include(x => x.Class).ThenInclude(x => x.Course)
                 .Where(x => x.Deleted == false
                 && x.State == "Đã hoàn thành"
-                && x.Class.ClassId == "SE121"
+                && x.Class.Course.CourseId == "SE121"
                 && x.Class.Semester == GetCurrentSemester()
                 && x.Class.Cyear == GetCurrentYear());
             
@@ -204,7 +237,100 @@ namespace ProjectRegistration.Controllers
                         break;
                 }
             }
-            return data;
+            if (data.Total != 0)
+            {
+                data.A = data.A / data.Total;
+                data.B = data.B / data.Total;
+                data.C = data.C / data.Total;
+                data.D = data.D / data.Total;
+                data.E = data.E / data.Total;
+                return data;
+            }
+            else return new GradeDetail(0);
+        }
+        public GradeDetail GetSE122Grade()
+        {
+            var data = new GradeDetail();
+            var finishedPj = _context.Projects.Include(x => x.Class).ThenInclude(x => x.Course)
+                .Where(x => x.Deleted == false
+                && x.State == "Đã hoàn thành"
+                && x.Class.Course.CourseId == "SE122"
+                && x.Class.Semester == GetCurrentSemester()
+                && x.Class.Cyear == GetCurrentYear());
+            
+            foreach (var x in finishedPj)
+            {
+                data.Total++;
+                switch (x.PGrade) {
+                    case var expression when x.PGrade >= 9:
+                        data.A++;
+                        break;
+                    case var expression when (x.PGrade >= 7 && x.PGrade < 9):
+                        data.B++;
+                        break;
+                    case var expression when (x.PGrade >= 5 && x.PGrade < 7):
+                        data.C++;
+                        break;
+                    case var expression when (x.PGrade >= 0 && x.PGrade < 5):
+                        data.D++;
+                        break;
+                    default:
+                        data.E++;
+                        break;
+                }
+            }
+            if (data.Total != 0)
+            {
+                data.A = data.A / data.Total;
+                data.B = data.B / data.Total;
+                data.C = data.C / data.Total;
+                data.D = data.D / data.Total;
+                data.E = data.E / data.Total;
+                return data;
+            }
+            else return new GradeDetail(0);
+        }
+        public GradeDetail GetKLTNGrade()
+        {
+            var data = new GradeDetail();
+            var finishedPj = _context.Projects.Include(x => x.Class).ThenInclude(x => x.Course)
+                .Where(x => x.Deleted == false
+                && x.State == "Đã hoàn thành"
+                && x.Class.Course.CourseId == "KLTN"
+                && x.Class.Semester == GetCurrentSemester()
+                && x.Class.Cyear == GetCurrentYear());
+            
+            foreach (var x in finishedPj)
+            {
+                data.Total++;
+                switch (x.PGrade) {
+                    case var expression when x.PGrade >= 9:
+                        data.A++;
+                        break;
+                    case var expression when (x.PGrade >= 7 && x.PGrade < 9):
+                        data.B++;
+                        break;
+                    case var expression when (x.PGrade >= 5 && x.PGrade < 7):
+                        data.C++;
+                        break;
+                    case var expression when (x.PGrade >= 0 && x.PGrade < 5):
+                        data.D++;
+                        break;
+                    default:
+                        data.E++;
+                        break;
+                }
+            }
+            if (data.Total != 0)
+            {
+                data.A = data.A / data.Total;
+                data.B = data.B / data.Total;
+                data.C = data.C / data.Total;
+                data.D = data.D / data.Total;
+                data.E = data.E / data.Total;
+                return data;
+            }
+            else return new GradeDetail(0);
         }
 
         public IActionResult ERROR_500()

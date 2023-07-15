@@ -118,31 +118,31 @@
                                     <td>
                                         <p><i class="fa fa-square blue"></i>9-10 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td> @ViewData["SE121_A"] </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square red"></i>7-8 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["SE121_B"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square purple"></i>5-6 </p>
                                     </td>
-                                    <td>20%</td>
+                                    <td>@ViewData["SE121_C"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square aero"></i> &lt5 </p>
                                     </td>
-                                    <td>15%</td>
+                                    <td>@ViewData["SE121_D"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square green"></i>0 </p>
                                     </td>
-                                    <td>10%</td>
+                                    <td>@ViewData["SE121_E  "]</td>
                                 </tr>
                             </table>
                         </td>
@@ -186,8 +186,8 @@
                         </th>
                     </tr>
                     <tr>
-                        <td>
-                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        <td style="width:fit-content">
+                            <canvas id="myPie2" style="max-height:150px; max-width:150px" width="100" height="100"></canvas>
                         </td>
                         <td>
                             <table class="tile_info">
@@ -263,8 +263,8 @@
                         </th>
                     </tr>
                     <tr>
-                        <td>
-                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        <td style="width:fit-content">
+                            <canvas id="myPie3" style="max-height:150px; max-width:150px" width="100" height="100"></canvas>
                         </td>
                         <td>
                             <table class="tile_info">
@@ -378,37 +378,7 @@
             }
         });
     </script>
-    <script>
-        var pie1 = document.getElementById("myPie1");
-        @{
-            var data = @ViewData["SE121Grade"] as GradeDetail;
-            Console.WriteLine(data.A);
-            Console.WriteLine(data.B);
-            Console.WriteLine(data.C);
-            Console.WriteLine(data.D);
-            Console.WriteLine(data.E);
-            Console.WriteLine(data.Total);
-        };
-        var myPie1 = new Chart(pie1, {
-            type: 'doughnut',
-            data: {
-                labels: ["9-10", "7-8", "5-6", "<5", "0"],
-                datasets: [{
-                    data: [(data.A / data.Total).toFixed(2), (data.B / data.Total).toFixed(2), (data.C / data.Total).toFixed(2), (data.D / data.Total).toFixed(2), (data.E / data.Total).toFixed(2)],
-                    backgroundColor: [
-                        '#1ABB9C',
-                        '#3498DB',
-                    ],
-                }]
-            },
-            options: {
-                responsive: true,
-                legend: {
-                    display: false
-                },
-            }
-        });
-    </script>
+
     <script defer>
         window.onload = function () {
             var ctx1 = document.getElementById("myChart1");
@@ -542,6 +512,159 @@
                 },
 
             });
+
+
+            var pie1 = document.getElementById("myPie1");
+            if ('@ViewData["SE121_Total"]' == -1) {
+                console.log(@ViewData["SE121_Total"]);
+                var myPie1 = new Chart(pie1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["chưa có"],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: [
+                                '#7cb9e8',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+            else {
+                var myPie1 = new Chart(pie1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["9-10", "7-8", "5-6", "<5", "0"],
+                        datasets: [{
+                            data: ['@ViewData["SE121_A"]',
+                                '@ViewData["SE121_B"]',
+                                '@ViewData["SE121_C"]',
+                                '@ViewData["SE121_D"]',
+                                '@ViewData["SE121_E"]'],
+                            backgroundColor: [
+                                '#dc3545',
+                                '#0d6efd',
+                                '#6f42c1',
+                                '#7cb9e8',
+                                '#198754',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+
+            var pie2 = document.getElementById("myPie2");
+            if ('@ViewData["SE122_Total"]' == -1) {
+                var myPie2 = new Chart(pie2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["chưa có"],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: [
+                                '#7cb9e8',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+            else {
+                var myPie2 = new Chart(pie2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["9-10", "7-8", "5-6", "<5", "0"],
+                        datasets: [{
+                            data: ['@ViewData["SE122_A"]',
+                                '@ViewData["SE122_B"]',
+                                '@ViewData["SE122_C"]',
+                                '@ViewData["SE122_D"]',
+                                '@ViewData["SE122_E"]'],
+                            backgroundColor: [
+                                '#dc3545',
+                                '#0d6efd',
+                                '#6f42c1',
+                                '#7cb9e8',
+                                '#198754',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+
+
+            var pie3 = document.getElementById("myPie3");
+            if ('@ViewData["KLTN_Total"]' == -1) {
+                var myPie3 = new Chart(pie3, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["chưa có"],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: [
+                                '#7cb9e8',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+            else {
+                var myPie3 = new Chart(pie3, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["9-10", "7-8", "5-6", "<5", "0"],
+                        datasets: [{
+                            data: ['@ViewData["KLTN_A"]',
+                                '@ViewData["KLTN_B"]',
+                                '@ViewData["KLTN_C"]',
+                                '@ViewData["KLTN_D"]',
+                                '@ViewData["KLTN_E"]'],
+                            backgroundColor: [
+                                '#dc3545',
+                                '#0d6efd',
+                                '#6f42c1',
+                                '#7cb9e8',
+                                '#198754',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
         }
     </script>
 }
