@@ -118,31 +118,31 @@
                                     <td>
                                         <p><i class="fa fa-square blue"></i>9-10 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td> @ViewData["SE121_A"] </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square red"></i>7-8 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["SE121_B"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square purple"></i>5-6 </p>
                                     </td>
-                                    <td>20%</td>
+                                    <td>@ViewData["SE121_C"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square aero"></i> &lt5 </p>
                                     </td>
-                                    <td>15%</td>
+                                    <td>@ViewData["SE121_D"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square green"></i>0 </p>
                                     </td>
-                                    <td>10%</td>
+                                    <td>@ViewData["SE121_E"]</td>
                                 </tr>
                             </table>
                         </td>
@@ -186,8 +186,8 @@
                         </th>
                     </tr>
                     <tr>
-                        <td>
-                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        <td style="width:fit-content">
+                            <canvas id="myPie2" style="max-height:150px; max-width:150px" width="100" height="100"></canvas>
                         </td>
                         <td>
                             <table class="tile_info">
@@ -195,31 +195,31 @@
                                     <td>
                                         <p><i class="fa fa-square blue"></i>9-10 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["SE122_A"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square red"></i>7-8 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["SE122_B"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square purple"></i>5-6 </p>
                                     </td>
-                                    <td>20%</td>
+                                    <td>@ViewData["SE122_C"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square aero"></i> &lt5 </p>
                                     </td>
-                                    <td>15%</td>
+                                    <td>@ViewData["SE122_D"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square green"></i>0 </p>
                                     </td>
-                                    <td>10%</td>
+                                    <td>@ViewData["SE122_E"]</td>
                                 </tr>
                             </table>
                         </td>
@@ -263,8 +263,8 @@
                         </th>
                     </tr>
                     <tr>
-                        <td>
-                            <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        <td style="width:fit-content">
+                            <canvas id="myPie3" style="max-height:150px; max-width:150px" width="100" height="100"></canvas>
                         </td>
                         <td>
                             <table class="tile_info">
@@ -272,31 +272,31 @@
                                     <td>
                                         <p><i class="fa fa-square blue"></i>9-10 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["KLTN_A"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square red"></i>7-8 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["KLTN_B"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square purple"></i>5-6 </p>
                                     </td>
-                                    <td>20%</td>
+                                    <td>@ViewData["KLTN_C"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square aero"></i> &lt5 </p>
                                     </td>
-                                    <td>15%</td>
+                                    <td>@ViewData["KLTN_D"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square green"></i>0 </p>
                                     </td>
-                                    <td>10%</td>
+                                    <td>@ViewData["KLTN_E"]</td>
                                 </tr>
                             </table>
                         </td>
@@ -378,62 +378,17 @@
             }
         });
     </script>
-    <script>
-        var pie1 = document.getElementById("myPie1");
-        @{
-            var data = @ViewData["SE121Grade"] as GradeDetail;
-            Console.WriteLine(data.A);
-            Console.WriteLine(data.B);
-            Console.WriteLine(data.C);
-            Console.WriteLine(data.D);
-            Console.WriteLine(data.E);
-            Console.WriteLine(data.Total);
-        };
-        var myPie1 = new Chart(pie1, {
-            type: 'doughnut',
-            data: {
-                labels: ["9-10", "7-8", "5-6", "<5", "0"],
-                datasets: [{
-                    data: [(data.A / data.Total).toFixed(2), (data.B / data.Total).toFixed(2), (data.C / data.Total).toFixed(2), (data.D / data.Total).toFixed(2), (data.E / data.Total).toFixed(2)],
-                    backgroundColor: [
-                        '#1ABB9C',
-                        '#3498DB',
-                    ],
-                }]
-            },
-            options: {
-                responsive: true,
-                legend: {
-                    display: false
-                },
-            }
-        });
-    </script>
+
     <script defer>
         window.onload = function () {
             var ctx1 = document.getElementById("myChart1");
             var myChart1 = new Chart(ctx1, {
                 type: 'line',
                 data: {
-                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    labels: ["Điểm", '@ViewData["Semester_and_Year_3"]', '@ViewData["Semester_and_Year_2"]', '@ViewData["Semester_and_Year_1"]', '@ViewData["Semester_and_Year_0"]'],
                     datasets: [{
                         label: 'Điểm',
-                        data: [{
-                            x: 0,
-                            y: 7.3
-                        }, {
-                            x: 1,
-                            y: 7.3
-                        }, {
-                            x: 2,
-                            y: 7.8
-                        }, {
-                            x: 3,
-                            y: 8.1
-                        }, {
-                            x: 4,
-                            y: 7.6
-                        }],
+                        data: ['@ViewData["SE121_AVG_0"]', '@ViewData["SE121_AVG_1"]', '@ViewData["SE121_AVG_2"]', '@ViewData["SE121_AVG_3"]', '@ViewData["SE121_AVG_4"]'],
                         borderColor: "#dc3545"
                     }],
                 },
@@ -459,25 +414,10 @@
             var myChart2 = new Chart(ctx2, {
                 type: 'line',
                 data: {
-                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    labels: ["Điểm", '@ViewData["Semester_and_Year_3"]', '@ViewData["Semester_and_Year_2"]', '@ViewData["Semester_and_Year_1"]', '@ViewData["Semester_and_Year_0"]'],
                     datasets: [{
                         label: 'Điểm',
-                        data: [{
-                            x: 0,
-                            y: 8.6
-                        }, {
-                            x: 1,
-                            y: 8.6
-                        }, {
-                            x: 2,
-                            y: 7.2
-                        }, {
-                            x: 3,
-                            y: 8.5
-                        }, {
-                            x: 4,
-                            y: 7.4
-                        }],
+                        data: ['@ViewData["SE122_AVG_0"]', '@ViewData["SE122_AVG_1"]', '@ViewData["SE122_AVG_2"]', '@ViewData["SE122_AVG_3"]', '@ViewData["SE122_AVG_4"]'],
                         borderColor: "#198754"
                     }],
                 },
@@ -503,25 +443,10 @@
             var myChart3 = new Chart(ctx3, {
                 type: 'line',
                 data: {
-                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    labels: ["Điểm", '@ViewData["Semester_and_Year_3"]', '@ViewData["Semester_and_Year_2"]', '@ViewData["Semester_and_Year_1"]', '@ViewData["Semester_and_Year_0"]'],
                     datasets: [{
                         label: 'Điểm',
-                        data: [{
-                            x: 0,
-                            y: 7.6
-                        }, {
-                            x: 1,
-                            y: 7.6
-                        }, {
-                            x: 2,
-                            y: 7.8
-                        }, {
-                            x: 3,
-                            y: 8.3
-                        }, {
-                            x: 4,
-                            y: 8.5
-                        }],
+                        data: ['@ViewData["KLTN_AVG_0"]', '@ViewData["KLTN_AVG_1"]', '@ViewData["KLTN_AVG_2"]', '@ViewData["KLTN_AVG_3"]', '@ViewData["KLTN_AVG_4"]'],
                         borderColor: "#6f42c1"
                     }],
                 },
@@ -542,6 +467,161 @@
                 },
 
             });
+
+
+            var pie1 = document.getElementById("myPie1");
+            if ('@ViewData["SE121_Total"]' == -1) {
+                console.log(@ViewData["SE121_Total"]);
+                var myPie1 = new Chart(pie1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["chưa có"],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: [
+                                '#6c757d',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+            else {
+                var myPie1 = new Chart(pie1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["9-10", "7-8", "5-6", "<5", "0"],
+                        datasets: [{
+                            data: ['@ViewData["SE121_A"]',
+                                '@ViewData["SE121_B"]',
+                                '@ViewData["SE121_C"]',
+                                '@ViewData["SE121_D"]',
+                                '@ViewData["SE121_E"]'],
+                            backgroundColor: [
+                                '#dc3545',
+                                '#0d6efd',
+                                '#6f42c1',
+                                '#7cb9e8',
+                                '#198754',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+
+            var pie2 = document.getElementById("myPie2");
+            console.log('@ViewData["SE122_Total"]')
+            if ('@ViewData["SE122_Total"]' == -1) {
+                console.log('@ViewData["SE122_Total"]')
+                var myPie2 = new Chart(pie2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["chưa có"],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: [
+                                '#6c757d',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+            else {
+                var myPie2 = new Chart(pie2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["9-10", "7-8", "5-6", "<5", "0"],
+                        datasets: [{
+                            data: ['@ViewData["SE122_A"]',
+                                '@ViewData["SE122_B"]',
+                                '@ViewData["SE122_C"]',
+                                '@ViewData["SE122_D"]',
+                                '@ViewData["SE122_E"]'],
+                            backgroundColor: [
+                                '#dc3545',
+                                '#0d6efd',
+                                '#6f42c1',
+                                '#7cb9e8',
+                                '#198754',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+
+
+            var pie3 = document.getElementById("myPie3");
+            if ('@ViewData["KLTN_Total"]' == -1) {
+                var myPie3 = new Chart(pie3, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["chưa có"],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: [
+                                '#6c757d',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
+            else {
+                var myPie3 = new Chart(pie3, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["9-10", "7-8", "5-6", "<5", "0"],
+                        datasets: [{
+                            data: ['@ViewData["KLTN_A"]',
+                                '@ViewData["KLTN_B"]',
+                                '@ViewData["KLTN_C"]',
+                                '@ViewData["KLTN_D"]',
+                                '@ViewData["KLTN_E"]'],
+                            backgroundColor: [
+                                '#dc3545',
+                                '#0d6efd',
+                                '#6f42c1',
+                                '#7cb9e8',
+                                '#198754',
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                    }
+                });
+            }
         }
     </script>
 }
