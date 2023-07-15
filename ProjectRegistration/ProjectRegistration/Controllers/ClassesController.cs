@@ -173,6 +173,13 @@ namespace ProjectRegistration.Controllers
             ViewData["Course"] = new SelectList(_context.Courses.Where(x => x.Deleted == false), "Id", "CourseName", @class.CourseId);
             ViewData["Year"] = new SelectList(yearList);
 
+
+            ViewData["Semester"] = new SelectList(new List<SelectListItem>
+            {
+                    new SelectListItem { Text = "1", Value = "1"},
+                    new SelectListItem { Text = "2", Value = "2"},
+            }, "Value", "Text", @class.Semester);
+
             ViewData["RegTime"] = @class.RegStart.ToString() + " - " + @class.RegEnd.ToString();
             return View(@class);
         }
@@ -414,7 +421,7 @@ namespace ProjectRegistration.Controllers
 
             ViewData["id"] = id;
             ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id");
-            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id");            
+            ViewData["ClassId2"] = new SelectList(_context.Classes, "Id", "Id");
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id");
 
             var studentList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == id && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 100).ToList();
@@ -445,7 +452,7 @@ namespace ProjectRegistration.Controllers
             {
                 var currentClass = _context.Classes.Include(x => x.Course).FirstOrDefault(x => x.Id == project.ClassId);
                 if (currentClass != null)
-                {                                                               
+                {
                     if (StudentId1 != "Không có")
                     {
                         ProjectMember projectMember = new()
@@ -471,9 +478,9 @@ namespace ProjectRegistration.Controllers
                         };
                         project.ProjectMembers.Add(projectMember);
                         _context.ProjectMembers.Add(projectMember);
-                    }                   
+                    }
                 }
-                    
+
                 if (project.GuidingLecturerId != null)
                 {
                     if (currentClass.Course.CourseName == "Đồ án 1" || currentClass.Course.CourseName == "Đồ án 2")
@@ -509,7 +516,7 @@ namespace ProjectRegistration.Controllers
                             return RedirectToAction("ViewProjectList", new { id = project.ClassId });
                         }
                     }
-                }            
+                }
 
                 project.CreatedDateTime = DateTime.Now;
                 project.State = "Chưa duyệt";
@@ -659,7 +666,7 @@ namespace ProjectRegistration.Controllers
             var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
             ViewData["GradingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
             ViewData["GuidingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
-            
+
             var studentList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 100).ToList();
             var selectStudentList = new List<SelectStudentList>();
             foreach (var item in studentList)
@@ -712,9 +719,9 @@ namespace ProjectRegistration.Controllers
                             _context.Entry(checkPj).State = EntityState.Detached;
                             // if no one is in the project
                             if (memCount == 0)
-                            {                                
+                            {
                                 if (StudentId1 != "Không có")
-                                {                                   
+                                {
                                     ProjectMember projectMember = new()
                                     {
                                         ProjectId = project.Id,
@@ -750,7 +757,7 @@ namespace ProjectRegistration.Controllers
                                     currentMembers[i].Deleted = true;
                                     _context.SaveChanges();
                                     _context.Entry(currentMembers[i]).State = EntityState.Detached;
-                                }                                                              
+                                }
                                 if (StudentId1 != "Không có")
                                 {
                                     ProjectMember projectMember = new()
@@ -821,8 +828,8 @@ namespace ProjectRegistration.Controllers
                                         return RedirectToAction("ViewProjectList", new { id = project.ClassId });
                                     }
                                 }
-                            }                                                     
-                        }                       
+                            }
+                        }
                     }
                 }
                 _context.Update(project);
@@ -909,7 +916,7 @@ namespace ProjectRegistration.Controllers
                 //    return RedirectToAction("ProjectDetails", new { id = saidProject.Id });
                 //}
                 bool check = false;
-                foreach(var item in project.ProjectMembers)
+                foreach (var item in project.ProjectMembers)
                 {
                     if (item.StudentId == currentUserName)
                     {
@@ -924,7 +931,7 @@ namespace ProjectRegistration.Controllers
                 }
                 List<SelectListItem> currentUserList = new List<SelectListItem>();
                 currentUserList.Add(new SelectListItem() { Text = user.Fullname, Value = user.Id });
-                ViewData["StudentId1"] = new SelectList(currentUserList, "Value", "Text");                
+                ViewData["StudentId1"] = new SelectList(currentUserList, "Value", "Text");
             }
             else
             {
@@ -933,9 +940,9 @@ namespace ProjectRegistration.Controllers
                 if (project.ProjectMembers.Where(x => x.Deleted == false).Count() == 1)
                 {
                     ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname",
-                        project.ProjectMembers.FirstOrDefault(x => x.Deleted == false).StudentId);                   
+                        project.ProjectMembers.FirstOrDefault(x => x.Deleted == false).StudentId);
                 }
-                
+
             }
             ViewData["1Member"] = "yes";
             if (project.ProjectMembers.Where(x => x.Deleted == false).Count() == 2)
@@ -944,7 +951,7 @@ namespace ProjectRegistration.Controllers
                 ViewData["StudentId1"] = new SelectList(classDetails, "UserId", "User.Fullname", project.ProjectMembers.First(x => x.Deleted == false).StudentId);
                 ViewData["StudentId2"] = new SelectList(classDetails, "UserId", "User.Fullname", project.ProjectMembers.Last(x => x.Deleted == false).StudentId);
             }
-            
+
             return View();
         }
 
@@ -1068,7 +1075,7 @@ namespace ProjectRegistration.Controllers
                 TempData["message"] = "MemberDeletedFromProject";
                 _context.Update(member);
             }
-            
+
             var currentProject = _context.Projects.Include(x => x.ProjectMembers).FirstOrDefault(x => x.Id == projectId);
             if (currentProject != null && currentProject.ProjectMembers.Any(x => x.Deleted == false))
             {
@@ -1078,7 +1085,7 @@ namespace ProjectRegistration.Controllers
             _context.SaveChanges();
             return RedirectToAction("ViewProjectList", new { id = cId });
         }
-        
+
         // POST
         [HttpPost, ActionName("VerifyProject")]
         [ValidateAntiForgeryToken]
@@ -1345,7 +1352,7 @@ namespace ProjectRegistration.Controllers
         public async Task<IActionResult> AddComment(string descr, int id)
         {
             var project = _context.Projects.Include(x => x.Products).ThenInclude(x => x.ProductDetails).FirstOrDefault(x => x.Id == id);
-            var product = _context.Products.FirstOrDefault(x => x.ProjectId == id);            
+            var product = _context.Products.FirstOrDefault(x => x.ProjectId == id);
             string comment = descr;
             if (!string.IsNullOrEmpty(comment))
             {
@@ -1377,7 +1384,7 @@ namespace ProjectRegistration.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
             }
-           
+
             TempData["message"] = "CommentNotAdded";
             return RedirectToAction("ProjectDetails", new { id = project.Id + "-" + project.ClassId });
         }
@@ -1388,7 +1395,7 @@ namespace ProjectRegistration.Controllers
             bool isNumber = double.TryParse(form["addGrade"], out double grade);
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
             if (isNumber)
-            {                
+            {
                 if (project == null)
                 {
                     TempData["message"] = "NotProjectId";
