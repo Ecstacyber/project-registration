@@ -866,12 +866,14 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> ProjectDetails(string? id)
         {
+            
             if (id == null || _context.Projects == null)
             {
                 return NotFound();
             }
             int pId = int.Parse(id.Split('-')[0]);
             int cId = int.Parse(id.Split('-')[1]);
+
 
             var project = await _context.Projects
                 .Where(p => p.Deleted == false && p.Id == pId)
@@ -884,6 +886,13 @@ namespace ProjectRegistration.Controllers
                 .Include(p => p.Products)
                 .ThenInclude(p => p.ProductDetails)
                 .FirstOrDefaultAsync();
+            ClaimsPrincipal currentUser = this.User;
+            var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (!project.ProjectMembers.Any(x => x.StudentId == currentUserName && x.Deleted == false))
+            {
+                TempData["message"] = "NotYourProject";
+                return RedirectToAction("ViewProjectList", new { id = cId });
+            }
             if (project == null)
             {
                 return NotFound();

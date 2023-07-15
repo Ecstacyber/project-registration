@@ -139,7 +139,6 @@
                     </div>
                     <input id="fileSelect" required="required" name="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none" />
                     <label for="fileSelect" id="fileSelect_label" class="form-control"><i class="fa fa-file-excel-o"></i> &nbsp; Chọn file excel </label>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -169,7 +168,6 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                 <button type="button" class="btn btn-danger" id="delete-btn">Xóa</button>
             </div>
-
         </div>
     </div>
 </div>
@@ -338,13 +336,19 @@
                     styling: 'bootstrap3',
                 });
             }
+            if (msg == 'NotYourProject') {
+                new PNotify({
+                    text: 'Bạn không thể vào đồ án của nhóm khác',
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
         });
     </script>
     <script type="text/javascript">
         $(document).ready(function () {
             var dtb = $('#datatable-project').DataTable({
                 "language": {
-
                     "emptyTable": "Hiện tại không có đồ án nào",
                     "zeroRecords": "Không tìm thấy đồ án nào",
                 },
@@ -372,7 +376,7 @@
                     dtb.search($('#searchInput').val()).draw();
                 }
             });
-
+            
             dtb.on('click', 'tr', function (e) {
                 if (!hasClass(e.target, 'openDeleteModalBtn')) {
                     var id = this.getAttribute('data-id');
@@ -380,7 +384,6 @@
                         const detailForm = document.getElementById('projectDetailForm');
                         detailForm.action = '@Url.Content("~/Classes/ProjectDetails/")' + id + '-' + '@ViewData["ClassId"]';
                         detailForm.submit();
-
                     }
                 }
             });
@@ -401,7 +404,6 @@
         deleteBtn.onclick = () => {
             deleteForm.action = '@Url.Content("~/Classes/DeleteProject/")' + id;
             deleteForm.submit();
-
         }
     </script>
     <script>
