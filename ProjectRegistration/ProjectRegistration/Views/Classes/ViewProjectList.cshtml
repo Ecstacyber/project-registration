@@ -58,9 +58,17 @@
         </thead>
         <tbody>
             @{
+                bool flag = false;
                 foreach (var item in Model)
                 {
-
+                    if (item.ProjectMembers.Any(x => x.StudentId == ViewData["CurrentUserId"].ToString() && x.Deleted == false))
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+                foreach (var item in Model)
+                {                                       
                     <tr data-id="@item.Id">
                         <td class="align-middle" style="text-align: center;">STT</td>
                         <td class="align-middle">
@@ -81,7 +89,6 @@
                                     //<p>@member.Student.Fullname</p>
                                 }
                             }
-
                         </td>
                         <td class="align-middle">
                             <label class="text-info">@Html.DisplayFor(modelItem => item.State)</label>
@@ -94,8 +101,14 @@
                                     <i class="fa fa-trash-o"></i> Xoá
                                 </button>
                             }
-                            else if (User.IsInRole("Student") || User.IsInRole("Lecturer"))
+                            else if (User.IsInRole("Lecturer"))
                             {
+                                <button type="button" class="btn btn-success btn-xs openDeleteModalBtn" onclick="GoToAddMember(this)" data-id="@item.Id">
+                                    <i class="fa fa-pencil-square"></i> Đăng ký
+                                </button>
+                            }
+                            else if (User.IsInRole("Student") && !flag)
+                            {                                
                                 <button type="button" class="btn btn-success btn-xs openDeleteModalBtn" onclick="GoToAddMember(this)" data-id="@item.Id">
                                     <i class="fa fa-pencil-square"></i> Đăng ký
                                 </button>
@@ -108,7 +121,6 @@
     </table>
     <!-- end project list -->
 </div>
-
 
 <form method="post" enctype="multipart/form-data" name="add-project-file-form" id="add-project-file-form" asp-action="AddProjectFromFileExcel">
     <!-- Modal -->
@@ -138,8 +150,6 @@
     </div>
     <input type="hidden" name="classId" value="@ViewData["ClassId"]" />
 </form>
-
-
 
 <!-- Delete Confirmation Modal -->
 <form method="post" action="" id="delete-form"></form>
