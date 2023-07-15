@@ -888,10 +888,25 @@ namespace ProjectRegistration.Controllers
                 .FirstOrDefaultAsync();
             ClaimsPrincipal currentUser = this.User;
             var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (!project.ProjectMembers.Any(x => x.StudentId == currentUserName && x.Deleted == false))
+            var user = _context.Users.FirstOrDefault(x => x.Id == currentUserName);
+            if (user.UserTypeId == 100 || user.UserTypeId == 10)
             {
-                TempData["message"] = "NotYourProject";
-                return RedirectToAction("ViewProjectList", new { id = cId });
+                if (user.UserTypeId == 100)
+                {
+                    if (!project.ProjectMembers.Any(x => x.StudentId == user.Id && x.Deleted == false))
+                    {
+                        TempData["message"] = "NotYourProject";
+                        return RedirectToAction("ViewProjectList", new { id = cId });
+                    }
+                }
+                else
+                {
+                    if(project.GuidingLecturerId != user.Id && user.Deleted == false)
+                    {
+                        TempData["message"] = "NotYourProject";
+                        return RedirectToAction("ViewProjectList", new { id = cId });
+                    }
+                }
             }
             if (project == null)
             {
