@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectRegistration.Models;
+using static Quartz.Logging.OperationName;
 
 namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
 {
@@ -72,10 +74,10 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
             public string Fullname { get; set; }
 
             [Display(Name = "Ảnh đại diện")]
-            public string ImagePath { get; set; }
+            public IFormFile FileUpload { get; set; }
 
             [Display(Name = "Ngày sinh")]
-            public DateTime DateOfBirth { get; set; }
+            public string DateOfBirth { get; set; }
 
 
         }
@@ -91,8 +93,7 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
                     Username = user.UserName,
                     PhoneNumber = user.PhoneNumber,
                     Fullname = user.Fullname,
-                    ImagePath = user.ImagePath,
-                    DateOfBirth = (DateTime)user.DateOfBirth,
+                    DateOfBirth = ((DateTime)user.DateOfBirth).ToString("dd/MM/yyyy"),
                 };
             }
             else
@@ -101,7 +102,6 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
                 {
                     Username = user.UserName,
                     Fullname = user.Fullname,
-                    ImagePath = user.ImagePath,
                 };
             }
         }
@@ -118,7 +118,7 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(IFormFile fileSelect)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -163,8 +163,40 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+
+            if (Input.DateOfBirth != null)
+            {
+                int day = int.Parse(Input.DateOfBirth.Split("/")[0]);
+                int month = int.Parse(Input.DateOfBirth.Split("/")[1]);
+                int year = int.Parse(Input.DateOfBirth.Split('/')[2]);
+                var newDOB = new DateTime(year, month, day);
+                if (newDOB != user.DateOfBirth)
+                {
+                    user.DateOfBirth = newDOB;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+
+            if (Input.FileUpload != null)
+            {
+                var fileextension = Path.GetExtension(Input.FileUpload.FileName);
+                var filename = Guid.NewGuid().ToString() + fileextension;
+                if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")))
+                {
+                    Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files"));
+                }
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files", filename);
+                using (FileStream fs = System.IO.File.Create(filepath))
+                {
+                    Input.FileUpload.CopyTo(fs);
+                }
+
+                user.ImagePath = filename;
+                await _userManager.UpdateAsync(user);
+            }
+            
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Thông tin tài khoản đã được cập nhật";
+            TempData["message"] = "Thông tin tài khoản đã được cập nhật";
             return RedirectToPage();
         }
     }

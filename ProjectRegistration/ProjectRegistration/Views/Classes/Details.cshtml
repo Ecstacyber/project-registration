@@ -85,12 +85,12 @@
                                 <tr>
 
                                     <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.RegStart): </td>
-                                    <th class="">@Html.DisplayFor(model => model.RegStart)</th>
+                                    <th>@(((DateTime)Model.RegStart).ToString("dd/MM/yyyy hh:mm tt"))</th>
                                 </tr>
                                 <tr>
 
                                     <td class="d-flex justify-content-end">@Html.DisplayNameFor(model => model.RegEnd): </td>
-                                    <th class="">@Html.DisplayFor(model => model.RegEnd)</th>
+                                    <th>@(((DateTime)Model.RegEnd).ToString("dd/MM/yyyy hh:mm tt"))</th>
                                 </tr>
                             </tbody>
                         </table>

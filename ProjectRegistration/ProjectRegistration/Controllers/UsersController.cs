@@ -249,7 +249,7 @@ namespace ProjectRegistration.Controllers
         [HttpPost]
         [Authorize(Roles = "Manager")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("Id,UserId,Gender,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
+        public async Task<IActionResult> Edit([Bind("Id,UserId,Gender,Fullname,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath, string DOB)
         {
             ModelState.Remove("ImagePath");
             if (ModelState.IsValid)
@@ -258,10 +258,17 @@ namespace ProjectRegistration.Controllers
                 {
                     var updatedUser = await _userManager.FindByIdAsync(user.Id);
 
+                    // Convert string date "dd / mm / yyyy" to DateTime
+                    int day = int.Parse(DOB.Split("/")[0]);
+                    int month = int.Parse(DOB.Split("/")[1]);
+                    int year = int.Parse(DOB.Split('/')[2]);
+                    updatedUser.DateOfBirth = new DateTime(year, month, day);
+
                     updatedUser.UserId = user.UserId;
                     updatedUser.Fullname = user.Fullname;
                     updatedUser.Gender = user.Gender;
-                    updatedUser.DateOfBirth = user.DateOfBirth;
+
+
                     updatedUser.DepartmentId = user.DepartmentId;
                     updatedUser.UserTypeId = user.UserTypeId;
 

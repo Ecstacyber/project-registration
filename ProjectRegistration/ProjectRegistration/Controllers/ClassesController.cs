@@ -418,8 +418,17 @@ namespace ProjectRegistration.Controllers
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id");
 
             var studentList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == id && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 100).ToList();
-            ViewData["StudentId1"] = new SelectList(studentList, "UserId", "User.Fullname");
-            ViewData["StudentId2"] = new SelectList(studentList, "UserId", "User.Fullname");
+            var selectStudentList = new List<SelectStudentList>();
+            foreach (var item in studentList)
+            {
+                var tempStudent = new SelectStudentList();
+                tempStudent.UserId = item.UserId;
+                tempStudent.Detail = item.User.UserId + " - " + item.User.Fullname;
+                selectStudentList.Add(tempStudent);
+            }
+
+            ViewData["StudentId1"] = new SelectList(selectStudentList, "UserId", "Detail");
+            ViewData["StudentId2"] = new SelectList(selectStudentList, "UserId", "Detail");
 
             return View();
         }
@@ -626,6 +635,11 @@ namespace ProjectRegistration.Controllers
             return RedirectToAction("ViewProjectList", new { id = project.ClassId });
         }
 
+        public class SelectStudentList
+        {
+            public string UserId { get; set; }
+            public string Detail { get; set; }
+        }
         // GET: Projects/Edit/5
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> EditProject(int? id)
@@ -635,7 +649,7 @@ namespace ProjectRegistration.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Projects.Include(p => p.ProjectMembers).Where(x => x.Id == id).FirstOrDefaultAsync();
             if (project == null)
             {
                 return NotFound();
@@ -645,9 +659,28 @@ namespace ProjectRegistration.Controllers
             var leturerList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 10).ToList();
             ViewData["GradingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
             ViewData["GuidingLecturerId"] = new SelectList(leturerList, "User.Id", "User.Fullname");
+            
             var studentList = _context.ClassDetails.Include(x => x.User).Where(x => x.ClassId == project.ClassId && x.Deleted == false && x.User.Deleted == false && x.User.UserTypeId == 100).ToList();
-            ViewData["StudentId1"] = new SelectList(studentList, "UserId", "User.Fullname");
-            ViewData["StudentId2"] = new SelectList(studentList, "UserId", "User.Fullname");
+            var selectStudentList = new List<SelectStudentList>();
+            foreach (var item in studentList)
+            {
+                var tempStudent = new SelectStudentList();
+                tempStudent.UserId = item.UserId;
+                tempStudent.Detail = item.User.UserId + " - " + item.User.Fullname;
+                selectStudentList.Add(tempStudent);
+            }
+
+            ViewData["StudentId1"] = new SelectList(selectStudentList, "UserId", "Detail");
+            ViewData["StudentId2"] = new SelectList(selectStudentList, "UserId", "Detail");
+            var projectMembers = project.ProjectMembers.Where(m => m.Deleted == false).ToList();
+            if (projectMembers.Count() > 0)
+            {
+                ViewData["StudentId1"] = new SelectList(selectStudentList, "UserId", "Detail", projectMembers[0].StudentId);
+            }
+            if (projectMembers.Count() > 1)
+            {
+                ViewData["StudentId2"] = new SelectList(selectStudentList, "UserId", "Detail", projectMembers[1].StudentId);
+            }
             return View(project);
         }
 
@@ -816,9 +849,10 @@ namespace ProjectRegistration.Controllers
             }
             int pId = int.Parse(id.Split('-')[0]);
             int cId = int.Parse(id.Split('-')[1]);
-            
+
             var project = await _context.Projects
-                .Where(p => p.Deleted == false)
+                .Where(p => p.Deleted == false && p.Id == pId)
+                .AsSplitQuery()
                 .Include(p => p.Class)
                 .Include(p => p.ProjectMembers)
                 .ThenInclude(p => p.Student)
@@ -826,7 +860,7 @@ namespace ProjectRegistration.Controllers
                 .Include(p => p.GuidingLecturer)
                 .Include(p => p.Products)
                 .ThenInclude(p => p.ProductDetails)
-                .FirstOrDefaultAsync(m => m.Id == pId);
+                .FirstOrDefaultAsync();
             if (project == null)
             {
                 return NotFound();

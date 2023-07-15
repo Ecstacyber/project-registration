@@ -72,14 +72,10 @@
                             <label asp-for="DateOfBirth" class="col-form-label col-md-3 col-sm-3 label-align">
                             </label>
                             <div class="col-md-4 col-sm-4 ">
-                                <input asp-for="DateOfBirth" id="birthday" value="2000-01-01" class="date-picker form-control" placeholder="dd-mm-yyyy" type="text" required="required" onfocus="this.type='date'" onmouseover="this.type='date'" onclick="this.type='date'" onblur="this.type='text'" onmouseout="timeFunctionLong(this)">
-                                <script>
-                                    function timeFunctionLong(input) {
-                                        setTimeout(function () {
-                                            input.type = 'text';
-                                        }, 60000);
-                                    }
-                                </script>
+                                <div class='input-group date' id='myDatepicker'>
+                                    <input asp-for="DateOfBirth" type='text' placeholder="ngày / tháng / năm" class="form-control" />
+                                    <span class="add-on input-group-addon" style="align-items:center"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                </div>
                             </div>
                         </div>
                         <div class="item form-group mb-4">
@@ -116,10 +112,10 @@
     </div>
 </div>
 
-<script src="~/vendors/fastclick/lib/fastclick.js"></script>
-<script src="~/vendors/moment/min/moment.min.js"></script>
-
 @section Scripts {
+    <script src="~/vendors/fastclick/lib/fastclick.js"></script>
+    <script src="~/vendors/moment/min/moment.min.js"></script>
+    <script src="~/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -127,6 +123,12 @@
     <script>
         $("#img").change(function () {
             $("#img_label").html($(this).val().split("\\").splice(-1, 1)[0] || "Chọn ảnh đại diện");
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('#myDatepicker').datetimepicker({
+            format: 'DD / MM / YYYY'
         });
     </script>
 

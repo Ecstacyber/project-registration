@@ -73,13 +73,12 @@
                             @{
                                 foreach (var member in item.ProjectMembers.Where(x => x.Deleted == false))
                                 {
-                                    //string imgSrc = "../../files/" + member.Student.ImagePath;
-                                    //<div class="d-inline-block">
-                                    //    <img src="" class="avatar" alt="Avatar">
-                                    //    <a>@Html.DisplayFor(modelItem => imgSrc)</a>
-                                    //</div>
-                                    <p>@member.Student.Fullname</p>
-
+                                    string imgSrc = "/files/" + member.Student.ImagePath;
+                                    <div class="d-inline-block">
+                                        <img src="@imgSrc" class="avatar" alt="Avatar">
+                                        <a>@member.Student.Fullname</a>
+                                    </div>
+                                    //<p>@member.Student.Fullname</p>
                                 }
                             }
 
