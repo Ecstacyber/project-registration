@@ -142,7 +142,7 @@
                                     <td>
                                         <p><i class="fa fa-square green"></i>0 </p>
                                     </td>
-                                    <td>@ViewData["SE121_E  "]</td>
+                                    <td>@ViewData["SE121_E"]</td>
                                 </tr>
                             </table>
                         </td>
@@ -195,31 +195,31 @@
                                     <td>
                                         <p><i class="fa fa-square blue"></i>9-10 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["SE122_A"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square red"></i>7-8 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["SE122_B"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square purple"></i>5-6 </p>
                                     </td>
-                                    <td>20%</td>
+                                    <td>@ViewData["SE122_C"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square aero"></i> &lt5 </p>
                                     </td>
-                                    <td>15%</td>
+                                    <td>@ViewData["SE122_D"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square green"></i>0 </p>
                                     </td>
-                                    <td>10%</td>
+                                    <td>@ViewData["SE122_E"]</td>
                                 </tr>
                             </table>
                         </td>
@@ -272,31 +272,31 @@
                                     <td>
                                         <p><i class="fa fa-square blue"></i>9-10 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["KLTN_A"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square red"></i>7-8 </p>
                                     </td>
-                                    <td>30%</td>
+                                    <td>@ViewData["KLTN_B"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square purple"></i>5-6 </p>
                                     </td>
-                                    <td>20%</td>
+                                    <td>@ViewData["KLTN_C"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square aero"></i> &lt5 </p>
                                     </td>
-                                    <td>15%</td>
+                                    <td>@ViewData["KLTN_D"]</td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p><i class="fa fa-square green"></i>0 </p>
                                     </td>
-                                    <td>10%</td>
+                                    <td>@ViewData["KLTN_E"]</td>
                                 </tr>
                             </table>
                         </td>
@@ -385,25 +385,10 @@
             var myChart1 = new Chart(ctx1, {
                 type: 'line',
                 data: {
-                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    labels: ["Điểm", '@ViewData["Semester_and_Year_3"]', '@ViewData["Semester_and_Year_2"]', '@ViewData["Semester_and_Year_1"]', '@ViewData["Semester_and_Year_0"]'],
                     datasets: [{
                         label: 'Điểm',
-                        data: [{
-                            x: 0,
-                            y: 7.3
-                        }, {
-                            x: 1,
-                            y: 7.3
-                        }, {
-                            x: 2,
-                            y: 7.8
-                        }, {
-                            x: 3,
-                            y: 8.1
-                        }, {
-                            x: 4,
-                            y: 7.6
-                        }],
+                        data: ['@ViewData["SE121_AVG_0"]', '@ViewData["SE121_AVG_1"]', '@ViewData["SE121_AVG_2"]', '@ViewData["SE121_AVG_3"]', '@ViewData["SE121_AVG_4"]'],
                         borderColor: "#dc3545"
                     }],
                 },
@@ -429,25 +414,10 @@
             var myChart2 = new Chart(ctx2, {
                 type: 'line',
                 data: {
-                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    labels: ["Điểm", '@ViewData["Semester_and_Year_3"]', '@ViewData["Semester_and_Year_2"]', '@ViewData["Semester_and_Year_1"]', '@ViewData["Semester_and_Year_0"]'],
                     datasets: [{
                         label: 'Điểm',
-                        data: [{
-                            x: 0,
-                            y: 8.6
-                        }, {
-                            x: 1,
-                            y: 8.6
-                        }, {
-                            x: 2,
-                            y: 7.2
-                        }, {
-                            x: 3,
-                            y: 8.5
-                        }, {
-                            x: 4,
-                            y: 7.4
-                        }],
+                        data: ['@ViewData["SE122_AVG_0"]', '@ViewData["SE122_AVG_1"]', '@ViewData["SE122_AVG_2"]', '@ViewData["SE122_AVG_3"]', '@ViewData["SE122_AVG_4"]'],
                         borderColor: "#198754"
                     }],
                 },
@@ -473,25 +443,10 @@
             var myChart3 = new Chart(ctx3, {
                 type: 'line',
                 data: {
-                    labels: ["Điểm", "HK1 2022-2023", "HK2 2022-2023", "HK1 2023-2024", "HK2 2023-2024",],
+                    labels: ["Điểm", '@ViewData["Semester_and_Year_3"]', '@ViewData["Semester_and_Year_2"]', '@ViewData["Semester_and_Year_1"]', '@ViewData["Semester_and_Year_0"]'],
                     datasets: [{
                         label: 'Điểm',
-                        data: [{
-                            x: 0,
-                            y: 7.6
-                        }, {
-                            x: 1,
-                            y: 7.6
-                        }, {
-                            x: 2,
-                            y: 7.8
-                        }, {
-                            x: 3,
-                            y: 8.3
-                        }, {
-                            x: 4,
-                            y: 8.5
-                        }],
+                        data: ['@ViewData["KLTN_AVG_0"]', '@ViewData["KLTN_AVG_1"]', '@ViewData["KLTN_AVG_2"]', '@ViewData["KLTN_AVG_3"]', '@ViewData["KLTN_AVG_4"]'],
                         borderColor: "#6f42c1"
                     }],
                 },
@@ -524,7 +479,7 @@
                         datasets: [{
                             data: [1],
                             backgroundColor: [
-                                '#7cb9e8',
+                                '#6c757d',
                             ],
                         }]
                     },
@@ -566,7 +521,9 @@
             }
 
             var pie2 = document.getElementById("myPie2");
+            console.log('@ViewData["SE122_Total"]')
             if ('@ViewData["SE122_Total"]' == -1) {
+                console.log('@ViewData["SE122_Total"]')
                 var myPie2 = new Chart(pie2, {
                     type: 'doughnut',
                     data: {
@@ -574,7 +531,7 @@
                         datasets: [{
                             data: [1],
                             backgroundColor: [
-                                '#7cb9e8',
+                                '#6c757d',
                             ],
                         }]
                     },
@@ -625,7 +582,7 @@
                         datasets: [{
                             data: [1],
                             backgroundColor: [
-                                '#7cb9e8',
+                                '#6c757d',
                             ],
                         }]
                     },
