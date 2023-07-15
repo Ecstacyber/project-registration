@@ -117,46 +117,44 @@
                                 </button>
                             </div>
                         </div>
-
-                        @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
-                        {
-                            <div class="d-flex justify-content-center w-100" style="min-height: 100px">
-                            </div>
-                            <div>
-                                <h4>Nhận xét</h4>
-                                @{
-                                    foreach (var product in Model.Products)
+                        
+                        <div class="d-flex justify-content-center w-100" style="min-height: 100px">
+                        </div>
+                        <div>
+                            <h4>Nhận xét</h4>
+                            @{
+                                foreach (var product in Model.Products)
+                                {
+                                    foreach (var item in product.ProductDetails)
                                     {
-                                        foreach (var item in product.ProductDetails)
+                                        if (item.Type == "Comment" && item.Deleted == false)
                                         {
-                                            if (item.Type == "Comment" && item.Deleted == false)
-                                            {
-                                                <ul class="messages">
-                                                    <li>
-                                                        @if (Model.GuidingLecturer != null && !string.IsNullOrEmpty(Model.GuidingLecturer.ImagePath))
+                                            <ul class="messages">
+                                                <li>
+                                                    @if (Model.GuidingLecturer != null && !string.IsNullOrEmpty(Model.GuidingLecturer.ImagePath))
+                                                    {
+                                                        <img src="@Model.GuidingLecturer.ImagePath" class="avatar" alt="Avatar">
+                                                    }
+                                                    <div class="message_wrapper">
+                                                        @if (@Model.GuidingLecturer != null)
                                                         {
-                                                            <img src="@Model.GuidingLecturer.ImagePath" class="avatar" alt="Avatar">
+                                                            <h4 class="heading">@Model.GuidingLecturer.Fullname - @item.CreatedDateTime</h4>
                                                         }
-                                                        <div class="message_wrapper">
-                                                            @if (@Model.GuidingLecturer != null)
-                                                            {
-                                                                <h4 class="heading">@Model.GuidingLecturer.Fullname - @item.CreatedDateTime</h4>
-                                                            }
-                                                            else
-                                                            {
-                                                                <h4 class="heading"></h4>
-                                                            }
-                                                            <blockquote class="message">@item.Info</blockquote>
-                                                            <br />
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            }
+                                                        else
+                                                        {
+                                                            <h4 class="heading"></h4>
+                                                        }
+                                                        <blockquote class="message">@item.Info</blockquote>
+                                                        <br />
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         }
                                     }
                                 }
-                                <!-- start of user messages -->
-                                @*<ul class="messages">
+                            }
+                            <!-- start of user messages -->
+                            @*<ul class="messages">
                             <li>
                             <img src="../../files/default-avatar.jpg" class="avatar" alt="Avatar">
                             <div class="message_wrapper">
@@ -170,7 +168,8 @@
                             </div>
                             </li>
                             </ul>*@
-
+                            @if (User.IsInRole("Manager") || User.IsInRole("Lecturer"))
+                            {
                                 <div class="x_content">
                                     <form method="post" id="add-comment-form" asp-action="AddComment" asp-route-id="@Model.Id">
                                         <textarea name="descr" id="descr" class="w-100" style="min-height:100px"></textarea>
@@ -180,8 +179,8 @@
                                     </form>
                                     <!-- end of user messages -->
                                 </div>
-                            </div>
-                        }                       
+                            }
+                        </div>                                        
                     </div>
 
                     <!-- start project-detail sidebar -->
