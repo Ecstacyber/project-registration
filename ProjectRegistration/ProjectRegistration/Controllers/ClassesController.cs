@@ -591,13 +591,18 @@ namespace ProjectRegistration.Controllers
                         while (reader.Read()) //Each row of the file
                         {
                             if (reader.GetValue(1) == null) continue;
+
                             var existProject = _context.Projects
                                 .Where(x => x.Deleted == false && x.Pname == reader.GetValue(1).ToString() && x.ClassId == classId).FirstOrDefault();
                             if (existProject != null) continue;
+
                             var project = new Project();
+
                             project.Pname = reader.GetValue(1).ToString();
-                            var user = _context.Users.Where(x => (x.Fullname == reader.GetValue(3).ToString() && x.Deleted == false)).FirstOrDefault();
-                            if (user == null) continue;
+                            var lecturer = _context.ClassDetails.Include(x => x.User).FirstOrDefault(x => x.User.Fullname == reader.GetValue(3).ToString() && x.ClassId == classId && x.Deleted == false && x.User.Deleted == false);
+
+                            if (lecturer == null) continue; 
+                            var user = lecturer.User;
                             project.GuidingLecturer = user;
                             project.GuidingLecturerId = user.Id;
                             project.Info = reader.GetValue(2) == null ? "" : reader.GetValue(2).ToString();

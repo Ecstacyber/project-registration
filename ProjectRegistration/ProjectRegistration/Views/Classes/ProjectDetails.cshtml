@@ -135,7 +135,8 @@
                                                     <li>
                                                         @if (Model.GuidingLecturer != null && !string.IsNullOrEmpty(Model.GuidingLecturer.ImagePath))
                                                         {
-                                                            <img src="@Model.GuidingLecturer.ImagePath" class="avatar" alt="Avatar">
+                                                            var lecSrc = "/files/" + Model.GuidingLecturer.ImagePath;
+                                                            <img src = "@lecSrc" class="avatar" alt="Avatar">
                                                         }
                                                         <div class="message_wrapper">
                                                             @if (@Model.GuidingLecturer != null)
