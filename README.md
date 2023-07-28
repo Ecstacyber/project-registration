@@ -9,9 +9,9 @@ At the moment, this website only used for Ho Chi Minh University of Information 
 
 
 ### Features
-- Manage Lecturer/student account information.
-- Manage Department/Course information
-- Manage Class/Project information
+- Manage lecturer & student account information.
+- Manage department & course information
+- Manage class & project information
 - Register project
 - Statistic report
 
@@ -21,9 +21,9 @@ At the moment, this website only used for Ho Chi Minh University of Information 
 - Microsoft Visual Studio 2022
 [<img src="https://visualstudio.microsoft.com/wp-content/uploads/2021/10/Product-Icon.svg" width="50" />](https://visualstudio.microsoft.com/vs/)
 
-- SQL Server
+- SQL Server 2022 Express
 [<img src="https://learn.microsoft.com/en-us/training/achievements/sqlserver/introduction-to-sql-server-2022.svg" width="50" />](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
-
+When installing the SQL Server, when asked about the server's name, choose the default name.
 
 ##### Step 1: Clone the project
 ##### Step 2: Run this command in NPM console: 
