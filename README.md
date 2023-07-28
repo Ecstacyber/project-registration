@@ -49,4 +49,4 @@ Update-Database
 
 
 
-**Thank you Ms.Huỳnh Hồ Thị Mộng Trinh for your guilding this project**
+**Thank you Ms.Huỳnh Hồ Thị Mộng Trinh for guiding this project**
