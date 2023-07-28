@@ -23,6 +23,7 @@ At the moment, this website only used for Ho Chi Minh University of Information 
 
 - SQL Server 2022 Express
 [<img src="https://learn.microsoft.com/en-us/training/achievements/sqlserver/introduction-to-sql-server-2022.svg" width="50" />](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
+
 When installing the SQL Server, when asked about the server's name, choose the default name.
 
 ##### Step 1: Clone the project
