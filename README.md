@@ -18,10 +18,10 @@ At the moment, this website only used for specific courses and classes of Ho Chi
 
 ### Installation
 #### Requirement
-- Microsoft Visual Studio 2022
+- [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
 [<img src="https://visualstudio.microsoft.com/wp-content/uploads/2021/10/Product-Icon.svg" width="50" />](https://visualstudio.microsoft.com/vs/)
 
-- SQL Server 2022 Express
+- [SQL Server 2022 Express](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
 [<img src="https://learn.microsoft.com/en-us/training/achievements/sqlserver/introduction-to-sql-server-2022.svg" width="50" />](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
 
 When installing the SQL Server, when asked about the server's name, choose the default name.
