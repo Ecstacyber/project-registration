@@ -26,11 +26,11 @@ At the moment, this website only used for Ho Chi Minh University of Information 
 When installing the SQL Server, when asked about the server's name, choose the default name.
 
 ##### Step 1: Clone the project
-##### Step 2: Run this command in NPM console: 
+##### Step 2: Run this command in the NPM console: 
 ```bash
 Update-Database
 ```
-##### Step 3: Run the project
+##### Step 3: Run the project by hitting F5 or the green arrow
   
 
 ### Preview
