@@ -3,7 +3,7 @@
 At the moment, this website only used for specific courses and classes of Ho Chi Minh University of Information Technology.
 
 
-### Creator
+### Creators
 - Châu Vĩnh Sinh: Frontend/Backend
 - Nguyễn Duy Hào: Backend/Data
 
