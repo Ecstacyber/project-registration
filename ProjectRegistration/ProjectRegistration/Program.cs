@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ProjectRegistration.Factory;
+using ProjectRegistration.Factory.Interfaces;
 using ProjectRegistration.Jobs;
 using ProjectRegistration.Models;
+using ProjectRegistration.Strategy.Interfaces;
+using ProjectRegistration.Strategy;
 using Quartz;
 using System.Net;
 
@@ -66,6 +70,9 @@ builder.Services.AddQuartz(q =>
     );
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+builder.Services.AddScoped<IUserFactory, StudentUserFactory>();
+builder.Services.AddScoped<IUserFactory, LecturerUserFactory>();
+
 
 var app = builder.Build();
 

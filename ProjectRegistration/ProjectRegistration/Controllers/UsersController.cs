@@ -16,54 +16,45 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using ProjectRegistration.Factory.Interfaces;
+using ProjectRegistration.Strategy.Interfaces;
+using ProjectRegistration.Strategy;
 
 namespace ProjectRegistration.Controllers
 {
     public class UsersController : Controller
     {
         private readonly IDENTITYUSERContext _context;
-        private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly IUserStore<User> _userStore;
-        private readonly IUserEmailStore<User> _emailStore;
-        private readonly IEmailSender _emailSender;
+        private readonly IUserFactory _lecturerUserFactory;
+        private readonly IUserFactory _studentUserFactory;
+        private IUserListStrategy _userListStrategy;
+
 
         public UsersController(IDENTITYUSERContext context,
             UserManager<User> userManager,
-            IUserStore<User> userStore,
-            SignInManager<User> signInManager,
-            IEmailSender emailSender)
+            IUserFactory lecturerUserFactory,
+            IUserFactory studentUserFactory)
         {
             _context = context;
             _userManager = userManager;
-            _userStore = userStore;
-            _emailStore = GetEmailStore();
-            _signInManager = signInManager;
-            _emailSender = emailSender;
-        }
-
-        // GET: Users
-
-        [Authorize(Roles = "Manager, Lecturer, Student")]
-        public async Task<IActionResult> Index()
-        {
-            var IDENTITYUSERContext = _context.Users.Include(u => u.Department);
-            return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
+            _lecturerUserFactory = lecturerUserFactory;
+            _studentUserFactory = studentUserFactory;
         }
 
 
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> StudentList()
         {
-            var IDENTITYUSERContext = _context.Users.Where(u => u.UserTypeId == 100).Include(u => u.Department);
-            return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
+            _userListStrategy = new StudentListStrategy();
+            return View(await _userListStrategy.GetUserList(_context));
         }
 
         [Authorize(Roles = "Manager, Lecturer, Student")]
         public async Task<IActionResult> LecturerList()
         {
-            var IDENTITYUSERContext = _context.Users.Where(u => u.UserTypeId == 10).Include(u => u.Department);
-            return View(await IDENTITYUSERContext.Where(x => x.Deleted == false).ToListAsync());
+            _userListStrategy = new LecturerListStrategy();
+            return View(await _userListStrategy.GetUserList(_context));
         }
 
         // GET: Users/Details/5
@@ -114,7 +105,6 @@ namespace ProjectRegistration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Create([Bind("UserId,Fullname,Gender,DateOfBirth,DepartmentId,UserTypeId")] User user, IFormFile ImagePath)
         {
@@ -125,35 +115,24 @@ namespace ProjectRegistration.Controllers
             }
             if (ModelState.IsValid)
             {
-                var newUser = CreateUser();
-                newUser.UserId = user.UserId;
-                await _userStore.SetUserNameAsync(newUser, newUser.UserId, CancellationToken.None);
-                await _emailStore.SetEmailAsync(newUser, newUser.UserId + "@gm.uit.edu.vn", CancellationToken.None);
-                var result = await _userManager.CreateAsync(newUser, user.UserId);
+                IUserFactory userFactory;
 
-                if (result.Succeeded)
+                if (user.UserTypeId == 10)
                 {
-                    newUser.CreatedDateTime = DateTime.Now;
-
-                    //var userId = await _userManager.GetUserIdAsync(newUser);
-                    //await _signInManager.SignInAsync(newUser, isPersistent: false);
-
-                    newUser.Fullname = user.Fullname;
-                    newUser.PhoneNumber = user.PhoneNumber;
-                    newUser.Gender = user.Gender;
-                    newUser.DateOfBirth = user.DateOfBirth;
-                    newUser.DepartmentId = user.DepartmentId;
-                    newUser.UserTypeId = user.UserTypeId;
-
-                    if (newUser.UserTypeId == 10)
-                    {
-                        await _userManager.AddToRoleAsync(newUser, "Lecturer");
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(newUser, "Student");
-                    }
-
+                    userFactory = _lecturerUserFactory;
+                }
+                else if (user.UserTypeId == 100)
+                {
+                    userFactory = _studentUserFactory;
+                }
+                else
+                {
+                    // Handle other user types or throw an exception
+                    return BadRequest("Invalid user type");
+                }
+                var newUser = await userFactory.CreateUser(user);
+                if (newUser != null)
+                {
                     if (ImagePath != null)
                     {
                         var fileextension = Path.GetExtension(ImagePath.FileName);
@@ -189,7 +168,14 @@ namespace ProjectRegistration.Controllers
                 }
             }
             ViewData["Department"] = new SelectList(_context.Departments.Where(x => x.Deleted == false), "Id", "Info", user.DepartmentId);
-            return View(user);
+            if (user.UserTypeId == 10)
+            {
+                return RedirectToAction(nameof(LecturerList), user);
+            }
+            else
+            {
+                return RedirectToAction(nameof(StudentList), user);
+            }
         }
 
         // GET: Users/Edit/5
@@ -405,28 +391,15 @@ namespace ProjectRegistration.Controllers
                             continue;
                         }
 
-                        var user = CreateUser();
+                        var user = new User();
                         user.UserId = reader.GetValue(1).ToString();
-                        await _userStore.SetUserNameAsync(user, user.UserId, CancellationToken.None);
-                        await _emailStore.SetEmailAsync(user, user.UserId + "@gm.uit.edu.vn", CancellationToken.None);
-                        var result = await _userManager.CreateAsync(user, user.UserId);
+                        user.CreatedDateTime = DateTime.Now;
+                        user.Fullname = reader.GetValue(2).ToString();
+                        user.UserTypeId = 100;
+                        var department = _context.Departments.Where(x => x.Dname == reader.GetValue(3).ToString()).FirstOrDefault();
+                        user.DepartmentId = (department != null) ? department.Id : 1;
 
-                        if (result.Succeeded)
-                        {
-                            user.CreatedDateTime = DateTime.Now;
-                            user.Fullname = reader.GetValue(2).ToString();
-                            user.UserTypeId = 100;
-                            user.ImagePath = "default-avatar.jpg";
-                            await _userManager.AddToRoleAsync(user, "Student");
-
-
-                            var department = _context.Departments.Where(x => x.Dname == reader.GetValue(3).ToString()).FirstOrDefault();
-                            if (department != null)
-                            {
-                                user.DepartmentId = department.Id;
-                            }
-                            _context.Update(user);
-                        }
+                        await _studentUserFactory.CreateUser(user);
                     }
 
                 }
@@ -438,27 +411,5 @@ namespace ProjectRegistration.Controllers
             return RedirectToAction(nameof(StudentList));
         }
 
-        private User CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<User>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
-                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
-        }
-
-        private IUserEmailStore<User> GetEmailStore()
-        {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-            return (IUserEmailStore<User>)_userStore;
-        }
     }
 }

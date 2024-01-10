@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ProjectRegistration.Models;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectRegistration.Areas.Identity.Pages.Account
 {
@@ -26,18 +27,21 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IUserStore<User> _userStore;
+        private readonly IDENTITYUSERContext _context;
 
         public LoginModel(SignInManager<User> signInManager, 
             ILogger<LoginModel> logger,
             UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
-            IUserStore<User> userStore)
+            IUserStore<User> userStore,
+            IDENTITYUSERContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
             _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
+            _context = context;
         }
 
         /// <summary>
@@ -145,16 +149,36 @@ namespace ProjectRegistration.Areas.Identity.Pages.Account
                 await _roleManager.CreateAsync(stuRole);
             }
 
+            var check = await CreateAdmin();
+            if (check != "")
+            {
+                _logger.LogInformation("Tạo tài khoản admin thành công.");
+            }
+        }
+
+        public async Task<string> CreateAdmin()
+        {
             if (_userManager.FindByNameAsync("admin").Result == null)
             {
                 var user = CreateUser();
                 user.UserTypeId = 1;
                 user.Fullname = "Ban Quản Trị";
                 user.ImagePath = "default-avatar.jpg";
+                user.DepartmentId = 1;
                 await _userStore.SetUserNameAsync(user, "admin", CancellationToken.None);
                 await _userManager.CreateAsync(user, "admin");
+                var userId = await _userManager.GetUserIdAsync(user);
+                user.UserId = userId;
+                await _userManager.AddToRoleAsync(user, "Manager");
+                await _context.AddAsync(user);
+                return userId;
+            }
+            else
+            {
+                var user = await _userManager.FindByNameAsync("admin");
                 await _userManager.AddToRoleAsync(user, "Manager");
             }
+            return "";
         }
 
         private User CreateUser()

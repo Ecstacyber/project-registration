@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Quartz;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Primitives;
+using ProjectRegistration.Decorator;
 
 namespace ProjectRegistration.Controllers
 {
@@ -1130,18 +1131,34 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> VerifyProject(int id)
         {
-            var project = _context.Projects.FirstOrDefault(x => x.Id == id);
+            var project = _context.Projects.Include(x => x.ProjectMembers).FirstOrDefault(x => x.Id == id);
+
             if (project != null)
             {
-                project.State = "Chưa đăng ký";
-                _context.SaveChanges();
-                TempData["message"] = "ProjectVerified";
+                // Use the Decorator Pattern to dynamically compose verification behaviors
+                var baseVerification = new DefaultVerification();
+                var memberCountVerificationDecorator = new MemberCountVerificationDecorator(baseVerification, 2);
+                var uniqueUserVerificationDecorator = new UniqueUserVerificationDecorator(memberCountVerificationDecorator, _context);
+
+                var isVerified = uniqueUserVerificationDecorator.VerifyProject(project);
+
+                if (isVerified)
+                {
+                    project.State = "Chưa đăng ký";
+                    await _context.SaveChangesAsync();
+                    TempData["message"] = "ProjectVerified";
+                }
+                else
+                {
+                    TempData["message"] = "ProjectVerificationFailed";
+                }
             }
             else
             {
                 TempData["message"] = "CouldNotVerifyProject";
             }
-            return RedirectToAction("Details", new { id = project.ClassId });
+
+            return RedirectToAction("Details", new { id = project?.ClassId });
         }
 
         private class UnverifyProjectDetail

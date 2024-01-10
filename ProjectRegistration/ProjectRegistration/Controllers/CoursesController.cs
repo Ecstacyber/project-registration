@@ -17,12 +17,11 @@ namespace ProjectRegistration.Controllers
     public class CoursesController : Controller
     {
         private readonly IDENTITYUSERContext _context;
-        private readonly CoursesCommandInvoker _coursesCommandInvoker;
+        private static CoursesCommandInvoker _coursesCommandInvoker = new CoursesCommandInvoker();
 
-        public CoursesController(IDENTITYUSERContext context, CoursesCommandInvoker coursesCommandInvoker)
+        public CoursesController(IDENTITYUSERContext context)
         {
             _context = context;
-            _coursesCommandInvoker = coursesCommandInvoker;
         }
 
         // GET: Courses
@@ -38,20 +37,6 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Details(int id)
         {
-            //if (id == null || _context.Courses == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var course = await _context.Courses
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            //if (course == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(course);
-
             _coursesCommandInvoker.SetCoursesCommand(new CourseDetailsCommand(_context, id));
             Course course = await _coursesCommandInvoker.ExecuteCoursesCommand();
             if (course != null)
@@ -79,18 +64,6 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Create([Bind("Id,CourseId,CourseName,Semester,Cyear,CreatedDateTime,Deleted,DeletedDateTime")] Course course)
         {
-            //if (_context.Courses.Where(x => x.Deleted == false && x.CourseId == course.CourseId).FirstOrDefault() != null)
-            //{
-            //    ModelState.AddModelError("CourseId", "Mã môn học đã tồn tại");
-            //}
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(course);
-            //    await _context.SaveChangesAsync();
-            //    TempData["message"] = "CourseCreated";
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(course);
 
             if (ModelState.IsValid)
             {
@@ -129,47 +102,11 @@ namespace ProjectRegistration.Controllers
             return View(course);
         }
 
-        // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,CourseName,Semester,Cyear,CreatedDateTime,Deleted,DeletedDateTime")] Course course)
         {
-            //if (id != course.Id)
-            //{
-            //    TempData["message"] = "NoCourseToEdit";
-            //    return NotFound();
-            //}
-
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(course);
-            //        await _context.SaveChangesAsync();
-            //        TempData["message"] = "CourseCreated";
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!CourseExists(course.Id))
-            //        {
-            //            TempData["message"] = "NoCourseToEdit";
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            TempData["message"] = "NoCourseToEdit";
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-
-            //TempData["message"] = "CourseNotCreated";
-            //return View(course);
-
             _coursesCommandInvoker.SetCoursesCommand(new EditCourseCommand(_context, course, id));
             Course result = await _coursesCommandInvoker.ExecuteCoursesCommand();
             if (result != null)
@@ -190,22 +127,6 @@ namespace ProjectRegistration.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //if (_context.Courses == null)
-            //{
-            //    TempData["message"] = "CourseNotFound";
-            //    return Problem("Entity set 'IDENTITYUSERContext.Courses'  is null.");
-            //}
-            //var course = await _context.Courses.FindAsync(id);
-            //if (course != null)
-            //{
-            //    course.Deleted = true;
-            //    course.DeletedDateTime = DateTime.Now;
-            //    TempData["message"] = "CourseDeleted";
-            //}
-
-            //await _context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
-
             _coursesCommandInvoker.SetCoursesCommand(new DeleteCourseCommand(_context, id));
             Course result = await _coursesCommandInvoker.ExecuteCoursesCommand();
             if (result != null)
