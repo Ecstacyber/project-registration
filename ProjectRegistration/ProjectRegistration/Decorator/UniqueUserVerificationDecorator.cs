@@ -1,5 +1,6 @@
 ﻿using ProjectRegistration.Models;
 using ProjectRegistration.Decorator.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectRegistration.Decorator
 {
@@ -20,15 +21,16 @@ namespace ProjectRegistration.Decorator
 
             if (baseVerificationResult)
             {
-                var uniqueUsers = project.ProjectMembers
-                    .Where(x => x.Deleted == false)
-                    .Select(x => x.StudentId)
-                    .Distinct();
-
-                var isUnique = uniqueUsers.Count() == project.ProjectMembers.Count(x => x.Deleted == false);
-                return isUnique;
+                foreach (var user in project.ProjectMembers)
+                {
+                    if (_context.ProjectMembers.Include(x => x.Project).Any(x => x.Project.ClassId == project.ClassId 
+                    && x.StudentId == user.StudentId 
+                    && x.ProjectId != project.Id
+                    && x.Deleted == false))
+                        return false;
+                }
+                return true;
             }
-
             return false;
         }
     }
