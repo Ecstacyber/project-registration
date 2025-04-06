@@ -1,5 +1,5 @@
 # Project Registration
-## _The purpose of the website is to help teachers and students optimize the process of registering for projects and resolving any issues that arise from using third-party tools for management._
+## _The purpose of the website is to help teachers and students optimize the process of registering course projects and resolving any issues that arise from using third-party tools for management._
 At the moment, this website only used for specific courses and classes of Ho Chi Minh University of Information Technology.
 
 
